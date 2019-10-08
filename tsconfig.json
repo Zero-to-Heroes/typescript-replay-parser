@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "replay-parser": [
+        "dist/replay-parser"
+      ],
+      "replay-parser/*": [
+        "dist/replay-parser/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

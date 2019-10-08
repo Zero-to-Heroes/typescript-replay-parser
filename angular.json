@@ -120,6 +120,41 @@
           }
         }
       }
+    },
+    "replay-parser": {
+      "projectType": "library",
+      "root": "projects/replay-parser",
+      "sourceRoot": "projects/replay-parser/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/replay-parser/tsconfig.lib.json",
+            "project": "projects/replay-parser/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/replay-parser/src/test.ts",
+            "tsConfig": "projects/replay-parser/tsconfig.spec.json",
+            "karmaConfig": "projects/replay-parser/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/replay-parser/tsconfig.lib.json",
+              "projects/replay-parser/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "replay-action-parser"
 }
