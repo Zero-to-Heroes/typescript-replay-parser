@@ -12,37 +12,37 @@ export class CardTargetAction extends Action implements HasTargets {
   readonly allCards: AllCardsService;
 
   constructor(allCards: AllCardsService) {
-    super();
-    this.allCards = allCards;
+	super();
+	this.allCards = allCards;
   }
 
   public static create(newAction, allCards: AllCardsService): CardTargetAction {
-    return Object.assign(new CardTargetAction(allCards), newAction);
+	return Object.assign(new CardTargetAction(allCards), newAction);
   }
 
   public update(entities: Map<number, Entity>): CardTargetAction {
-    return Object.assign(new CardTargetAction(this.allCards), this, {
-      entities
-    });
+	return Object.assign(new CardTargetAction(this.allCards), this, {
+		entities
+	});
   }
 
   public enrichWithText(): CardTargetAction {
-    const originCardId = ActionHelper.getCardId(this.entities, this.originId);
-    const targetCardIds = this.targetIds.map(entityId =>
-      ActionHelper.getCardId(this.entities, entityId)
-    );
-    const originCardName = this.allCards.getCard(originCardId).name;
-    const targetCardNames = targetCardIds
-      .map(cardId => this.allCards.getCard(cardId))
-      .map(card => card.name)
-      .join(', ');
-    const textRaw = `\t${originCardName} targets ${targetCardNames}`;
-    return Object.assign(new CardTargetAction(this.allCards), this, {
-      textRaw
-    });
+	const originCardId = ActionHelper.getCardId(this.entities, this.originId);
+	const targetCardIds = this.targetIds.map(entityId =>
+		ActionHelper.getCardId(this.entities, entityId)
+	);
+	const originCardName = this.allCards.getCard(originCardId).name;
+	const targetCardNames = targetCardIds
+		.map(cardId => this.allCards.getCard(cardId))
+		.map(card => card.name)
+		.join(', ');
+	const textRaw = `\t${originCardName} targets ${targetCardNames}`;
+	return Object.assign(new CardTargetAction(this.allCards), this, {
+		textRaw
+	});
   }
 
   protected getInstance(): Action {
-    return new CardTargetAction(this.allCards);
+	return new CardTargetAction(this.allCards);
   }
 }

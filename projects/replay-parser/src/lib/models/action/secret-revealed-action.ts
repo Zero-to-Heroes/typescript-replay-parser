@@ -10,33 +10,33 @@ export class SecretRevealedAction extends Action {
   readonly allCards: AllCardsService;
 
   constructor(allCards: AllCardsService) {
-    super();
-    this.allCards = allCards;
+	super();
+	this.allCards = allCards;
   }
 
   public static create(
-    newAction,
-    allCards: AllCardsService
+	newAction,
+	allCards: AllCardsService
   ): SecretRevealedAction {
-    return Object.assign(new SecretRevealedAction(allCards), newAction);
+	return Object.assign(new SecretRevealedAction(allCards), newAction);
   }
 
   public update(entities: Map<number, Entity>): SecretRevealedAction {
-    return Object.assign(new SecretRevealedAction(this.allCards), this, {
-      entities
-    });
+	return Object.assign(new SecretRevealedAction(this.allCards), this, {
+		entities
+	});
   }
 
   public enrichWithText(): SecretRevealedAction {
-    const cardId = ActionHelper.getCardId(this.entities, this.entityId);
-    const cardName = this.allCards.getCard(cardId).name;
-    const textRaw = `\t... which triggers ${cardName}!`;
-    return Object.assign(new SecretRevealedAction(this.allCards), this, {
-      textRaw
-    });
+	const cardId = ActionHelper.getCardId(this.entities, this.entityId);
+	const cardName = this.allCards.getCard(cardId).name;
+	const textRaw = `\t... which triggers ${cardName}!`;
+	return Object.assign(new SecretRevealedAction(this.allCards), this, {
+		textRaw
+	});
   }
 
   protected getInstance(): Action {
-    return new SecretRevealedAction(this.allCards);
+	return new SecretRevealedAction(this.allCards);
   }
 }

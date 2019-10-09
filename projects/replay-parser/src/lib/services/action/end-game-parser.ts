@@ -15,59 +15,59 @@ export class EndGameParser implements Parser {
   constructor(private logger: NGXLogger) {}
 
   public applies(item: HistoryItem): boolean {
-    return (
-      item instanceof TagChangeHistoryItem &&
-      item.tag.tag === GameTag.PLAYSTATE &&
-      [
-        PlayState.LOST,
-        PlayState.WON,
-        PlayState.TIED,
-        PlayState.CONCEDED
-      ].indexOf(item.tag.value) !== -1
-    );
+	return (
+		item instanceof TagChangeHistoryItem &&
+		item.tag.tag === GameTag.PLAYSTATE &&
+		[
+		PlayState.LOST,
+		PlayState.WON,
+		PlayState.TIED,
+		PlayState.CONCEDED
+		].indexOf(item.tag.value) !== -1
+	);
   }
 
   public parse(
-    item: TagChangeHistoryItem,
-    currentTurn: number,
-    entitiesBeforeAction: Map<number, Entity>,
-    history: readonly HistoryItem[],
-    players: readonly PlayerEntity[]
+	item: TagChangeHistoryItem,
+	currentTurn: number,
+	entitiesBeforeAction: Map<number, Entity>,
+	history: readonly HistoryItem[],
+	players: readonly PlayerEntity[]
   ): Action[] {
-    return [
-      EndGameAction.create({
-        timestamp: item.timestamp,
-        index: item.index,
-        entityId: players[0].id,
-        opponentId: players[1].id,
-        winStatus: [[item.tag.entity, item.tag.value]]
-      })
-    ];
+	return [
+		EndGameAction.create({
+		timestamp: item.timestamp,
+		index: item.index,
+		entityId: players[0].id,
+		opponentId: players[1].id,
+		winStatus: [[item.tag.entity, item.tag.value]]
+		})
+	];
   }
 
   public reduce(actions: readonly Action[]): readonly Action[] {
-    return ActionHelper.combineActions<EndGameAction>(
-      actions,
-      (previous, current) => this.shouldMergeActions(previous, current),
-      (previous, current) => this.mergeActions(previous, current)
-    );
+	return ActionHelper.combineActions<EndGameAction>(
+		actions,
+		(previous, current) => this.shouldMergeActions(previous, current),
+		(previous, current) => this.mergeActions(previous, current)
+	);
   }
 
   private shouldMergeActions(previous: Action, current: Action): boolean {
-    // Absorbs all actions after the end game
-    return previous instanceof EndGameAction;
+	// Absorbs all actions after the end game
+	return previous instanceof EndGameAction;
   }
 
   private mergeActions(
-    previousAction: EndGameAction,
-    currentAction: EndGameAction
+	previousAction: EndGameAction,
+	currentAction: EndGameAction
   ): EndGameAction {
-    const winStatus: readonly [number, number][] = [
-      ...(previousAction.winStatus || []),
-      ...(currentAction.winStatus || [])
-    ];
-    return previousAction.updateAction<EndGameAction>({
-      winStatus
-    } as EndGameAction);
+	const winStatus: readonly [number, number][] = [
+		...(previousAction.winStatus || []),
+		...(currentAction.winStatus || [])
+	];
+	return previousAction.updateAction<EndGameAction>({
+		winStatus
+	} as EndGameAction);
   }
 }

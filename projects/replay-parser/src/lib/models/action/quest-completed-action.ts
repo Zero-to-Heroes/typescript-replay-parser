@@ -8,29 +8,29 @@ export class QuestCompletedAction extends Action {
   readonly originId: number;
 
   constructor(private allCards: AllCardsService) {
-    super();
+	super();
   }
 
   public static create(
-    newAction,
-    allCards: AllCardsService
+	newAction,
+	allCards: AllCardsService
   ): QuestCompletedAction {
-    return Object.assign(new QuestCompletedAction(allCards), newAction);
+	return Object.assign(new QuestCompletedAction(allCards), newAction);
   }
 
   public update(entities: Map<number, Entity>): QuestCompletedAction {
-    return Object.assign(this.getInstance(), this, { entities });
+	return Object.assign(this.getInstance(), this, { entities });
   }
 
   public enrichWithText(): QuestCompletedAction {
-    const questCardId = ActionHelper.getCardId(this.entities, this.originId);
-    const questName = this.allCards.getCard(questCardId).name;
-    const playerName = ActionHelper.getOwner(this.entities, this.originId).name;
-    const textRaw = `\t${playerName} completes ${questName}!`;
-    return Object.assign(this.getInstance(), this, { textRaw });
+	const questCardId = ActionHelper.getCardId(this.entities, this.originId);
+	const questName = this.allCards.getCard(questCardId).name;
+	const playerName = ActionHelper.getOwner(this.entities, this.originId).name;
+	const textRaw = `\t${playerName} completes ${questName}!`;
+	return Object.assign(this.getInstance(), this, { textRaw });
   }
 
   protected getInstance(): Action {
-    return new QuestCompletedAction(this.allCards);
+	return new QuestCompletedAction(this.allCards);
   }
 }

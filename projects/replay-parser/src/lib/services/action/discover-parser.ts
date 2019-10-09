@@ -12,33 +12,33 @@ export class DiscoverParser implements Parser {
   constructor(private allCards: AllCardsService) {}
 
   public applies(item: HistoryItem): boolean {
-    return item instanceof ChoicesHistoryItem;
+	return item instanceof ChoicesHistoryItem;
   }
 
   public parse(
-    item: ChoicesHistoryItem,
-    currentTurn: number,
-    entitiesBeforeAction: Map<number, Entity>,
-    history: readonly HistoryItem[]
+	item: ChoicesHistoryItem,
+	currentTurn: number,
+	entitiesBeforeAction: Map<number, Entity>,
+	history: readonly HistoryItem[]
   ): Action[] {
-    if (item.choices.type !== ChoiceType.GENERAL) {
-      return [];
-    }
-    return [
-      DiscoverAction.create(
-        {
-          timestamp: item.timestamp,
-          index: item.index,
-          origin: item.choices.source,
-          ownerId: item.choices.playerID,
-          choices: item.choices.cards
-        },
-        this.allCards
-      )
-    ];
+	if (item.choices.type !== ChoiceType.GENERAL) {
+		return [];
+	}
+	return [
+		DiscoverAction.create(
+		{
+			timestamp: item.timestamp,
+			index: item.index,
+			origin: item.choices.source,
+			ownerId: item.choices.playerID,
+			choices: item.choices.cards
+		},
+		this.allCards
+		)
+	];
   }
 
   public reduce(actions: readonly Action[]): readonly Action[] {
-    return actions;
+	return actions;
   }
 }

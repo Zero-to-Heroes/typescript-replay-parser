@@ -13,52 +13,52 @@ export class OptionsParser implements Parser {
   constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
   public applies(item: HistoryItem): boolean {
-    return item instanceof OptionsHistoryItem;
+	return item instanceof OptionsHistoryItem;
   }
 
   public parse(
-    item: OptionsHistoryItem,
-    currentTurn: number,
-    entitiesBeforeAction: Map<number, Entity>,
-    history: readonly HistoryItem[]
+	item: OptionsHistoryItem,
+	currentTurn: number,
+	entitiesBeforeAction: Map<number, Entity>,
+	history: readonly HistoryItem[]
   ): Action[] {
-    return [
-      OptionsAction.create(
-        {
-          timestamp: item.timestamp,
-          index: item.index,
-          options: item.tag.options
-            .filter(option => !option.error || option.error === -1)
-            .map(option => option.entity)
-        },
-        this.allCards
-      )
-    ];
+	return [
+		OptionsAction.create(
+		{
+			timestamp: item.timestamp,
+			index: item.index,
+			options: item.tag.options
+			.filter(option => !option.error || option.error === -1)
+			.map(option => option.entity)
+		},
+		this.allCards
+		)
+	];
   }
 
   public reduce(actions: readonly Action[]): readonly Action[] {
-    return ActionHelper.combineActions<Action>(
-      actions,
-      (previous, current) => this.shouldMergeActions(previous, current),
-      (previous, current) => this.mergeActions(previous, current)
-    );
+	return ActionHelper.combineActions<Action>(
+		actions,
+		(previous, current) => this.shouldMergeActions(previous, current),
+		(previous, current) => this.mergeActions(previous, current)
+	);
   }
 
   private shouldMergeActions(
-    previousAction: Action,
-    currentAction: Action
+	previousAction: Action,
+	currentAction: Action
   ): boolean {
-    return currentAction instanceof OptionsAction;
+	return currentAction instanceof OptionsAction;
   }
 
   private mergeActions(previousAction: Action, currentAction: Action): Action {
-    return previousAction.updateAction({
-      index: currentAction.index,
-      entities: currentAction.entities,
-      options: [
-        ...(previousAction.options || []),
-        ...(currentAction.options || [])
-      ] as readonly number[]
-    } as Action);
+	return previousAction.updateAction({
+		index: currentAction.index,
+		entities: currentAction.entities,
+		options: [
+		...(previousAction.options || []),
+		...(currentAction.options || [])
+		] as readonly number[]
+	} as Action);
   }
 }

@@ -68,8 +68,8 @@ export class XmlParserService {
 
 	rootState(node: EnrichedTag) {
 		node.index = this.index++;
-		let name = undefined;
-		let ts = undefined;
+		let name;
+		let ts;
 		switch (node.name) {
 			case 'Game':
 				this.initialTimestamp = this.tsToSeconds(node.attributes.ts);

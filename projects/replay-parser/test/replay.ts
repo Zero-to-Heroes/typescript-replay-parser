@@ -1,4 +1,4 @@
-export const replay: string = `<?xml version="1.0" encoding="utf-8"?>
+export const replay = `<?xml version="1.0" encoding="utf-8"?>
 <HSReplay xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Game buildNumber="31532" formatType="2" gameType="7" scenarioID="2" ts="00:13:42.4591533" type="0">
     <GameEntity id="1">

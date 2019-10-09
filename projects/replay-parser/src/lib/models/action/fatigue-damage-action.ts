@@ -9,28 +9,28 @@ export class FatigueDamageAction extends Action {
   readonly amount: number;
 
   constructor(private allCards: AllCardsService) {
-    super();
+	super();
   }
 
   public static create(
-    newAction,
-    allCards: AllCardsService
+	newAction,
+	allCards: AllCardsService
   ): FatigueDamageAction {
-    return Object.assign(new FatigueDamageAction(allCards), newAction);
+	return Object.assign(new FatigueDamageAction(allCards), newAction);
   }
 
   public update(entities: Map<number, Entity>): FatigueDamageAction {
-    return Object.assign(this.getInstance(), this, { entities });
+	return Object.assign(this.getInstance(), this, { entities });
   }
 
   public enrichWithText(): FatigueDamageAction {
-    const playerName = ActionHelper.getOwner(this.entities, this.controller)
-      .name;
-    const textRaw = `\t${playerName} takes ${this.amount} fatigue damage`;
-    return Object.assign(this.getInstance(), this, { textRaw });
+	const playerName = ActionHelper.getOwner(this.entities, this.controller)
+		.name;
+	const textRaw = `\t${playerName} takes ${this.amount} fatigue damage`;
+	return Object.assign(this.getInstance(), this, { textRaw });
   }
 
   protected getInstance(): Action {
-    return new FatigueDamageAction(this.allCards);
+	return new FatigueDamageAction(this.allCards);
   }
 }

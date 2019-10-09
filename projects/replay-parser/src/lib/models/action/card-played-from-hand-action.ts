@@ -12,43 +12,43 @@ export class CardPlayedFromHandAction extends Action {
   readonly allCards: AllCardsService;
 
   constructor(allCards: AllCardsService) {
-    super();
-    this.allCards = allCards;
+	super();
+	this.allCards = allCards;
   }
 
   public static create(
-    newAction,
-    allCards: AllCardsService
+	newAction,
+	allCards: AllCardsService
   ): CardPlayedFromHandAction {
-    return Object.assign(new CardPlayedFromHandAction(allCards), newAction);
+	return Object.assign(new CardPlayedFromHandAction(allCards), newAction);
   }
 
   public update(entities: Map<number, Entity>): CardPlayedFromHandAction {
-    return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
-      entities
-    });
+	return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
+		entities
+	});
   }
 
   public enrichWithText(): CardPlayedFromHandAction {
-    const ownerName: string = ActionHelper.getOwner(
-      this.entities,
-      this.entityId
-    ).name;
-    const cardEntity = this.entities.get(this.entityId);
-    const cardId: string = ActionHelper.getCardId(this.entities, this.entityId);
-    const card = this.allCards.getCard(cardId);
-    const cardName = card ? card.name : 'one card';
-    let playVerb = 'plays';
-    if (cardEntity.getTag(GameTag.CARDTYPE) === CardType.WEAPON) {
-      playVerb = 'equips';
-    }
-    const textRaw = `\t${ownerName} ${playVerb} ${cardName}`;
-    return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
-      textRaw
-    });
+	const ownerName: string = ActionHelper.getOwner(
+		this.entities,
+		this.entityId
+	).name;
+	const cardEntity = this.entities.get(this.entityId);
+	const cardId: string = ActionHelper.getCardId(this.entities, this.entityId);
+	const card = this.allCards.getCard(cardId);
+	const cardName = card ? card.name : 'one card';
+	let playVerb = 'plays';
+	if (cardEntity.getTag(GameTag.CARDTYPE) === CardType.WEAPON) {
+		playVerb = 'equips';
+	}
+	const textRaw = `\t${ownerName} ${playVerb} ${cardName}`;
+	return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
+		textRaw
+	});
   }
 
   protected getInstance(): Action {
-    return new CardPlayedFromHandAction(this.allCards);
+	return new CardPlayedFromHandAction(this.allCards);
   }
 }

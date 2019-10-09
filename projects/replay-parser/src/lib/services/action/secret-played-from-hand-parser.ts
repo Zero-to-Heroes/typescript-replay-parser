@@ -15,59 +15,59 @@ export class SecretPlayedFromHandParser implements Parser {
   constructor(private allCards: AllCardsService) {}
 
   public applies(item: HistoryItem): boolean {
-    return (
-      item instanceof ActionHistoryItem &&
-      parseInt(item.node.attributes.type) === BlockType.PLAY &&
-      (item.node.tags && item.node.tags.length > 0)
-    );
+	return (
+		item instanceof ActionHistoryItem &&
+		parseInt(item.node.attributes.type) === BlockType.PLAY &&
+		(item.node.tags && item.node.tags.length > 0)
+	);
   }
 
   public parse(
-    item: ActionHistoryItem,
-    currentTurn: number,
-    entitiesBeforeAction: Map<number, Entity>,
-    history: readonly HistoryItem[]
+	item: ActionHistoryItem,
+	currentTurn: number,
+	entitiesBeforeAction: Map<number, Entity>,
+	history: readonly HistoryItem[]
   ): Action[] {
-    let playedCardId = -1;
-    let isSecret = false;
-    for (const tag of item.node.tags) {
-      if (tag.tag === GameTag.ZONE && tag.value === Zone.SECRET) {
-        if (
-          entitiesBeforeAction.get(tag.entity).getTag(GameTag.CARDTYPE) !==
-          CardType.ENCHANTMENT
-        ) {
-          playedCardId = tag.entity;
-        }
-      }
-      if (tag.tag === GameTag.SECRET && tag.value === 1) {
-        isSecret = true;
-      }
-    }
-    if (
-      !isSecret &&
-      entitiesBeforeAction.get(playedCardId) &&
-      entitiesBeforeAction.get(playedCardId).getTag(GameTag.SECRET) === 1
-    ) {
-      isSecret = true;
-    }
+	let playedCardId = -1;
+	let isSecret = false;
+	for (const tag of item.node.tags) {
+		if (tag.tag === GameTag.ZONE && tag.value === Zone.SECRET) {
+		if (
+			entitiesBeforeAction.get(tag.entity).getTag(GameTag.CARDTYPE) !==
+			CardType.ENCHANTMENT
+		) {
+			playedCardId = tag.entity;
+		}
+		}
+		if (tag.tag === GameTag.SECRET && tag.value === 1) {
+		isSecret = true;
+		}
+	}
+	if (
+		!isSecret &&
+		entitiesBeforeAction.get(playedCardId) &&
+		entitiesBeforeAction.get(playedCardId).getTag(GameTag.SECRET) === 1
+	) {
+		isSecret = true;
+	}
 
-    if (playedCardId === -1 || !isSecret) {
-      return;
-    }
+	if (playedCardId === -1 || !isSecret) {
+		return;
+	}
 
-    return [
-      SecretPlayedFromHandAction.create(
-        {
-          timestamp: item.timestamp,
-          index: item.index,
-          entityId: playedCardId
-        },
-        this.allCards
-      )
-    ];
+	return [
+		SecretPlayedFromHandAction.create(
+		{
+			timestamp: item.timestamp,
+			index: item.index,
+			entityId: playedCardId
+		},
+		this.allCards
+		)
+	];
   }
 
   public reduce(actions: readonly Action[]): readonly Action[] {
-    return actions;
+	return actions;
   }
 }

@@ -12,59 +12,72 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class DiscoveryPickParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+  constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-	public applies(item: HistoryItem): boolean {
-		return item instanceof ChosenEntityHistoryItem && item.tag.cards && item.tag.cards.length === 1;
-	}
+  public applies(item: HistoryItem): boolean {
+	return (
+		item instanceof ChosenEntityHistoryItem &&
+		item.tag.cards &&
+		item.tag.cards.length === 1
+	);
+  }
 
-	public parse(
-		item: ChosenEntityHistoryItem,
-		currentTurn: number,
-		entitiesBeforeAction: Map<number, Entity>,
-		history: readonly HistoryItem[],
-	): Action[] {
-		return [
-			DiscoveryPickAction.create(
-				{
-					timestamp: item.timestamp,
-					index: item.index,
-					owner: item.tag.playerID,
-					choice: item.tag.cards[0],
-				},
-				this.allCards,
-			),
-		];
-	}
+  public parse(
+	item: ChosenEntityHistoryItem,
+	currentTurn: number,
+	entitiesBeforeAction: Map<number, Entity>,
+	history: readonly HistoryItem[]
+  ): Action[] {
+	return [
+		DiscoveryPickAction.create(
+		{
+			timestamp: item.timestamp,
+			index: item.index,
+			owner: item.tag.playerID,
+			choice: item.tag.cards[0]
+		},
+		this.allCards
+		)
+	];
+  }
 
-	public reduce(actions: readonly Action[]): readonly Action[] {
-		return ActionHelper.combineActions<Action>(
-			actions,
-			(previous, current) => this.shouldMergeActions(previous, current),
-			(previous, current) => this.mergeActions(previous, current),
-		);
-	}
+  public reduce(actions: readonly Action[]): readonly Action[] {
+	return ActionHelper.combineActions<Action>(
+		actions,
+		(previous, current) => this.shouldMergeActions(previous, current),
+		(previous, current) => this.mergeActions(previous, current)
+	);
+  }
 
-	private shouldMergeActions(previousAction: Action, currentAction: Action): boolean {
-		// Merge it into the discover action
-		if (previousAction instanceof DiscoverAction && currentAction instanceof DiscoveryPickAction) {
-			return true;
-		} else if (currentAction instanceof DiscoveryPickAction) {
-			// Mulligan is handled differently
-			if (!(previousAction instanceof StartTurnAction)) {
-				this.logger.warn('removing discovery pick action', previousAction, currentAction);
-			}
-			return true;
+  private shouldMergeActions(
+	previousAction: Action,
+	currentAction: Action
+  ): boolean {
+	// Merge it into the discover action
+	if (
+		previousAction instanceof DiscoverAction &&
+		currentAction instanceof DiscoveryPickAction
+	) {
+		return true;
+	} else if (currentAction instanceof DiscoveryPickAction) {
+		// Mulligan is handled differently
+		if (!(previousAction instanceof StartTurnAction)) {
+		this.logger.warn('removing discovery pick action');
 		}
-		return false;
+		return true;
 	}
+	return false;
+  }
 
-	private mergeActions(previousAction: Action, currentAction: Action): Action {
-		if (previousAction instanceof DiscoverAction && currentAction instanceof DiscoveryPickAction) {
-			return previousAction.updateAction<DiscoverAction>({
-				chosen: [currentAction.choice] as readonly number[],
-			} as DiscoverAction);
-		}
-		return previousAction;
+  private mergeActions(previousAction: Action, currentAction: Action): Action {
+	if (
+		previousAction instanceof DiscoverAction &&
+		currentAction instanceof DiscoveryPickAction
+	) {
+		return previousAction.updateAction<DiscoverAction>({
+		chosen: [currentAction.choice] as readonly number[]
+		} as DiscoverAction);
 	}
+	return previousAction;
+  }
 }

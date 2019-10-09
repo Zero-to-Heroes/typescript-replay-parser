@@ -14,43 +14,43 @@ export class AttachingEnchantmentAction extends Action implements HasTargets {
   readonly allCards: AllCardsService;
 
   constructor(allCards: AllCardsService) {
-    super();
-    this.allCards = allCards;
+	super();
+	this.allCards = allCards;
   }
 
   public static create(
-    newAction,
-    allCards: AllCardsService
+	newAction,
+	allCards: AllCardsService
   ): AttachingEnchantmentAction {
-    return Object.assign(new AttachingEnchantmentAction(allCards), newAction);
+	return Object.assign(new AttachingEnchantmentAction(allCards), newAction);
   }
 
   public update(entities: Map<number, Entity>): AttachingEnchantmentAction {
-    return Object.assign(new AttachingEnchantmentAction(this.allCards), this, {
-      entities
-    });
+	return Object.assign(new AttachingEnchantmentAction(this.allCards), this, {
+		entities
+	});
   }
 
   public enrichWithText(): AttachingEnchantmentAction {
-    const creatorCardId = ActionHelper.getCardId(this.entities, this.originId);
-    const creatorCard = this.allCards.getCard(creatorCardId);
-    const enchantmentCard = this.allCards.getCard(this.enchantmentCardId);
-    const targetCardNames = this.targetIds
-      .map(targetId => this.entities.get(targetId))
-      .map(targetEntity =>
-        targetEntity.cardID
-          ? this.allCards.getCard(targetEntity.cardID).name
-          : // Enchantments sometimes target the player itself, not the hero
-            (targetEntity as PlayerEntity).name
-      )
-      .join(', ');
-    const textRaw = `\t${creatorCard.name} enchants ${targetCardNames} with ${enchantmentCard.name}`;
-    return Object.assign(new AttachingEnchantmentAction(this.allCards), this, {
-      textRaw
-    });
+	const creatorCardId = ActionHelper.getCardId(this.entities, this.originId);
+	const creatorCard = this.allCards.getCard(creatorCardId);
+	const enchantmentCard = this.allCards.getCard(this.enchantmentCardId);
+	const targetCardNames = this.targetIds
+		.map(targetId => this.entities.get(targetId))
+		.map(targetEntity =>
+		targetEntity.cardID
+			? this.allCards.getCard(targetEntity.cardID).name
+			: // Enchantments sometimes target the player itself, not the hero
+			(targetEntity as PlayerEntity).name
+		)
+		.join(', ');
+	const textRaw = `\t${creatorCard.name} enchants ${targetCardNames} with ${enchantmentCard.name}`;
+	return Object.assign(new AttachingEnchantmentAction(this.allCards), this, {
+		textRaw
+	});
   }
 
   protected getInstance(): Action {
-    return new AttachingEnchantmentAction(this.allCards);
+	return new AttachingEnchantmentAction(this.allCards);
   }
 }
