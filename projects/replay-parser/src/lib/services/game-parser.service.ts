@@ -51,7 +51,17 @@ export class GameParserService {
 	public static async create(): Promise<GameParserService> {
 		const getRequest = (url: string): Promise<any> => {
 			return new Promise<any>(function(resolve, reject) {
-				const request = new XMLHttpRequest();
+				console.log('preparing XMLHttpRequest replacemenet');
+				let requestIssuer;
+				try {
+					requestIssuer = XMLHttpRequest;
+				} catch (e) {
+					console.log('redefining XMLHttpRequest');
+					requestIssuer = require('xhr2');
+				}
+				// console.log('requestIssuer', requestIssuer);
+				// console.log('http', require('http'));
+				const request = new requestIssuer();
 				request.onload = function() {
 					if (this.status === 200) {
 						resolve(this.response);
@@ -60,7 +70,7 @@ export class GameParserService {
 					}
 				};
 				request.onerror = function() {
-					reject(new Error('XMLHttpRequest Error: ' + this.statusText));
+					reject(new Error('requestIssuer Error: ' + this.statusText));
 				};
 				request.open('GET', url);
 				request.send();
@@ -76,8 +86,8 @@ export class GameParserService {
 			warn: (message: any, ...additional: any[]) => console.warn(message, additional),
 			error: (message: any, ...additional: any[]) => console.error(message, additional),
 		} as NGXLogger;
-		const http: HttpClient = {} as HttpClient;
-		const allCards = new AllCardsService(http, logger);
+		const httpClient: HttpClient = {} as HttpClient;
+		const allCards = new AllCardsService(httpClient, logger);
 		allCards['allCards'] = cardsArray;
 		const stateProcessor = new StateProcessorService(logger);
 		const actionParser = new ActionParserService(logger, allCards, stateProcessor);
@@ -111,7 +121,10 @@ export class GameParserService {
 		);
 	}
 
-	public async parse(replayAsString: string): Promise<Observable<[Game, string, boolean]>> {
+	public async parse(
+		replayAsString: string,
+		options?: GameParsingOptions,
+	): Promise<Observable<[Game, string, boolean]>> {
 		const start = Date.now();
 		this.cancelled = false;
 		if (this.processingTimeout) {
@@ -121,7 +134,11 @@ export class GameParserService {
 		await this.allCards.initializeCardsDb();
 		this.logPerf('Retrieved cards DB, parsing replay', start);
 
-		const iterator: IterableIterator<[Game, number, string]> = this.createGamePipeline(replayAsString, start);
+		const iterator: IterableIterator<[Game, number, string]> = this.createGamePipeline(
+			replayAsString,
+			start,
+			options,
+		);
 		return Observable.create(observer => {
 			this.buildObservableFunction(observer, iterator);
 		});
@@ -145,40 +162,62 @@ export class GameParserService {
 		}
 	}
 
-	private *createGamePipeline(replayAsString: string, start: number): IterableIterator<[Game, number, string]> {
+	private *createGamePipeline(
+		replayAsString: string,
+		start: number,
+		options?: GameParsingOptions,
+	): IterableIterator<[Game, number, string]> {
 		const history: readonly HistoryItem[] = new XmlParserService(this.logger).parseXml(replayAsString);
 		this.logPerf('XML parsing', start);
-		yield [null, SMALL_PAUSE, 'XML parsing done'];
-
-		const preloadIterator = this.imagePreloader.preloadImages(history);
-		while (true) {
-			const itValue = preloadIterator.next();
-			yield [null, SMALL_PAUSE, null];
-			if (itValue.done) {
-				break;
-			}
+		if (!options || options.shouldYield) {
+			yield [null, SMALL_PAUSE, 'XML parsing done'];
 		}
-		yield [null, SMALL_PAUSE, 'Images preloading started'];
-		this.logPerf('Started image preloading', start);
+
+		try {
+			const preloadIterator = this.imagePreloader.preloadImages(history);
+			while (true) {
+				const itValue = preloadIterator.next();
+				if (!options || options.shouldYield) {
+					yield [null, SMALL_PAUSE, null];
+				}
+				if (itValue.done) {
+					break;
+				}
+			}
+			if (!options || options.shouldYield) {
+				yield [null, SMALL_PAUSE, 'Images preloading started'];
+			}
+			this.logPerf('Started image preloading', start);
+		} catch (e) {
+			this.logger.debug('not preloading images, probably in node environment');
+		}
 
 		const initialEntities = this.gamePopulationService.populateInitialEntities(history);
 		this.logPerf('Populating initial entities', start);
-		yield [null, SMALL_PAUSE, 'Populated initial entities'];
+		if (!options || options.shouldYield) {
+			yield [null, SMALL_PAUSE, 'Populated initial entities'];
+		}
 
 		const entities: Map<number, Entity> = this.gameStateParser.populateEntitiesUntilMulliganState(
 			history,
 			initialEntities,
 		);
 		this.logPerf('Populating entities with mulligan state', start);
-		yield [null, SMALL_PAUSE, 'Prepared Mulligan state'];
+		if (!options || options.shouldYield) {
+			yield [null, SMALL_PAUSE, 'Prepared Mulligan state'];
+		}
 
 		const gameWithPlayers: Game = this.gameInitializer.initializeGameWithPlayers(history, entities);
 		this.logPerf('initializeGameWithPlayers', start);
-		yield [gameWithPlayers, SMALL_PAUSE, 'Initialized Game'];
+		if (!options || options.shouldYield) {
+			yield [gameWithPlayers, SMALL_PAUSE, 'Initialized Game'];
+		}
 
 		const gameWithTurns: Game = this.turnParser.createTurns(gameWithPlayers, history);
 		this.logPerf('createTurns', start);
-		yield [gameWithTurns, SMALL_PAUSE, 'Created turns'];
+		if (!options || options.shouldYield) {
+			yield [gameWithTurns, SMALL_PAUSE, 'Created turns'];
+		}
 
 		const iterator = this.actionParser.parseActions(gameWithTurns, history);
 		let previousStep = gameWithTurns;
@@ -186,37 +225,55 @@ export class GameParserService {
 			const itValue = iterator.next();
 			const step = itValue.value[0] || previousStep;
 			previousStep = step;
-			yield [step, SMALL_PAUSE, 'Finished processing turn ' + itValue.value[1]];
+			if (!options || options.shouldYield) {
+				yield [step, SMALL_PAUSE, 'Finished processing turn ' + itValue.value[1]];
+			}
 			if (itValue.done) {
 				break;
 			}
 		}
 		this.logPerf('parseActions', start);
 
+		if (options && options.skipUi) {
+			return [previousStep, SMALL_PAUSE, 'Rendering game state'];
+		}
+
 		const gameWithActivePlayer: Game = this.activePlayerParser.parseActivePlayer(previousStep);
 		this.logPerf('activePlayerParser', start);
-		yield [gameWithActivePlayer, SMALL_PAUSE, 'Parsed active players'];
+		if (!options || options.shouldYield) {
+			yield [gameWithActivePlayer, SMALL_PAUSE, 'Parsed active players'];
+		}
 
 		const gameWithActiveSpell: Game = this.activeSpellParser.parseActiveSpell(gameWithActivePlayer);
 		this.logPerf('activeSpellParser', start);
-		yield [gameWithActiveSpell, SMALL_PAUSE, 'Parsed active spells'];
+		if (!options || options.shouldYield) {
+			yield [gameWithActiveSpell, SMALL_PAUSE, 'Parsed active spells'];
+		}
 
 		const gameWithTargets: Game = this.targetsParser.parseTargets(gameWithActiveSpell);
 		this.logPerf('targets', start);
-		yield [gameWithTargets, SMALL_PAUSE, 'Parsed targets'];
+		if (!options || options.shouldYield) {
+			yield [gameWithTargets, SMALL_PAUSE, 'Parsed targets'];
+		}
 
 		const gameWithMulligan: Game = this.mulliganParser.affectMulligan(gameWithTargets);
 		this.logPerf('affectMulligan', start);
-		yield [gameWithMulligan, SMALL_PAUSE, null];
+		if (!options || options.shouldYield) {
+			yield [gameWithMulligan, SMALL_PAUSE, null];
+		}
 
 		const gameWithEndGame: Game = this.endGameParser.parseEndGame(gameWithMulligan);
 		this.logPerf('parseEndGame', start);
-		yield [gameWithEndGame, SMALL_PAUSE, 'Parsed end game'];
+		if (!options || options.shouldYield) {
+			yield [gameWithEndGame, SMALL_PAUSE, 'Parsed end game'];
+		}
 
 		const gameWithNarrator: Game = this.narrator.populateActionText(gameWithEndGame);
 		this.logPerf('populateActionText', start);
 		// console.log(gameWithNarrator.fullStoryRaw);
-		yield [gameWithNarrator, SMALL_PAUSE, 'Populated actions text'];
+		if (!options || options.shouldYield) {
+			yield [gameWithNarrator, SMALL_PAUSE, 'Populated actions text'];
+		}
 
 		const gameWithFullStory: Game = this.narrator.createGameStory(gameWithNarrator);
 		this.logPerf('game story', start);
@@ -232,4 +289,9 @@ export class GameParserService {
 export interface GameProcessingStep {
 	game: Game;
 	shouldBubble: boolean;
+}
+
+export interface GameParsingOptions {
+	readonly shouldYield: number;
+	readonly skipUi: boolean;
 }

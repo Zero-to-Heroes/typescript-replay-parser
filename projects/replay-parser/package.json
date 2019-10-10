@@ -1,47 +1,47 @@
 {
-  "name": "@firestone-hs/replay-parser",
-  "version": "0.0.5",
-  "peerDependencies": {
-    "@angular/common": "^8.2.9",
-    "@angular/core": "^8.2.9",
-    "immutable": "3.8.2",
-    "lodash-es": "4.17.15",
-    "ngx-logger": "3.3.11",
-    "sax": "1.2.4"
-  },
-  "main": "bundles/firestone-replay-parser.umd.js",
-  "module": "fesm5/firestone-replay-parser.js",
-  "es2015": "fesm2015/firestone-replay-parser.js",
-  "esm5": "esm5/firestone-replay-parser.js",
-  "esm2015": "esm2015/firestone-replay-parser.js",
-  "fesm5": "fesm5/firestone-replay-parser.js",
-  "fesm2015": "fesm2015/firestone-replay-parser.js",
-  "typings": "firestone-replay-parser.d.ts",
-  "metadata": "firestone-replay-parser.metadata.json",
-  "sideEffects": false,
-  "dependencies": {
-    "tslib": "^1.9.0"
-  },
-  "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.9.",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "ng test replay-parser"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Zero-to-Heroes/typescript-replay-parser.git"
-  },
-  "keywords": [
-    "hearthstone",
-    "replay",
-    "parser"
-  ],
-  "author": "Sébastien Tromp",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Zero-to-Heroes/typescript-replay-parser/issues"
-  },
-  "homepage": "https://github.com/Zero-to-Heroes/typescript-replay-parser#readme"
+	"name": "@firestone-hs/replay-parser",
+	"version": "0.0.6",
+	"main": "bundles/firestone-replay-parser.umd.js",
+	"module": "fesm5/firestone-replay-parser.js",
+	"es2015": "fesm2015/firestone-replay-parser.js",
+	"esm5": "esm5/firestone-replay-parser.js",
+	"esm2015": "esm2015/firestone-replay-parser.js",
+	"fesm5": "fesm5/firestone-replay-parser.js",
+	"fesm2015": "fesm2015/firestone-replay-parser.js",
+	"typings": "firestone-replay-parser.d.ts",
+	"metadata": "firestone-replay-parser.metadata.json",
+	"sideEffects": false,
+	"dependencies": {
+		"@angular/common": "^8.2.9",
+		"@angular/core": "^8.2.9",
+		"@angular/platform-browser": "~8.2.9",
+		"immutable": "3.8.2",
+		"lodash-es": "4.17.15",
+		"ngx-logger": "3.3.11",
+		"sax": "1.2.4",
+		"tslib": "^1.9.0",
+		"xhr2": "^0.2.0"
+	},
+	"description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.9.",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "ng test replay-parser"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Zero-to-Heroes/typescript-replay-parser.git"
+	},
+	"keywords": [
+		"hearthstone",
+		"replay",
+		"parser"
+	],
+	"author": "Sébastien Tromp",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Zero-to-Heroes/typescript-replay-parser/issues"
+	},
+	"homepage": "https://github.com/Zero-to-Heroes/typescript-replay-parser#readme"
 }
