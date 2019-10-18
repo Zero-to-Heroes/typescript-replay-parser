@@ -123,7 +123,7 @@ export class ActionParserService {
 			currentTurn = newCurrentTurn;
 			// This whole process takes roughly 5-20ms depending on the turn
 			if (updatedTurn) {
-				console.log('updated turn', currentTurn, game.turns);
+				// console.log('updated turn', currentTurn, game.turns);
 				// this.logger.log('took', parserDurationForTurn, 'ms to parse all history items in turn');
 				// parserDurationForTurn = 0;
 				// const start = Date.now();

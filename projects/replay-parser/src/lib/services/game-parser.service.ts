@@ -56,8 +56,8 @@ export class GameParserService {
 				try {
 					requestIssuer = XMLHttpRequest;
 				} catch (e) {
-					// console.log('redefining XMLHttpRequest');
-					// requestIssuer = require('xhr2');
+					console.log('redefining XMLHttpRequest');
+					requestIssuer = require('xhr2');
 				}
 				// console.log('requestIssuer', requestIssuer);
 				// console.log('http', require('http'));

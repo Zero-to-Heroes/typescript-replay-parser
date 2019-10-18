@@ -22,14 +22,15 @@ export class TurnParserService {
 		let turnNumber = 0;
 		for (const item of history) {
 			if (turnNumber === 0 && this.isMulligan(item, game)) {
-				console.log('adding mulligan turn');
+				// console.log('adding mulligan turn');
 				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
 			} else if (this.isStartOfTurn(item, game)) {
-				console.log('adding new turn', turnNumber);
+				// console.log('adding new turn', turnNumber);
+				// Used for instance in Bob's encounters
 				if (!turns.has(0)) {
-					console.log('creating fake mulligan turn');
+					// console.log('creating fake mulligan turn');
 					const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 					turns = turns.set(0, mulliganTurn);
 					turnNumber++;
