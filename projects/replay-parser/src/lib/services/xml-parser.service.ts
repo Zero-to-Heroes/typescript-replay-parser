@@ -99,7 +99,9 @@ export class XmlParserService {
 			case 'ChangeEntity':
 				name = name || node.attributes.name;
 				this.state.push('entity');
-				const attributes = Object.assign({}, this.entityDefinition.attributes, { ts: this.tsToSeconds(node.attributes.ts) });
+				const attributes = Object.assign({}, this.entityDefinition.attributes, {
+					ts: this.tsToSeconds(node.attributes.ts),
+				});
 				const newAttributes: EntityDefinition = {
 					id: parseInt(node.attributes.entity || node.attributes.id),
 					attributes,
@@ -122,7 +124,11 @@ export class XmlParserService {
 				let parentTags: readonly EntityTag[] = this.stack[this.stack.length - 2].tags || [];
 				parentTags = [...parentTags, tag];
 				this.stack[this.stack.length - 2].tags = parentTags;
-				const tagItem: TagChangeHistoryItem = new TagChangeHistoryItem(tag, this.buildTimestamp(ts), node.index);
+				const tagItem: TagChangeHistoryItem = new TagChangeHistoryItem(
+					tag,
+					this.buildTimestamp(ts),
+					node.index,
+				);
 				this.enqueueHistoryItem(tagItem);
 				break;
 			case 'Options':
@@ -166,11 +172,13 @@ export class XmlParserService {
 				Object.assign(this.entityDefinition, newAttributes);
 
 				if (node.name === 'ShowEntity') {
-					let showEntities: readonly EntityDefinition[] = this.stack[this.stack.length - 2].showEntities || [];
+					let showEntities: readonly EntityDefinition[] =
+						this.stack[this.stack.length - 2].showEntities || [];
 					showEntities = [...showEntities, this.entityDefinition];
 					this.stack[this.stack.length - 2].showEntities = showEntities;
 				} else if (node.name === 'FullEntity') {
-					let fullEntities: readonly EntityDefinition[] = this.stack[this.stack.length - 2].fullEntities || [];
+					let fullEntities: readonly EntityDefinition[] =
+						this.stack[this.stack.length - 2].fullEntities || [];
 					fullEntities = [...fullEntities, this.entityDefinition];
 					this.stack[this.stack.length - 2].fullEntities = fullEntities;
 				}
@@ -199,7 +207,11 @@ export class XmlParserService {
 				let parentTags: readonly EntityTag[] = this.stack[this.stack.length - 2].tags || [];
 				parentTags = [...parentTags, tag];
 				this.stack[this.stack.length - 2].tags = parentTags;
-				const tagItem: TagChangeHistoryItem = new TagChangeHistoryItem(tag, this.buildTimestamp(ts), node.index);
+				const tagItem: TagChangeHistoryItem = new TagChangeHistoryItem(
+					tag,
+					this.buildTimestamp(ts),
+					node.index,
+				);
 				this.enqueueHistoryItem(tagItem);
 				break;
 			case 'MetaData':
@@ -211,7 +223,11 @@ export class XmlParserService {
 					info: [],
 					index: this.index++,
 				};
-				const metaItem: MetadataHistoryItem = new MetadataHistoryItem(this.metaData, this.buildTimestamp(ts), node.index);
+				const metaItem: MetadataHistoryItem = new MetadataHistoryItem(
+					this.metaData,
+					this.buildTimestamp(ts),
+					node.index,
+				);
 				this.enqueueHistoryItem(metaItem);
 				let parentMeta: readonly MetaData[] = this.stack[this.stack.length - 2].meta || [];
 				parentMeta = [...parentMeta, this.metaData];
@@ -359,13 +375,21 @@ export class XmlParserService {
 		switch (node.name) {
 			case 'GameEntity':
 				this.state.pop();
-				const gameItem: GameHistoryItem = new GameHistoryItem(this.entityDefinition, this.buildTimestamp(ts), node.index);
+				const gameItem: GameHistoryItem = new GameHistoryItem(
+					this.entityDefinition,
+					this.buildTimestamp(ts),
+					node.index,
+				);
 				this.enqueueHistoryItem(gameItem);
 				this.entityDefinition = { tags: Map() };
 				break;
 			case 'Player':
 				this.state.pop();
-				const playerItem: PlayerHistoryItem = new PlayerHistoryItem(this.entityDefinition, this.buildTimestamp(ts), node.index);
+				const playerItem: PlayerHistoryItem = new PlayerHistoryItem(
+					this.entityDefinition,
+					this.buildTimestamp(ts),
+					node.index,
+				);
 				this.enqueueHistoryItem(playerItem);
 				this.entityDefinition = { tags: Map() };
 				break;
@@ -433,8 +457,8 @@ export class XmlParserService {
 
 	private enqueueHistoryItem(item: HistoryItem) {
 		if (item.timestamp === undefined) {
-			this.logger.error('History item doesn\'t have timestamp', item);
-			throw new Error('History item doesn\'t have timestamp' + item);
+			this.logger.error("History item doesn't have timestamp", item);
+			throw new Error("History item doesn't have timestamp" + item);
 		}
 		this.history = [...(this.history || []), item];
 	}
