@@ -56,8 +56,8 @@ export class GameParserService {
 				try {
 					requestIssuer = XMLHttpRequest;
 				} catch (e) {
-					console.log('redefining XMLHttpRequest');
-					requestIssuer = require('xhr2');
+					// console.log('redefining XMLHttpRequest');
+					// requestIssuer = require('xhr2');
 				}
 				// console.log('requestIssuer', requestIssuer);
 				// console.log('http', require('http'));
@@ -177,16 +177,16 @@ export class GameParserService {
 			const preloadIterator = this.imagePreloader.preloadImages(history);
 			while (true) {
 				const itValue = preloadIterator.next();
-				if (!options || options.shouldYield) {
-					yield [null, SMALL_PAUSE, null];
-				}
+				// if (!options || options.shouldYield) {
+				// 	yield [null, SMALL_PAUSE, null];
+				// }
 				if (itValue.done) {
 					break;
 				}
 			}
-			if (!options || options.shouldYield) {
-				yield [null, SMALL_PAUSE, 'Images preloading started'];
-			}
+			// if (!options || options.shouldYield) {
+			// 	yield [null, SMALL_PAUSE, 'Images preloading started'];
+			// }
 			this.logPerf('Started image preloading', start);
 		} catch (e) {
 			this.logger.debug('not preloading images, probably in node environment');
