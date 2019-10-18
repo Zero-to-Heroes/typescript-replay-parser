@@ -1,6 +1,6 @@
 {
 	"name": "@firestone-hs/replay-parser",
-	"version": "0.0.9",
+	"version": "0.0.13",
 	"main": "bundles/firestone-replay-parser.umd.js",
 	"module": "fesm5/firestone-replay-parser.js",
 	"es2015": "fesm2015/firestone-replay-parser.js",
@@ -11,7 +11,7 @@
 	"typings": "firestone-replay-parser.d.ts",
 	"metadata": "firestone-replay-parser.metadata.json",
 	"sideEffects": false,
-	"dependencies": {
+	"peerDependencies": {
 		"@angular/common": "^8.2.9",
 		"@angular/core": "^8.2.9",
 		"@angular/platform-browser": "~8.2.9",
