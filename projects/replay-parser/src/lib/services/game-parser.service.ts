@@ -69,9 +69,9 @@ export class GameParserService {
 						reject(new Error(this.statusText));
 					}
 				};
-				request.onerror = function() {
-					reject(new Error('requestIssuer Error: ' + this.statusText));
-				};
+				// request.onerror = function() {
+				// 	reject(new Error('requestIssuer Error: ' + this.statusText));
+				// };
 				request.open('GET', url);
 				request.send();
 			});
