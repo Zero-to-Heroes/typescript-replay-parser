@@ -59,8 +59,6 @@ export class GameParserService {
 					console.log('redefining XMLHttpRequest');
 					requestIssuer = require('xhr2');
 				}
-				// console.log('requestIssuer', requestIssuer);
-				// console.log('http', require('http'));
 				const request = new requestIssuer();
 				request.onload = function() {
 					if (this.status === 200) {
@@ -167,6 +165,10 @@ export class GameParserService {
 		start: number,
 		options?: GameParsingOptions,
 	): IterableIterator<[Game, number, string]> {
+		if (!replayAsString || replayAsString.length == 0) {
+			return [null, SMALL_PAUSE, 'Invalid XML replay'];
+		}
+
 		const history: readonly HistoryItem[] = new XmlParserService(this.logger).parseXml(replayAsString);
 		this.logPerf('XML parsing', start);
 		if (!options || options.shouldYield) {
