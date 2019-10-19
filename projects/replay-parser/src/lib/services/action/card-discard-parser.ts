@@ -13,99 +13,83 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class CardDiscardParser implements Parser {
-  constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-  public applies(item: HistoryItem): boolean {
-	return (
-		item instanceof TagChangeHistoryItem &&
-		item.tag.tag === GameTag.ZONE &&
-		item.tag.value === Zone.SETASIDE
-	);
-  }
-
-  public parse(
-	item: TagChangeHistoryItem,
-	currentTurn: number,
-	entitiesBeforeAction: Map<number, Entity>,
-	history: readonly HistoryItem[]
-  ): Action[] {
-	if (currentTurn === 0) {
-		return;
+	public applies(item: HistoryItem): boolean {
+		return (
+			item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.ZONE && item.tag.value === Zone.SETASIDE
+		);
 	}
 
-	const previousZone = entitiesBeforeAction
-		.get(item.tag.entity)
-		.getTag(GameTag.ZONE);
-	if (previousZone === Zone.HAND) {
-		const controller = entitiesBeforeAction
-		.get(item.tag.entity)
-		.getTag(GameTag.CONTROLLER);
-		if (!controller) {
-		this.logger.error(
-			'[card-discard-parser] empty controller',
-			item,
-			entitiesBeforeAction.get(item.tag.entity)
-		);
+	public parse(
+		item: TagChangeHistoryItem,
+		currentTurn: number,
+		entitiesBeforeAction: Map<number, Entity>,
+		history: readonly HistoryItem[],
+	): Action[] {
+		if (currentTurn === 0) {
+			return;
 		}
-		return [
-		CardDiscardAction.create(
-			{
-			timestamp: item.timestamp,
-			index: item.index,
-			controller,
-			data: [item.tag.entity]
-			},
-			this.allCards
-		)
-		];
+
+		const entity = entitiesBeforeAction.get(item.tag.entity);
+		if (!entity) {
+			return [];
+		}
+
+		const previousZone = entity.getTag(GameTag.ZONE);
+		if (previousZone === Zone.HAND) {
+			const controller = entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CONTROLLER);
+			if (!controller) {
+				this.logger.error(
+					'[card-discard-parser] empty controller',
+					item,
+					entitiesBeforeAction.get(item.tag.entity),
+				);
+			}
+			return [
+				CardDiscardAction.create(
+					{
+						timestamp: item.timestamp,
+						index: item.index,
+						controller,
+						data: [item.tag.entity],
+					},
+					this.allCards,
+				),
+			];
+		}
+
+		return [];
 	}
 
-	return [];
-  }
-
-  public reduce(actions: readonly Action[]): readonly Action[] {
-	return ActionHelper.combineActions<CardDiscardAction>(
-		actions,
-		(previous, current) => this.shouldMergeActions(previous, current),
-		(previous, current) => this.mergeActions(previous, current)
-	);
-  }
-
-  private shouldMergeActions(previous: Action, current: Action): boolean {
-	if (
-		!(
-		previous instanceof CardDiscardAction &&
-		current instanceof CardDiscardAction
-		)
-	) {
-		return false;
-	}
-	if (previous.controller === undefined || current.controller === undefined) {
-		this.logger.error(
-		'[card-discard-parser] Empty controller for draw action',
-		previous,
-		current
+	public reduce(actions: readonly Action[]): readonly Action[] {
+		return ActionHelper.combineActions<CardDiscardAction>(
+			actions,
+			(previous, current) => this.shouldMergeActions(previous, current),
+			(previous, current) => this.mergeActions(previous, current),
 		);
 	}
-	return previous.controller === current.controller;
-  }
 
-  private mergeActions(
-	previousAction: CardDiscardAction,
-	currentAction: CardDiscardAction
-  ): CardDiscardAction {
-	return CardDiscardAction.create(
-		{
-		timestamp: previousAction.timestamp,
-		index: currentAction.index,
-		entities: currentAction.entities,
-		controller: currentAction.controller,
-		data: uniq([
-			...uniq(previousAction.data || []),
-			...uniq(currentAction.data || [])
-		])
-		},
-		this.allCards
-	);
-  }
+	private shouldMergeActions(previous: Action, current: Action): boolean {
+		if (!(previous instanceof CardDiscardAction && current instanceof CardDiscardAction)) {
+			return false;
+		}
+		if (previous.controller === undefined || current.controller === undefined) {
+			this.logger.error('[card-discard-parser] Empty controller for draw action', previous, current);
+		}
+		return previous.controller === current.controller;
+	}
+
+	private mergeActions(previousAction: CardDiscardAction, currentAction: CardDiscardAction): CardDiscardAction {
+		return CardDiscardAction.create(
+			{
+				timestamp: previousAction.timestamp,
+				index: currentAction.index,
+				entities: currentAction.entities,
+				controller: currentAction.controller,
+				data: uniq([...uniq(previousAction.data || []), ...uniq(currentAction.data || [])]),
+			},
+			this.allCards,
+		);
+	}
 }

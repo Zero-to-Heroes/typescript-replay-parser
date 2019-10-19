@@ -10,37 +10,37 @@ import { TagChangeHistoryItem } from '../../models/history/tag-change-history-it
 import { Parser } from './parser';
 
 export class StartOfMulliganParser implements Parser {
-  private numberOfMulligansDone = 0;
+	private numberOfMulligansDone = 0;
 
-  public applies(item: HistoryItem): boolean {
-	return (
-		item instanceof TagChangeHistoryItem &&
-		item.tag.tag === GameTag.STEP &&
-		item.tag.value === Step.BEGIN_MULLIGAN
-	);
-  }
-
-  public parse(
-	item: ActionHistoryItem,
-	currentTurn: number,
-	entitiesBeforeAction: Map<number, Entity>,
-	history: readonly HistoryItem[]
-  ): Action[] {
-	if (this.numberOfMulligansDone > 0) {
-		return [];
+	public applies(item: HistoryItem): boolean {
+		return (
+			item instanceof TagChangeHistoryItem &&
+			item.tag.tag === GameTag.STEP &&
+			item.tag.value === Step.BEGIN_MULLIGAN
+		);
 	}
-	this.numberOfMulligansDone++;
-	return [
-		StartTurnAction.create({
-		timestamp: item.timestamp,
-		turn: currentTurn,
-		isStartOfMulligan: true,
-		index: item.index
-		})
-	];
-  }
 
-  public reduce(actions: readonly Action[]): readonly Action[] {
-	return actions;
-  }
+	public parse(
+		item: ActionHistoryItem,
+		currentTurn: number,
+		entitiesBeforeAction: Map<number, Entity>,
+		history: readonly HistoryItem[],
+	): Action[] {
+		if (this.numberOfMulligansDone > 0) {
+			return [];
+		}
+		this.numberOfMulligansDone++;
+		return [
+			StartTurnAction.create({
+				timestamp: item.timestamp,
+				turn: currentTurn,
+				isStartOfMulligan: true,
+				index: item.index,
+			}),
+		];
+	}
+
+	public reduce(actions: readonly Action[]): readonly Action[] {
+		return actions;
+	}
 }

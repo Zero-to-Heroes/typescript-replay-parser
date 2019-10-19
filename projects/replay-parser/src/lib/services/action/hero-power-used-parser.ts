@@ -11,40 +11,41 @@ import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
 export class HeroPowerUsedParser implements Parser {
-  constructor(private allCards: AllCardsService) {}
+	constructor(private allCards: AllCardsService) {}
 
-  public applies(item: HistoryItem): boolean {
-	return item instanceof ActionHistoryItem;
-  }
-
-  public parse(
-	item: ActionHistoryItem,
-	currentTurn: number,
-	entitiesBeforeAction: Map<number, Entity>,
-	history: readonly HistoryItem[]
-  ): Action[] {
-	if (parseInt(item.node.attributes.type) !== BlockType.PLAY) {
-		return;
+	public applies(item: HistoryItem): boolean {
+		return item instanceof ActionHistoryItem;
 	}
 
-	const entity = entitiesBeforeAction.get(
-		parseInt(item.node.attributes.entity)
-	);
-	if (entity.getTag(GameTag.CARDTYPE) === CardType.HERO_POWER) {
-		return [
-		HeroPowerUsedAction.create(
-			{
-			timestamp: item.timestamp,
-			index: item.index,
-			entityId: entity.id
-			},
-			this.allCards
-		)
-		];
-	}
-  }
+	public parse(
+		item: ActionHistoryItem,
+		currentTurn: number,
+		entitiesBeforeAction: Map<number, Entity>,
+		history: readonly HistoryItem[],
+	): Action[] {
+		if (parseInt(item.node.attributes.type) !== BlockType.PLAY) {
+			return;
+		}
 
-  public reduce(actions: readonly Action[]): readonly Action[] {
-	return actions;
-  }
+		const entity = entitiesBeforeAction.get(parseInt(item.node.attributes.entity));
+		if (!entity) {
+			return [];
+		}
+		if (entity.getTag(GameTag.CARDTYPE) === CardType.HERO_POWER) {
+			return [
+				HeroPowerUsedAction.create(
+					{
+						timestamp: item.timestamp,
+						index: item.index,
+						entityId: entity.id,
+					},
+					this.allCards,
+				),
+			];
+		}
+	}
+
+	public reduce(actions: readonly Action[]): readonly Action[] {
+		return actions;
+	}
 }

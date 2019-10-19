@@ -135,6 +135,12 @@ export class StateProcessorService {
 			return entities;
 		}
 		// No default creation - if the entity is not registered yet, it's a bug
+		// It sometimes happens that the XML itself doesn't have the right entity
+		// so we safeguard here
+		if (!entities.get(historyItem.tag.entity)) {
+			return entities;
+		}
+
 		const entity: Entity = entities
 			.get(historyItem.tag.entity)
 			.updateTag(historyItem.tag.tag, historyItem.tag.value);

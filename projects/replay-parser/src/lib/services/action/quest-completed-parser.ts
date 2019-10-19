@@ -11,43 +11,39 @@ import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
 export class QuestCompletedParser implements Parser {
-  constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-  public applies(item: HistoryItem): boolean {
-	return (
-		item instanceof ActionHistoryItem &&
-		parseInt(item.node.attributes.type) === BlockType.TRIGGER
-	);
-  }
-
-  public parse(
-	item: ActionHistoryItem,
-	currentTurn: number,
-	entitiesBeforeAction: Map<number, Entity>,
-	history: readonly HistoryItem[]
-  ): Action[] {
-	const originId = parseInt(item.node.attributes.entity);
-	const entity = entitiesBeforeAction.get(originId);
-	if (
-		entity.getTag(GameTag.QUEST) === 1 &&
-		item.node.fullEntities &&
-		item.node.fullEntities.length === 1
-	) {
-		return [
-		QuestCompletedAction.create(
-			{
-			timestamp: item.timestamp,
-			index: item.index,
-			originId
-			},
-			this.allCards
-		)
-		];
+	public applies(item: HistoryItem): boolean {
+		return item instanceof ActionHistoryItem && parseInt(item.node.attributes.type) === BlockType.TRIGGER;
 	}
-	return [];
-  }
 
-  public reduce(actions: readonly Action[]): readonly Action[] {
-	return actions;
-  }
+	public parse(
+		item: ActionHistoryItem,
+		currentTurn: number,
+		entitiesBeforeAction: Map<number, Entity>,
+		history: readonly HistoryItem[],
+	): Action[] {
+		const originId = parseInt(item.node.attributes.entity);
+		const entity = entitiesBeforeAction.get(originId);
+		if (!entity) {
+			return [];
+		}
+		if (entity.getTag(GameTag.QUEST) === 1 && item.node.fullEntities && item.node.fullEntities.length === 1) {
+			return [
+				QuestCompletedAction.create(
+					{
+						timestamp: item.timestamp,
+						index: item.index,
+						originId,
+					},
+					this.allCards,
+				),
+			];
+		}
+		return [];
+	}
+
+	public reduce(actions: readonly Action[]): readonly Action[] {
+		return actions;
+	}
 }

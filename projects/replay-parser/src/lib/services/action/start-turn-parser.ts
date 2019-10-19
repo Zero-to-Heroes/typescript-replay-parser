@@ -11,7 +11,9 @@ import { Parser } from './parser';
 
 export class StartTurnParser implements Parser {
 	public applies(item: HistoryItem): boolean {
-		return item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.STEP && item.tag.value === Step.MAIN_READY;
+		return (
+			item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.STEP && item.tag.value === Step.MAIN_READY
+		);
 	}
 
 	public parse(
