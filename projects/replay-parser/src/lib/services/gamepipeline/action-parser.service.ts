@@ -182,6 +182,9 @@ export class ActionParserService {
 		actionsForTurn = this.reduceActions(actionParsers, actionsForTurn);
 		actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
 		try {
+			if (!game.turns.get(currentTurn)) {
+				this.logger.warn('could not get current turn', currentTurn, game.turns.toJS());
+			}
 			const turnWithNewActions = game.turns.get(currentTurn).update({ actions: actionsForTurn });
 			turns = turns.set(
 				turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn),
@@ -189,8 +192,8 @@ export class ActionParserService {
 			);
 			actionsForTurn = [];
 		} catch (e) {
-			this.logger.error(e);
 			this.logger.warn(currentTurn, turns.toJS(), actionsForTurn);
+			this.logger.error(e);
 		}
 		// this.logger.log('took', Date.now() - start, 'ms for parseActions');
 		return [Game.createGame(game, { turns }), currentTurn];

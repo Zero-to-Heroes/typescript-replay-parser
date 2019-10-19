@@ -22,7 +22,7 @@ export class ActionHelper {
 
 	public static getCardId(entities: Map<number, Entity>, entityId: number): string {
 		const entity = entities.get(entityId);
-		if (entity.cardID) {
+		if (entity && entity.cardID) {
 			return entity.cardID;
 		}
 		// Otherwise, this can happen when we're targeting a player entity, which doesn't have a card id

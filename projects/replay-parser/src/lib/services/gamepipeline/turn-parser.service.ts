@@ -10,6 +10,7 @@ import { PlayerEntity } from '../../models/game/player-entity';
 import { Turn } from '../../models/game/turn';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { Mulligan, PlayerHistoryItem } from '../../models/models';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,6 +27,12 @@ export class TurnParserService {
 				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
+			} else if (turnNumber === 0 && this.isMulliganDone(item, game)) {
+				// The proper mulligan input could not be parsed
+				this.logger.warn('Could not detect mulligan input, creating mulligan turn');
+				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as PlayerHistoryItem, turns);
+				turns = turns.set(0, mulliganTurn);
+				turnNumber++;
 			} else if (this.isStartOfTurn(item, game)) {
 				// console.log('adding new turn', turnNumber);
 				// Used for instance in Bob's encounters
@@ -40,7 +47,7 @@ export class TurnParserService {
 				turnNumber++;
 			}
 		}
-		// this.logger.info('created turns', turns.toJS());
+		this.logger.info('created turns', turns.toJS());
 		return Game.createGame(game, { turns });
 	}
 
@@ -60,8 +67,8 @@ export class TurnParserService {
 		return turn;
 	}
 
-	private parseMulliganTurn(item: TagChangeHistoryItem, turns: Map<number, Turn>): MulliganTurn {
-		const itemIndex = (item as TagChangeHistoryItem).tag.index;
+	private parseMulliganTurn(item: TagChangeHistoryItem | PlayerHistoryItem, turns: Map<number, Turn>): MulliganTurn {
+		const itemIndex = item instanceof TagChangeHistoryItem ? item.tag.index : item.index;
 		let mulliganTurn: MulliganTurn = turns.get(0, Object.assign(new MulliganTurn(), {
 			turn: 'mulligan',
 			timestamp: item.timestamp,
@@ -78,8 +85,19 @@ export class TurnParserService {
 		return (
 			item instanceof TagChangeHistoryItem &&
 			item.tag.tag === GameTag.MULLIGAN_STATE &&
-			item.tag.value === 1 &&
+			item.tag.value === Mulligan.INPUT &&
 			this.isPlayerEntity(item.tag.entity, game)
+		);
+	}
+
+	private isMulliganDone(item: HistoryItem, game: Game) {
+		return (
+			(item instanceof PlayerHistoryItem &&
+				item.entityDefintion.tags.get(GameTag[GameTag.MULLIGAN_STATE]) === Mulligan.DONE) ||
+			(item instanceof TagChangeHistoryItem &&
+				item.tag.tag === GameTag.MULLIGAN_STATE &&
+				item.tag.value === Mulligan.DONE &&
+				this.isPlayerEntity(item.tag.entity, game))
 		);
 	}
 
