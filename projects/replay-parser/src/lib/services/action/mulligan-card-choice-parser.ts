@@ -58,7 +58,7 @@ export class MulliganCardChoiceParser implements Parser {
 				),
 			];
 		} else {
-			this.logger.error('Invalid mulligan choice', item, players);
+			this.logger.warn('Invalid mulligan choice', item, players);
 		}
 		return null;
 	}
@@ -80,7 +80,7 @@ export class MulliganCardChoiceParser implements Parser {
 		currentAction: MulliganCardChoiceAction | StartTurnAction,
 	): MulliganCardChoiceAction | StartTurnAction {
 		if (currentAction instanceof StartTurnAction) {
-			this.logger.error('Invalid mulligan action merge', previousAction, currentAction);
+			this.logger.warn('Invalid mulligan action merge', previousAction, currentAction);
 			return previousAction;
 		}
 		if (previousAction instanceof MulliganCardChoiceAction) {

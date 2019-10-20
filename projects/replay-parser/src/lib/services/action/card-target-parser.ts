@@ -88,7 +88,7 @@ export class CardTargetParser implements Parser {
 		currentAction: CardTargetAction | AttachingEnchantmentAction,
 	): CardTargetAction | AttachingEnchantmentAction {
 		if (currentAction instanceof AttachingEnchantmentAction) {
-			this.logger.error(
+			this.logger.warn(
 				'incorrect AttachingEnchantmentAction as current action for card-target-parser',
 				currentAction,
 			);

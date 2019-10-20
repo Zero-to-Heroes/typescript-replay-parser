@@ -57,7 +57,10 @@ export class CardPlayedFromHandParser implements Parser {
 			// when we play our own card. In that case, the tags are already known, and
 			// tag changes are the only things we care about
 			if (item.tag.tag === GameTag.ZONE && item.tag.value === Zone.PLAY) {
-				if (entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CARDTYPE) !== CardType.ENCHANTMENT) {
+				if (
+					entitiesBeforeAction.get(item.tag.entity) &&
+					entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CARDTYPE) !== CardType.ENCHANTMENT
+				) {
 					return [
 						CardPlayedFromHandAction.create(
 							{

@@ -40,11 +40,12 @@ export class CardDiscardParser implements Parser {
 		if (previousZone === Zone.HAND) {
 			const controller = entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CONTROLLER);
 			if (!controller) {
-				this.logger.error(
+				this.logger.warn(
 					'[card-discard-parser] empty controller',
 					item,
 					entitiesBeforeAction.get(item.tag.entity),
 				);
+				return null;
 			}
 			return [
 				CardDiscardAction.create(
@@ -75,7 +76,8 @@ export class CardDiscardParser implements Parser {
 			return false;
 		}
 		if (previous.controller === undefined || current.controller === undefined) {
-			this.logger.error('[card-discard-parser] Empty controller for draw action', previous, current);
+			this.logger.warn('[card-discard-parser] Empty controller for draw action', previous, current);
+			return false;
 		}
 		return previous.controller === current.controller;
 	}

@@ -14,92 +14,73 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class CardBurnParser implements Parser {
-  constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-  public applies(item: HistoryItem): boolean {
-	return (
-		item instanceof MetadataHistoryItem &&
-		(item as MetadataHistoryItem).meta.meta === MetaTags[MetaTags.BURNED_CARD]
-	);
-  }
-
-  public parse(
-	item: MetadataHistoryItem,
-	currentTurn: number,
-	entitiesBeforeAction: Map<number, Entity>,
-	history: readonly HistoryItem[]
-  ): Action[] {
-	return item.meta.info.map(info =>
-		this.buildBurnAction(item, info, entitiesBeforeAction)
-	);
-  }
-
-  private buildBurnAction(
-	item: MetadataHistoryItem,
-	info: Info,
-	entitiesBeforeAction: Map<number, Entity>
-  ): Action {
-	const controller = entitiesBeforeAction
-		.get(info.entity)
-		.getTag(GameTag.CONTROLLER);
-	if (!controller) {
-		this.logger.error(
-		'[card-burn-parser] empty controller',
-		info,
-		entitiesBeforeAction.get(info.entity)
+	public applies(item: HistoryItem): boolean {
+		return (
+			item instanceof MetadataHistoryItem &&
+			(item as MetadataHistoryItem).meta.meta === MetaTags[MetaTags.BURNED_CARD]
 		);
 	}
-	return CardBurnAction.create(
-		{
-		timestamp: item.timestamp,
-		index: item.index,
-		controller,
-		burnedCardIds: [info.entity]
-		},
-		this.allCards
-	);
-  }
 
-  public reduce(actions: readonly Action[]): readonly Action[] {
-	return ActionHelper.combineActions<CardBurnAction>(
-		actions,
-		(previous, current) => this.shouldMergeActions(previous, current),
-		(previous, current) => this.mergeActions(previous, current)
-	);
-  }
-
-  private shouldMergeActions(previous: Action, current: Action): boolean {
-	if (
-		!(previous instanceof CardBurnAction && current instanceof CardBurnAction)
-	) {
-		return false;
+	public parse(
+		item: MetadataHistoryItem,
+		currentTurn: number,
+		entitiesBeforeAction: Map<number, Entity>,
+		history: readonly HistoryItem[],
+	): Action[] {
+		return item.meta.info.map(info => this.buildBurnAction(item, info, entitiesBeforeAction));
 	}
-	if (previous.controller === undefined || current.controller === undefined) {
-		this.logger.error(
-		'[card-burn-parser] Empty controller for burn action',
-		previous,
-		current
+
+	private buildBurnAction(item: MetadataHistoryItem, info: Info, entitiesBeforeAction: Map<number, Entity>): Action {
+		const controller = entitiesBeforeAction.get(info.entity).getTag(GameTag.CONTROLLER);
+		if (!controller) {
+			this.logger.warn('[card-burn-parser] empty controller', info, entitiesBeforeAction.get(info.entity));
+			return null;
+		}
+		return CardBurnAction.create(
+			{
+				timestamp: item.timestamp,
+				index: item.index,
+				controller,
+				burnedCardIds: [info.entity],
+			},
+			this.allCards,
 		);
 	}
-	return previous.controller === current.controller;
-  }
 
-  private mergeActions(
-	previousAction: CardBurnAction,
-	currentAction: CardBurnAction
-  ): CardBurnAction {
-	return CardBurnAction.create(
-		{
-		timestamp: previousAction.timestamp,
-		index: currentAction.index,
-		entities: currentAction.entities,
-		controller: currentAction.controller,
-		burnedCardIds: uniq([
-			...uniq(previousAction.burnedCardIds || []),
-			...uniq(currentAction.burnedCardIds || [])
-		])
-		},
-		this.allCards
-	);
-  }
+	public reduce(actions: readonly Action[]): readonly Action[] {
+		return ActionHelper.combineActions<CardBurnAction>(
+			actions,
+			(previous, current) => this.shouldMergeActions(previous, current),
+			(previous, current) => this.mergeActions(previous, current),
+		);
+	}
+
+	private shouldMergeActions(previous: Action, current: Action): boolean {
+		if (!(previous instanceof CardBurnAction && current instanceof CardBurnAction)) {
+			return false;
+		}
+		if (previous.controller === undefined || current.controller === undefined) {
+			this.logger.warn('[card-burn-parser] Empty controller for burn action', previous, current);
+			return false;
+		}
+		return previous.controller === current.controller;
+	}
+
+	private mergeActions(previousAction: CardBurnAction, currentAction: CardBurnAction): CardBurnAction {
+		return CardBurnAction.create(
+			{
+				timestamp: previousAction.timestamp,
+				index: currentAction.index,
+				entities: currentAction.entities,
+				controller: currentAction.controller,
+				burnedCardIds: uniq([
+					...uniq(previousAction.burnedCardIds || []),
+					...uniq(currentAction.burnedCardIds || []),
+				]),
+			},
+			this.allCards,
+		);
+	}
 }

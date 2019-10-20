@@ -70,7 +70,11 @@ export class PowerTargetParser implements Parser {
 	): PowerTargetAction[] {
 		const entityId = parseInt(item.node.attributes.entity);
 		// Prevent a spell from targeting itself
-		if (entityId === info.entity && entities.get(entityId).getTag(GameTag.CARDTYPE) === CardType.SPELL) {
+		if (
+			entityId === info.entity &&
+			entities.get(entityId) &&
+			entities.get(entityId).getTag(GameTag.CARDTYPE) === CardType.SPELL
+		) {
 			return [];
 		}
 		let target = info.entity;
@@ -125,7 +129,7 @@ export class PowerTargetParser implements Parser {
 
 	private mergeActions(previousAction: Action, currentAction: Action): Action {
 		if (!(currentAction instanceof PowerTargetAction)) {
-			this.logger.error('incorrect currentAction as current action for power-target-parser', currentAction);
+			this.logger.warn('incorrect currentAction as current action for power-target-parser', currentAction);
 			return;
 		}
 		if (previousAction instanceof PowerTargetAction || previousAction instanceof CardTargetAction) {

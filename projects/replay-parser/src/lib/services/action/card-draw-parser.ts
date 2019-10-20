@@ -49,11 +49,12 @@ export class CardDrawParser implements Parser {
 			) {
 				const controller = entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CONTROLLER);
 				if (!controller) {
-					this.logger.error(
+					this.logger.warn(
 						'[card-draw-parser] empty controller',
 						item,
 						entitiesBeforeAction.get(item.tag.entity),
 					);
+					return null;
 				}
 				return [
 					CardDrawAction.create(
@@ -78,7 +79,8 @@ export class CardDrawParser implements Parser {
 			) {
 				const controller = entitiesBeforeAction.get(item.entityDefintion.id).getTag(GameTag.CONTROLLER);
 				if (!controller) {
-					this.logger.error('empty controller', item, entitiesBeforeAction.get(item.entityDefintion.id));
+					this.logger.warn('empty controller', item, entitiesBeforeAction.get(item.entityDefintion.id));
+					return null;
 				}
 				return [
 					CardDrawAction.create(
@@ -108,7 +110,7 @@ export class CardDrawParser implements Parser {
 				item.entityDefintion.tags.get(GameTag[GameTag.CONTROLLER]) ||
 				entitiesBeforeAction.get(item.entityDefintion.id).getTag(GameTag.CONTROLLER);
 			if (!controller) {
-				this.logger.error('[card-draw-parser] empty controller', item);
+				this.logger.warn('[card-draw-parser] empty controller', item);
 				return [];
 			}
 			return [
@@ -140,7 +142,8 @@ export class CardDrawParser implements Parser {
 			return false;
 		}
 		if (previous.controller === undefined || current.controller === undefined) {
-			this.logger.error('[card-draw-parser] Empty controller for draw action', previous, current);
+			this.logger.warn('[card-draw-parser] Empty controller for draw action', previous, current);
+			return false;
 		}
 		return previous.controller === current.controller;
 	}
