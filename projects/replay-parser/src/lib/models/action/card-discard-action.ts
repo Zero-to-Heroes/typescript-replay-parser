@@ -44,7 +44,8 @@ export class CardDiscardAction extends Action {
 				}),
 		);
 		if (ownerNames.length !== 1) {
-			throw new Error('[discard-action] Invalid grouping of cards ' + ownerNames + ', ' + this.data);
+			console.warn('[discard-action] Invalid grouping of cards ' + ownerNames + ', ' + this.data);
+			return this;
 		}
 		const ownerName = ownerNames[0];
 		const discardedCards = this.data

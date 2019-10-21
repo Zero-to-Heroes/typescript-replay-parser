@@ -39,7 +39,8 @@ export class CardBurnAction extends Action {
 				}),
 		);
 		if (ownerNames.length !== 1) {
-			throw new Error('[card-burn-action] Invalid grouping of cards ' + ownerNames + ', ' + this.burnedCardIds);
+			console.warn('[card-burn-action] Invalid grouping of cards ' + ownerNames + ', ' + this.burnedCardIds);
+			return this;
 		}
 		const ownerName = ownerNames[0];
 		const drawnCards = this.burnedCardIds

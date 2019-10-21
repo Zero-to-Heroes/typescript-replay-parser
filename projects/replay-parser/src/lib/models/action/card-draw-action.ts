@@ -49,7 +49,8 @@ export class CardDrawAction extends Action {
 				}),
 		);
 		if (ownerNames.length !== 1) {
-			throw new Error('[card-draw-action] Invalid grouping of cards ' + ownerNames + ', ' + this.data);
+			console.warn('[card-draw-action] Invalid grouping of cards ' + ownerNames + ', ' + this.data);
+			return this;
 		}
 		const ownerName = ownerNames[0];
 		const drawnCards = this.data

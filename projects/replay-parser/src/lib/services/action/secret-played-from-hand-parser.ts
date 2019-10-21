@@ -32,7 +32,10 @@ export class SecretPlayedFromHandParser implements Parser {
 		let isSecret = false;
 		for (const tag of item.node.tags) {
 			if (tag.tag === GameTag.ZONE && tag.value === Zone.SECRET) {
-				if (entitiesBeforeAction.get(tag.entity).getTag(GameTag.CARDTYPE) !== CardType.ENCHANTMENT) {
+				if (
+					entitiesBeforeAction.get(tag.entity) &&
+					entitiesBeforeAction.get(tag.entity).getTag(GameTag.CARDTYPE) !== CardType.ENCHANTMENT
+				) {
 					playedCardId = tag.entity;
 				}
 			}

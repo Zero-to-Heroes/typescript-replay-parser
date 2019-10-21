@@ -115,6 +115,10 @@ export class StateProcessorService {
 		historyItem: ShowEntityHistoryItem | FullEntityHistoryItem,
 		entities: Map<number, Entity>,
 	): Map<number, Entity> {
+		if (!entities.get(historyItem.entityDefintion.id)) {
+			console.warn('[state-processor] could not update entity', historyItem.entityDefintion.id);
+			return entities;
+		}
 		const entity: Entity = entities.get(historyItem.entityDefintion.id).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
 	}
@@ -123,6 +127,10 @@ export class StateProcessorService {
 		historyItem: ChangeEntityHistoryItem,
 		entities: Map<number, Entity>,
 	): Map<number, Entity> {
+		if (!entities.get(historyItem.entityDefintion.id)) {
+			console.warn('[state-processor] could not update entity', historyItem.entityDefintion.id);
+			return entities;
+		}
 		const entity: Entity = entities.get(historyItem.entityDefintion.id).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
 	}
@@ -138,6 +146,7 @@ export class StateProcessorService {
 		// It sometimes happens that the XML itself doesn't have the right entity
 		// so we safeguard here
 		if (!entities.get(historyItem.tag.entity)) {
+			console.warn('[state-processor] could not update entity', historyItem.tag.entity);
 			return entities;
 		}
 
