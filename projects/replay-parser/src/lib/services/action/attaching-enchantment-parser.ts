@@ -1,3 +1,4 @@
+import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import isEqual from 'lodash-es/isEqual';
 import uniq from 'lodash-es/uniq';
@@ -5,8 +6,6 @@ import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
 import { CardTargetAction } from '../../models/action/card-target-action';
 import { PowerTargetAction } from '../../models/action/power-target-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { Zone } from '../../models/enums/zone';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';

@@ -1,3 +1,4 @@
+import { BlockType } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import isEqual from 'lodash-es/isEqual';
 import uniq from 'lodash-es/uniq';
@@ -5,7 +6,6 @@ import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
 import { CardTargetAction } from '../../models/action/card-target-action';
-import { BlockType } from '../../models/enums/block-type';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';

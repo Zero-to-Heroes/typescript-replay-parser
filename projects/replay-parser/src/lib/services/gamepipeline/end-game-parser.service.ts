@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { PlayState } from '@firestone-hs/reference-data';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { EndGameAction } from '../../models/action/end-game-action';
-import { PlayState } from '../../models/enums/playstate';
 import { Game } from '../../models/game/game';
 import { Turn } from '../../models/game/turn';
 import { AllCardsService } from '../all-cards.service';

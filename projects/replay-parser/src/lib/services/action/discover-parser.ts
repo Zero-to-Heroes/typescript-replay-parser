@@ -1,7 +1,7 @@
+import { ChoiceType } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { Action } from '../../models/action/action';
 import { DiscoverAction } from '../../models/action/discover-action';
-import { ChoiceType } from '../../models/enums/choice-type';
 import { Entity } from '../../models/game/entity';
 import { ChoicesHistoryItem } from '../../models/history/choices-history-item';
 import { HistoryItem } from '../../models/history/history-item';

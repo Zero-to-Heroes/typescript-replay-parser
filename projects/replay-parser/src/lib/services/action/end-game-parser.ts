@@ -1,9 +1,8 @@
+import { GameTag, PlayState } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { EndGameAction } from '../../models/action/end-game-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { PlayState } from '../../models/enums/playstate';
 import { Entity } from '../../models/game/entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { HistoryItem } from '../../models/history/history-item';

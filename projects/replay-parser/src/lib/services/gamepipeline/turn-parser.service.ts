@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import { GameTag, Mulligan, Step } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
-import { GameTag } from '../../models/enums/game-tags';
-import { Step } from '../../models/enums/step';
 import { ActionTurn } from '../../models/game/action-turn';
 import { Game } from '../../models/game/game';
 import { MulliganTurn } from '../../models/game/mulligan-turn';
@@ -10,7 +9,7 @@ import { PlayerEntity } from '../../models/game/player-entity';
 import { Turn } from '../../models/game/turn';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
-import { Mulligan, PlayerHistoryItem } from '../../models/models';
+import { PlayerHistoryItem } from '../../models/models';
 
 @Injectable({
 	providedIn: 'root',

@@ -1,6 +1,6 @@
-import { EntityDefinition } from '../parser/entity-definition';
+import { GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { GameTag } from '../enums/game-tags';
+import { EntityDefinition } from '../parser/entity-definition';
 
 export class Entity {
 	constructor() {}

@@ -1,4 +1,4 @@
-import { GameTag } from '../enums/game-tags';
+import { GameTag } from '@firestone-hs/reference-data';
 
 export interface EntityTag {
 	readonly index: number;

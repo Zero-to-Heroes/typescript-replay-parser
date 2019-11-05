@@ -1,8 +1,7 @@
+import { BlockType, GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { Action } from '../../models/action/action';
 import { SecretRevealedAction } from '../../models/action/secret-revealed-action';
-import { BlockType } from '../../models/enums/block-type';
-import { GameTag } from '../../models/enums/game-tags';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';

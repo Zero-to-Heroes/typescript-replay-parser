@@ -1,8 +1,7 @@
+import { GameTag, Step } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { Action } from '../../models/action/action';
 import { StartTurnAction } from '../../models/action/start-turn-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { Step } from '../../models/enums/step';
 import { Entity } from '../../models/game/entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { HistoryItem } from '../../models/history/history-item';

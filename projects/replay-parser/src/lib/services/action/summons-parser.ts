@@ -1,11 +1,8 @@
+import { BlockType, CardType, GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import uniq from 'lodash-es/uniq';
 import { Action } from '../../models/action/action';
 import { SummonAction } from '../../models/action/summon-action';
-import { BlockType } from '../../models/enums/block-type';
-import { CardType } from '../../models/enums/card-type';
-import { GameTag } from '../../models/enums/game-tags';
-import { Zone } from '../../models/enums/zone';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';

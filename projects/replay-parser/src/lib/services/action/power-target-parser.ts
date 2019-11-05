@@ -1,3 +1,4 @@
+import { BlockType, CardType, GameTag, MetaTags } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import isEqual from 'lodash-es/isEqual';
 import uniq from 'lodash-es/uniq';
@@ -6,10 +7,6 @@ import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
 import { CardTargetAction } from '../../models/action/card-target-action';
 import { PowerTargetAction } from '../../models/action/power-target-action';
-import { BlockType } from '../../models/enums/block-type';
-import { CardType } from '../../models/enums/card-type';
-import { GameTag } from '../../models/enums/game-tags';
-import { MetaTags } from '../../models/enums/meta-tags';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';

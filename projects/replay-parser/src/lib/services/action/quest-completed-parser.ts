@@ -1,9 +1,8 @@
+import { BlockType, GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { QuestCompletedAction } from '../../models/action/quest-completed-action';
-import { BlockType } from '../../models/enums/block-type';
-import { GameTag } from '../../models/enums/game-tags';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';

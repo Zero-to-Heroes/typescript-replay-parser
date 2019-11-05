@@ -1,6 +1,6 @@
+import { PlayState } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { Entity } from '../game/entity';
-import { PlayState } from '../enums/playstate';
 
 export abstract class Action {
 	readonly timestamp: number;

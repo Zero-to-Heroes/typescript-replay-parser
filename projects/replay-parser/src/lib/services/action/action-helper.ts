@@ -1,7 +1,7 @@
+import { GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import isEqual from 'lodash-es/isEqual';
 import { Action } from '../../models/action/action';
-import { GameTag } from '../../models/enums/game-tags';
 import { Entity } from '../../models/game/entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { EntityTag } from '../../models/parser/entity-tag';

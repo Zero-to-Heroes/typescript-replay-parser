@@ -1,11 +1,10 @@
+import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { MulliganCardAction } from '../../models/action/mulligan-card-action';
 import { MulliganCardChoiceAction } from '../../models/action/mulligan-card-choice-action';
 import { StartTurnAction } from '../../models/action/start-turn-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { Zone } from '../../models/enums/zone';
 import { Entity } from '../../models/game/entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { ChosenEntityHistoryItem } from '../../models/history/chosen-entities-history-item';

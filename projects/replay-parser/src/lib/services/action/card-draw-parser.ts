@@ -1,10 +1,9 @@
+import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import uniq from 'lodash-es/uniq';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { CardDrawAction } from '../../models/action/card-draw-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { Zone } from '../../models/enums/zone';
 import { Entity } from '../../models/game/entity';
 import { FullEntityHistoryItem } from '../../models/history/full-entity-history-item';
 import { HistoryItem } from '../../models/history/history-item';

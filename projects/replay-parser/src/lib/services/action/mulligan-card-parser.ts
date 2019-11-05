@@ -1,10 +1,8 @@
+import { BlockType, GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { MulliganCardAction } from '../../models/action/mulligan-card-action';
-import { BlockType } from '../../models/enums/block-type';
-import { GameTag } from '../../models/enums/game-tags';
-import { Zone } from '../../models/enums/zone';
 import { Entity } from '../../models/game/entity';
 import { GameHepler } from '../../models/game/game-helper';
 import { ActionHistoryItem } from '../../models/history/action-history-item';

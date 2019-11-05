@@ -1,8 +1,7 @@
+import { GameTag, MetaTags } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { parser, SAXParser, Tag } from 'sax';
-import { GameTag } from '../models/enums/game-tags';
-import { MetaTags } from '../models/enums/meta-tags';
 import { ActionHistoryItem } from '../models/history/action-history-item';
 import { ChangeEntityHistoryItem } from '../models/history/change-entity-history-item';
 import { ChoicesHistoryItem } from '../models/history/choices-history-item';

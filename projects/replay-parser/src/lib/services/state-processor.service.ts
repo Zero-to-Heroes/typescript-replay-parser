@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
-import { GameTag } from '../models/enums/game-tags';
 import { Entity } from '../models/game/entity';
 import { ChangeEntityHistoryItem } from '../models/history/change-entity-history-item';
 import { FullEntityHistoryItem } from '../models/history/full-entity-history-item';

@@ -1,8 +1,8 @@
+import { GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { FatigueDamageAction } from '../../models/action/fatigue-damage-action';
-import { GameTag } from '../../models/enums/game-tags';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';

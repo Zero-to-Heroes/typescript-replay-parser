@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CardType, GameTag } from '@firestone-hs/reference-data';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
@@ -11,8 +12,6 @@ import { PowerTargetAction } from '../../models/action/power-target-action';
 import { SecretRevealedAction } from '../../models/action/secret-revealed-action';
 import { StartTurnAction } from '../../models/action/start-turn-action';
 import { SummonAction } from '../../models/action/summon-action';
-import { CardType } from '../../models/enums/card-type';
-import { GameTag } from '../../models/enums/game-tags';
 import { Game } from '../../models/game/game';
 import { Turn } from '../../models/game/turn';
 import { AllCardsService } from '../all-cards.service';

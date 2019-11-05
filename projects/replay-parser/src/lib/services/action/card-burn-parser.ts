@@ -1,10 +1,9 @@
+import { GameTag, MetaTags } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import uniq from 'lodash-es/uniq';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { CardBurnAction } from '../../models/action/card-burn-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { MetaTags } from '../../models/enums/meta-tags';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { MetadataHistoryItem } from '../../models/history/metadata-history-item';

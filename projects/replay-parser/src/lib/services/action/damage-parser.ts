@@ -1,3 +1,4 @@
+import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
@@ -5,8 +6,6 @@ import { AttackAction } from '../../models/action/attack-action';
 import { DamageAction } from '../../models/action/damage-action';
 import { HealingAction } from '../../models/action/healing-action';
 import { PowerTargetAction } from '../../models/action/power-target-action';
-import { GameTag } from '../../models/enums/game-tags';
-import { Zone } from '../../models/enums/zone';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
