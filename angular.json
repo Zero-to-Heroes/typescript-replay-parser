@@ -141,6 +141,41 @@
                     }
                 }
             }
+        },
+        "hs-replay-xml-parser": {
+            "projectType": "library",
+            "root": "projects/hs-replay-xml-parser",
+            "sourceRoot": "projects/hs-replay-xml-parser/src",
+            "prefix": "lib",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-ng-packagr:build",
+                    "options": {
+                        "tsConfig": "projects/hs-replay-xml-parser/tsconfig.lib.json",
+                        "project": "projects/hs-replay-xml-parser/ng-package.json"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/hs-replay-xml-parser/src/test.ts",
+                        "tsConfig": "projects/hs-replay-xml-parser/tsconfig.spec.json",
+                        "karmaConfig": "projects/hs-replay-xml-parser/karma.conf.js"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/hs-replay-xml-parser/tsconfig.lib.json",
+                            "projects/hs-replay-xml-parser/tsconfig.spec.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
         }
     },
     "defaultProject": "replay-action-parser"
