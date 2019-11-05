@@ -2,6 +2,7 @@ import { CardType, GameTag } from '@firestone-hs/reference-data';
 import { parse } from 'elementtree';
 import { totalDamageDealtToEnemyHeroExtractor } from './exrtactors/total-damage-dealt-to-enemy-hero-extractor';
 import { totalManaSpentExtractor } from './exrtactors/total-mana-spent-extractor';
+import { totalMinionsDeathExtractor } from './exrtactors/total-minions-death-extractor';
 import { PlayerOpponentValues } from './model/player-opponent-values';
 import { Replay } from './model/replay';
 
@@ -38,4 +39,8 @@ export const extractTotalManaSpent = (replay: Replay): PlayerOpponentValues => {
 
 export const extractTotalDamageDealtToEnemyHero = (replay: Replay): number => {
 	return totalDamageDealtToEnemyHeroExtractor(replay);
+};
+
+export const extractTotalMinionDeaths = (replay: Replay): PlayerOpponentValues => {
+	return totalMinionsDeathExtractor(replay);
 };
