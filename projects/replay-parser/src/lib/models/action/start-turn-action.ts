@@ -1,6 +1,6 @@
-import { Action } from './action';
 import { Map } from 'immutable';
 import { Entity } from '../game/entity';
+import { Action } from './action';
 
 export class StartTurnAction extends Action {
 	readonly turn: number;
@@ -15,7 +15,12 @@ export class StartTurnAction extends Action {
 	}
 
 	public enrichWithText(): StartTurnAction {
-		const textRaw = this.turn === 0 ? 'Start of mulligan' : 'Start of turn ' + this.turn;
+		console.log('is hero selection.', this.isHeroSelection);
+		const textRaw = this.isHeroSelection
+			? 'Hero selection'
+			: this.isMulligan
+			? 'Start of mulligan'
+			: 'Start of turn ' + this.turn;
 		return Object.assign(new StartTurnAction(), this, { textRaw });
 	}
 

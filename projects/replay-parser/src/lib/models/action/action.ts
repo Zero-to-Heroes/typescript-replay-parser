@@ -7,6 +7,10 @@ export abstract class Action {
 	readonly index: number;
 	readonly textRaw: string;
 
+	// Since we want to make actions more compact and show everything at once, we store
+	// this data in possibly any action
+	readonly targetIds: readonly number[];
+
 	// Game state information
 	readonly entities: Map<number, Entity>;
 	readonly crossedEntities: readonly number[] = [];
@@ -14,6 +18,7 @@ export abstract class Action {
 	readonly activeSpell: number;
 	readonly activePlayer: number;
 	readonly isMulligan: boolean;
+	readonly isHeroSelection: boolean;
 	readonly isEndGame: boolean;
 	readonly endGameStatus: PlayState;
 	readonly targets: readonly [number, number][];

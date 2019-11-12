@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GameTag, Step } from '@firestone-hs/reference-data';
+import { CardType, GameTag, Step, Zone } from '@firestone-hs/reference-data';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { Game } from '../../models/game/game';
@@ -31,12 +31,26 @@ export class MulliganParserService {
 	}
 
 	private enrichAction(action: Action, previousAction: Action): Action {
-		let isMulligan = true;
+		const mulliganEntities = action.entities
+			.toArray()
+			.filter(entity => entity.getTag(GameTag.ZONE) === Zone.HAND)
+			.filter(entity => entity.cardID !== 'GAME_005') // Don't show the coin yet
+			.sort((a, b) => a.getTag(GameTag.ZONE_POSITION) - b.getTag(GameTag.ZONE_POSITION));
+		console.log('mulligan entities', mulliganEntities, mulliganEntities.map(entity => entity.tags.toJS()));
+		// Hero selection phase
+		let isHeroSelection = false;
+		if (mulliganEntities.length > 0 && mulliganEntities[0].getCardType() === CardType.HERO) {
+			console.log('hero selection');
+			isHeroSelection = true;
+		}
+
+		let isMulligan = !isHeroSelection && mulliganEntities.length > 0;
+		console.log('isMulligan?', isMulligan, mulliganEntities);
 		if (action.activeSpell) {
 			isMulligan = false;
 		} else if (previousAction && previousAction.entities.get(1).getTag(GameTag.STEP) === Step.BEGIN_MULLIGAN) {
 			isMulligan = previousAction.isMulligan;
 		}
-		return action.updateAction({ isMulligan } as Action);
+		return action.updateAction({ isMulligan, isHeroSelection } as Action);
 	}
 }

@@ -27,8 +27,13 @@ export class AttackParser implements Parser {
 		}
 		let target = parseInt(item.node.attributes.target);
 		if (!target) {
-			console.warn('Could not parse target entity id', item);
+			// console.warn('Could not parse target entity id', item);
 			target = ActionHelper.getTag(item.node.tags, GameTag.PROPOSED_DEFENDER);
+		}
+		// Happens when buying items for Battlegrounds
+		if (!target) {
+			// console.warn('Could not parse target entity id at all', item);
+			return [];
 		}
 		return [
 			AttackAction.create(

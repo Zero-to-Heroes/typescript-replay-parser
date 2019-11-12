@@ -220,6 +220,9 @@ export class ActionParserService {
 	): readonly Action[] {
 		const newActionsForTurn = [];
 		for (let i = 0; i < actionsForTurn.length; i++) {
+			if (!actionsForTurn[i]) {
+				console.warn('BBBB', actionsForTurn);
+			}
 			const newEntities = actionsForTurn[i].entities ? actionsForTurn[i].entities : previousStateEntities;
 			const entitiesAfterDamageUpdate: Map<number, Entity> = this.isDamageAction(actionsForTurn[i])
 				? newEntities.map(entity => this.updateDamageForEntity(actionsForTurn[i], entity)).toMap()
