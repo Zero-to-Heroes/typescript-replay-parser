@@ -56,6 +56,8 @@ export class GamePopulationService {
 		const entity: PlayerEntity = PlayerEntity.create({
 			id: historyItem.entityDefintion.id,
 			playerId: historyItem.entityDefintion.playerID,
+			accountHi: historyItem.accountHi,
+			accountLo: historyItem.accountLo,
 			name: playerName,
 		} as PlayerEntity).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);

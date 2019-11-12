@@ -32,6 +32,8 @@ export class XmlParserService {
 	private initialTimestamp: number;
 	private history: readonly HistoryItem[];
 	private entityDefinition: EntityDefinition;
+	private accountHi: string;
+	private accountLo: string;
 	private choices: Choices;
 	private chosen: ChosenTag;
 	private metaData: MetaData;
@@ -92,6 +94,8 @@ export class XmlParserService {
 					node.attributes.name && node.attributes.name.indexOf('#') !== -1
 						? node.attributes.name.split('#')[0]
 						: node.attributes.name;
+				this.accountHi = node.attributes.accountHi;
+				this.accountLo = node.attributes.accountLo;
 			/* falls through */
 			case 'GameEntity':
 			case 'FullEntity':
@@ -386,6 +390,8 @@ export class XmlParserService {
 				this.state.pop();
 				const playerItem: PlayerHistoryItem = new PlayerHistoryItem(
 					this.entityDefinition,
+					this.accountHi,
+					this.accountLo,
 					this.buildTimestamp(ts),
 					node.index,
 				);

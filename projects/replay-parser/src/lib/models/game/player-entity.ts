@@ -6,6 +6,8 @@ import { Entity } from './entity';
 export class PlayerEntity extends Entity {
 	readonly playerId: number;
 	readonly name: string;
+	readonly accountHi: string;
+	readonly accountLo: string;
 
 	public static create(base: PlayerEntity, newAttributes?: EntityDefinition): PlayerEntity {
 		// Merge tags
