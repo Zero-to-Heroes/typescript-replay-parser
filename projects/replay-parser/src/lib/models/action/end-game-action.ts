@@ -1,6 +1,7 @@
 import { PlayState } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { ActionHelper } from '../../services/action/action-helper';
+import { AllCardsService } from '../../services/all-cards.service';
 import { Entity } from '../game/entity';
 import { Action } from './action';
 
@@ -9,8 +10,12 @@ export class EndGameAction extends Action {
 	readonly entityId: number;
 	readonly opponentId: number;
 
-	public static create(newAction): EndGameAction {
-		return Object.assign(new EndGameAction(), newAction);
+	constructor(allCards: AllCardsService) {
+		super(allCards);
+	}
+
+	public static create(newAction, allCards: AllCardsService): EndGameAction {
+		return Object.assign(new EndGameAction(allCards), newAction);
 	}
 
 	public update(entities: Map<number, Entity>): EndGameAction {
@@ -44,6 +49,6 @@ export class EndGameAction extends Action {
 	}
 
 	protected getInstance(): Action {
-		return new EndGameAction();
+		return new EndGameAction(this.allCards);
 	}
 }

@@ -1,17 +1,14 @@
-import { Action } from './action';
 import { Map } from 'immutable';
-import { Entity } from '../game/entity';
 import { AllCardsService } from '../../services/all-cards.service';
+import { Entity } from '../game/entity';
+import { Action } from './action';
 
 export class MulliganCardChoiceAction extends Action {
 	readonly playerMulligan: readonly number[];
 	readonly opponentMulligan: readonly number[];
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): MulliganCardChoiceAction {

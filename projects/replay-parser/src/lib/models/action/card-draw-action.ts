@@ -9,11 +9,8 @@ export class CardDrawAction extends Action {
 	readonly data: readonly number[];
 	readonly controller: number;
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): CardDrawAction {

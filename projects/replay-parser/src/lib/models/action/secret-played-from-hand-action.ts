@@ -7,11 +7,8 @@ import { Action } from './action';
 export class SecretPlayedFromHandAction extends Action {
 	readonly entityId: number;
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): SecretPlayedFromHandAction {

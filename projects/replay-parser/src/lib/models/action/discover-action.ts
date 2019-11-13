@@ -11,11 +11,8 @@ export class DiscoverAction extends Action {
 	readonly choices: readonly number[];
 	readonly chosen: readonly number[];
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): DiscoverAction {

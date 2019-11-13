@@ -1,13 +1,13 @@
-import { Action } from './action';
 import { Map } from 'immutable';
-import { Entity } from '../game/entity';
 import { AllCardsService } from '../../services/all-cards.service';
+import { Entity } from '../game/entity';
+import { Action } from './action';
 
 export class OptionsAction extends Action {
 	readonly options: readonly number[];
 
-	constructor(private allCards: AllCardsService) {
-		super();
+	constructor(allCards: AllCardsService) {
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): OptionsAction {

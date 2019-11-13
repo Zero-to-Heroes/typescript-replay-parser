@@ -9,8 +9,8 @@ export class CardDiscardAction extends Action {
 	readonly data: readonly number[];
 	readonly controller: number;
 
-	constructor(private allCards: AllCardsService) {
-		super();
+	constructor(allCards: AllCardsService) {
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): CardDiscardAction {

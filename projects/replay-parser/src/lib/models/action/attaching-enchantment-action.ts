@@ -11,11 +11,8 @@ export class AttachingEnchantmentAction extends Action implements HasTargets {
 	readonly enchantmentCardId: string;
 	readonly targetIds: readonly number[];
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): AttachingEnchantmentAction {

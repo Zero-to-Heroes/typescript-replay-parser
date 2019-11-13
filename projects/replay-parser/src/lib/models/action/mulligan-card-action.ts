@@ -9,11 +9,8 @@ export class MulliganCardAction extends Action {
 	readonly playerMulligan: readonly number[];
 	readonly opponentMulligan: readonly number[];
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): MulliganCardAction {

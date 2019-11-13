@@ -9,11 +9,8 @@ export class CardTargetAction extends Action implements HasTargets {
 	readonly originId: number;
 	readonly targetIds: readonly number[];
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): CardTargetAction {

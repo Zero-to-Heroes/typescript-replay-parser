@@ -31,6 +31,11 @@ export class AttachingEnchantmentParser implements Parser {
 		if (!entity) {
 			return;
 		}
+		// Some specific stuff for Battlegrounds. Not super clean
+		if (['TB_BaconShop_8P_PlayerE', 'TB_BaconShop_1P_PlayerE'].indexOf(entity.cardID) !== -1) {
+			return [];
+		}
+
 		const attachedToEntityId = entity.getTag(GameTag.ATTACHED);
 		if (!attachedToEntityId) {
 			return;

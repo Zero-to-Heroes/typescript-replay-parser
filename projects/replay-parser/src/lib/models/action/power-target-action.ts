@@ -7,10 +7,9 @@ import { HasTargets } from './has-targets';
 
 export class PowerTargetAction extends Action implements HasTargets {
 	readonly originId: number;
-	readonly targetIds: readonly number[];
 
-	constructor(private allCards: AllCardsService) {
-		super();
+	constructor(allCards: AllCardsService) {
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): PowerTargetAction {

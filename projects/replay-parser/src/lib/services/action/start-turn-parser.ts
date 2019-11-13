@@ -6,9 +6,11 @@ import { Entity } from '../../models/game/entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
 export class StartTurnParser implements Parser {
+	constructor(private readonly allCards: AllCardsService) {}
 	public applies(item: HistoryItem): boolean {
 		return (
 			item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.STEP && item.tag.value === Step.MAIN_READY
@@ -26,12 +28,15 @@ export class StartTurnParser implements Parser {
 			.map(entity => entity as PlayerEntity)
 			.first().playerId;
 		return [
-			StartTurnAction.create({
-				timestamp: item.timestamp,
-				turn: currentTurn + 1,
-				activePlayer: activePlayerId,
-				index: item.index,
-			}),
+			StartTurnAction.create(
+				{
+					timestamp: item.timestamp,
+					turn: currentTurn + 1,
+					activePlayer: activePlayerId,
+					index: item.index,
+				},
+				this.allCards,
+			),
 		];
 	}
 

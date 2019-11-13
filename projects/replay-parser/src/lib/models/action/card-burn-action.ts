@@ -9,8 +9,8 @@ export class CardBurnAction extends Action {
 	readonly controller: number;
 	readonly burnedCardIds: readonly number[];
 
-	constructor(private allCards: AllCardsService) {
-		super();
+	constructor(allCards: AllCardsService) {
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): CardBurnAction {

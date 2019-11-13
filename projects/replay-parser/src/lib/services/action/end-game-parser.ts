@@ -7,11 +7,12 @@ import { Entity } from '../../models/game/entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { AllCardsService } from '../all-cards.service';
 import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class EndGameParser implements Parser {
-	constructor(private logger: NGXLogger) {}
+	constructor(private logger: NGXLogger, private readonly allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return (
@@ -29,13 +30,16 @@ export class EndGameParser implements Parser {
 		players: readonly PlayerEntity[],
 	): Action[] {
 		return [
-			EndGameAction.create({
-				timestamp: item.timestamp,
-				index: item.index,
-				entityId: players[0].id,
-				opponentId: players[1].id,
-				winStatus: [[item.tag.entity, item.tag.value]],
-			}),
+			EndGameAction.create(
+				{
+					timestamp: item.timestamp,
+					index: item.index,
+					entityId: players[0].id,
+					opponentId: players[1].id,
+					winStatus: [[item.tag.entity, item.tag.value]],
+				},
+				this.allCards,
+			),
 		];
 	}
 

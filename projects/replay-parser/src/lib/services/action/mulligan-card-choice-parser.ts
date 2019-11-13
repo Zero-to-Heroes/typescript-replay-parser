@@ -97,15 +97,18 @@ export class MulliganCardChoiceParser implements Parser {
 				this.allCards,
 			);
 		} else {
-			return StartTurnAction.create({
-				turn: previousAction.turn,
-				entities: previousAction.entities,
-				crossedEntities: [
-					...(previousAction.crossedEntities || []),
-					...(currentAction.playerMulligan || []),
-					...(currentAction.opponentMulligan || []),
-				],
-			});
+			return StartTurnAction.create(
+				{
+					turn: previousAction.turn,
+					entities: previousAction.entities,
+					crossedEntities: [
+						...(previousAction.crossedEntities || []),
+						...(currentAction.playerMulligan || []),
+						...(currentAction.opponentMulligan || []),
+					],
+				},
+				this.allCards,
+			);
 		}
 	}
 

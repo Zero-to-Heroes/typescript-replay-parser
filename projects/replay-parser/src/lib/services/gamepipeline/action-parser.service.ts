@@ -47,10 +47,10 @@ export class ActionParserService {
 
 	private registerActionParsers(): Parser[] {
 		return [
-			new StartTurnParser(),
+			new StartTurnParser(this.allCards),
 			new MulliganCardParser(this.allCards, this.logger),
 			new MulliganCardChoiceParser(this.allCards, this.logger),
-			new StartOfMulliganParser(),
+			new StartOfMulliganParser(this.allCards),
 			new CardDrawParser(this.allCards, this.logger),
 			new CardBurnParser(this.allCards, this.logger),
 			new HeroPowerUsedParser(this.allCards),
@@ -68,7 +68,7 @@ export class ActionParserService {
 			new DamageParser(this.allCards, this.logger),
 			new CardDiscardParser(this.allCards, this.logger),
 			new OptionsParser(this.allCards, this.logger),
-			new EndGameParser(this.logger),
+			new EndGameParser(this.logger, this.allCards),
 			new FatigueDamageParser(this.allCards, this.logger),
 			new QuestCompletedParser(this.allCards, this.logger),
 		];

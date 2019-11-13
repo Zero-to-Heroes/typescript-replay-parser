@@ -8,11 +8,8 @@ import { Action } from './action';
 export class CardPlayedFromHandAction extends Action {
 	readonly entityId: number;
 
-	readonly allCards: AllCardsService;
-
 	constructor(allCards: AllCardsService) {
-		super();
-		this.allCards = allCards;
+		super(allCards);
 	}
 
 	public static create(newAction, allCards: AllCardsService): CardPlayedFromHandAction {
@@ -35,7 +32,10 @@ export class CardPlayedFromHandAction extends Action {
 		if (cardEntity.getTag(GameTag.CARDTYPE) === CardType.WEAPON) {
 			playVerb = 'equips';
 		}
-		const textRaw = `\t${ownerName} ${playVerb} ${cardName}`;
+		const targetText = super.generateTargetsText();
+		const targetTextToDisplay = targetText && targetText.length > 0 ? `\n${targetText}` : '';
+		const textRaw = `\t${ownerName} ${playVerb} ${cardName}${targetTextToDisplay}`;
+		console.log('enriching card played from hand action text', targetText, textRaw);
 		return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
 			textRaw,
 		});

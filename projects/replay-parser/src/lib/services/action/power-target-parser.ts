@@ -11,6 +11,7 @@ import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
 import { MetadataHistoryItem } from '../../models/history/metadata-history-item';
+import { CardPlayedFromHandAction } from '../../models/models';
 import { Info } from '../../models/parser/info';
 import { MetaData } from '../../models/parser/metadata';
 import { AllCardsService } from '../all-cards.service';
@@ -121,6 +122,9 @@ export class PowerTargetParser implements Parser {
 				return true;
 			}
 		}
+		if (previousAction instanceof CardPlayedFromHandAction) {
+			return previousAction.entityId === currentAction.originId;
+		}
 		return false;
 	}
 
@@ -140,6 +144,15 @@ export class PowerTargetParser implements Parser {
 			} as PowerTargetAction);
 		} else if (previousAction instanceof AttachingEnchantmentAction) {
 			return previousAction;
+		} else if (previousAction instanceof CardPlayedFromHandAction) {
+			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
+				entities: currentAction.entities,
+				originId: previousAction.entityId,
+				targetIds: uniq([
+					...uniq(previousAction.targetIds || []),
+					...uniq(currentAction.targetIds || []),
+				]) as readonly number[],
+			} as CardPlayedFromHandAction);
 		}
 	}
 }

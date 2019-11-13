@@ -6,10 +6,13 @@ import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
 export class StartOfMulliganParser implements Parser {
 	private numberOfMulligansDone = 0;
+
+	constructor(private readonly allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return (
@@ -30,12 +33,15 @@ export class StartOfMulliganParser implements Parser {
 		}
 		this.numberOfMulligansDone++;
 		return [
-			StartTurnAction.create({
-				timestamp: item.timestamp,
-				turn: currentTurn,
-				isStartOfMulligan: true,
-				index: item.index,
-			}),
+			StartTurnAction.create(
+				{
+					timestamp: item.timestamp,
+					turn: currentTurn,
+					isStartOfMulligan: true,
+					index: item.index,
+				},
+				this.allCards,
+			),
 		];
 	}
 
