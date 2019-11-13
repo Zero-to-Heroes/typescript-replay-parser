@@ -9,6 +9,7 @@ import { PowerTargetAction } from '../../models/action/power-target-action';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { CardPlayedFromHandAction } from '../../models/models';
 import { AllCardsService } from '../all-cards.service';
 import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
@@ -75,8 +76,9 @@ export class DamageParser implements Parser {
 		return (
 			previousAction instanceof DamageAction || // Merge all damages into a single action
 			previousAction instanceof AttackAction || // Add damage to the attack causing the damage
-			previousAction instanceof PowerTargetAction
-		); // Add damages to the power causing the damage
+			previousAction instanceof PowerTargetAction || // Add damages to the power causing the damage
+			previousAction instanceof CardPlayedFromHandAction // It's usually teh same "action"
+		);
 	}
 
 	private mergeActions(previousAction: Action, currentAction: Action): Action {
