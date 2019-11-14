@@ -41,6 +41,9 @@ export abstract class Action {
 	}
 
 	protected generateTargetsText(): string {
+		if (!this.targetIds || this.targetIds.length === 0) {
+			return null;
+		}
 		const originCardId = ActionHelper.getCardId(this.entities, this.originId);
 		const targetCardIds = this.targetIds.map(entityId => ActionHelper.getCardId(this.entities, entityId));
 		const originCardName = this.allCards.getCard(originCardId).name;
