@@ -64,7 +64,7 @@ export class XmlParserService {
 		];
 		// console.log('xml chunks', chunks);
 		for (const chunk of chunksWithMulligan) {
-			// console.log('writing chunk', chunk);
+			console.log('writing chunk', chunk);
 			testSaxes.write(chunk);
 			yield this.history;
 			this.history = [];

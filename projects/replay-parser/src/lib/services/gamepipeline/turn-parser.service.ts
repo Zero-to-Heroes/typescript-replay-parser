@@ -18,12 +18,12 @@ export class TurnParserService {
 	constructor(private logger: NGXLogger) {}
 
 	public createTurns(game: Game, history: readonly HistoryItem[]): Game {
-		let turns: Map<number, Turn> = Map<number, Turn>();
-		let turnNumber = game.turns.size;
+		let turns: Map<number, Turn> = game.turns;
+		let turnNumber = turns.size;
 		console.log('last hiustory item', history[history.length - 1]);
 		for (const item of history) {
 			if (turnNumber === 0 && this.isMulligan(item, game)) {
-				// console.log('adding mulligan turn');
+				console.log('adding mulligan turn', item);
 				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
@@ -34,10 +34,10 @@ export class TurnParserService {
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
 			} else if (this.isStartOfTurn(item, game)) {
-				// console.log('adding new turn', turnNumber);
+				console.log('adding new turn', turnNumber);
 				// Used for instance in Bob's encounters
 				if (!turns.has(0)) {
-					// console.log('creating fake mulligan turn');
+					console.log('creating fake mulligan turn', turns, turns.toJS());
 					const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 					turns = turns.set(0, mulliganTurn);
 					turnNumber++;

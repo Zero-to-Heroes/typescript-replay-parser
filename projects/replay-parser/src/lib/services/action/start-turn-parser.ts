@@ -46,7 +46,7 @@ export class StartTurnParser implements Parser {
 				StartTurnAction.create(
 					{
 						timestamp: item.timestamp,
-						turn: currentTurn + 1,
+						turn: currentTurn,
 						activePlayer: activePlayerId,
 						index: item.index,
 					},
