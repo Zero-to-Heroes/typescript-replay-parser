@@ -183,7 +183,7 @@ export class GameParserService {
 			try {
 				const itValue = xmlParsingIterator.next();
 				const history = itValue.value;
-				console.log('got next turn from parser');
+				console.log('got next turn from parser\n\n\n\n\n\n\n\n\n\n\n');
 
 				// Preload the images we'll need early on
 				const preloadIterator = this.imagePreloader.preloadImages(history);
@@ -221,7 +221,7 @@ export class GameParserService {
 					console.log('game after populateActionText', game, game.turns.toJS());
 					game = this.narrator.createGameStory(game);
 					console.log('game after createGameStory', game, game.turns.toJS());
-					if (counter === 0) {
+					if (counter === 1) {
 						counter++;
 						console.log('returning', counter);
 						return [game, SMALL_PAUSE, 'Rendering game state'];
@@ -230,12 +230,12 @@ export class GameParserService {
 					console.log('moving on', counter);
 					yield [game, SMALL_PAUSE, 'Rendering game state'];
 				} else {
-					if (counter === 0) {
+					if (counter++ === 1) {
 						counter++;
 						console.log('returning', counter, game.entities.get(73), game.entities.get(74));
 						return [game, SMALL_PAUSE, 'Rendering game state'];
 					}
-					counter++;
+					// counter++;
 				}
 
 				if (itValue.done) {

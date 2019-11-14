@@ -52,7 +52,7 @@ export class DiscoveryPickParser implements Parser {
 		} else if (currentAction instanceof DiscoveryPickAction) {
 			// Mulligan is handled differently
 			if (!(previousAction instanceof StartTurnAction)) {
-				this.logger.warn('removing discovery pick action');
+				this.logger.warn('removing discovery pick action', previousAction);
 			}
 			return true;
 		}
