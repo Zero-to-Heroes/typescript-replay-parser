@@ -23,6 +23,9 @@ export class CardPlayedFromHandParser implements Parser {
 		history: readonly HistoryItem[],
 	): Action[] {
 		if (item instanceof ActionHistoryItem && parseInt(item.node.attributes.type) === BlockType.PLAY) {
+			if (parseInt(item.node.attributes.entity) === 38) {
+				console.warn('handling defile?', item);
+			}
 			// The case of a ShowEntity (or FullEntity) when we didn't previously know the
 			// card. In that case, a ShowEntity (or FullEntity) element is created that contains
 			// the tag with the proper zone
