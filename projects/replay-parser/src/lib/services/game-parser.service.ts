@@ -223,20 +223,20 @@ export class GameParserService {
 					console.log('game after populateActionText', game, game.turns.toJS());
 					game = this.narrator.createGameStory(game);
 					console.log('game after createGameStory', game, game.turns.toJS());
-					if (counter === 3) {
-						counter++;
-						console.log('returning', counter);
-						return [game, SMALL_PAUSE, 'Rendering game state'];
-					}
+					// if (counter === 4) {
+					// 	counter++;
+					// 	console.log('returning', counter);
+					// 	return [game, SMALL_PAUSE, 'Rendering game state'];
+					// }
 					counter++;
 					console.log('moving on', counter);
 					yield [game, SMALL_PAUSE, 'Rendering game state'];
 				} else {
-					if (counter++ === 3) {
-						counter++;
-						// console.log('returning', counter, game.entities.get(73), game.entities.get(74));
-						return [game, SMALL_PAUSE, 'Rendering game state'];
-					}
+					// if (counter++ === 3) {
+					// 	counter++;
+					// 	// console.log('returning', counter, game.entities.get(73), game.entities.get(74));
+					// 	return [game, SMALL_PAUSE, 'Rendering game state'];
+					// }
 					// counter++;
 				}
 
@@ -248,6 +248,7 @@ export class GameParserService {
 				return [game, SMALL_PAUSE, 'Rendering game state'];
 			}
 		}
+		console.log('parsing done, returning');
 		return [game, SMALL_PAUSE, 'Rendering game state'];
 	}
 

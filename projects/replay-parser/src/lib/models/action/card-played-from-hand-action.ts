@@ -35,7 +35,7 @@ export class CardPlayedFromHandAction extends Action {
 		const targetText = super.generateTargetsText();
 		const targetTextToDisplay = targetText && targetText.length > 0 ? `\n${targetText}` : '';
 		const textRaw = `\t${ownerName} ${playVerb} ${cardName}${targetTextToDisplay}`;
-		console.log('enriching card played from hand action text', targetText, textRaw);
+		// console.log('enriching card played from hand action text', targetText, textRaw);
 		return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
 			textRaw,
 		});

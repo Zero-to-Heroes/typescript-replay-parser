@@ -17,6 +17,7 @@ export class EndGameParserService {
 		let turns = game.turns;
 		const lastTurn = turns.get(turns.size - 1);
 		const enrichedLastTurn = this.enrichTurn(lastTurn);
+		console.log('previous', turns.get(turns.size - 2));
 		turns = turns.set(turns.size - 1, enrichedLastTurn);
 		return Game.createGame(game, { turns } as Game);
 	}
@@ -26,8 +27,13 @@ export class EndGameParserService {
 		for (let i = 0; i < turn.actions.length - 1; i++) {
 			newActions.push(turn.actions[i]);
 		}
+		if (!turn.actions[turn.actions.length - 1]) {
+			this.logger.warn('missing last action' + turn.actions[turn.actions.length - 1], turn);
+			return turn;
+		}
+
 		if (!(turn.actions[turn.actions.length - 1] instanceof EndGameAction)) {
-			this.logger.log('invalid last action' + turn.actions[turn.actions.length - 1].textRaw, turn);
+			this.logger.warn('invalid last action' + turn.actions[turn.actions.length - 1].textRaw, turn);
 			return turn;
 		}
 		const newEndGame = this.enrichAction(turn.actions[turn.actions.length - 1] as EndGameAction);

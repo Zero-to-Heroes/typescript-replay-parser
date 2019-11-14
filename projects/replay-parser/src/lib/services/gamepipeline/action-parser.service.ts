@@ -112,7 +112,7 @@ export class ActionParserService {
 						game.players,
 					);
 					if (actions && actions.length > 0) {
-						console.log('parser applies', parser, item);
+						// console.log('parser applies', parser, item);
 						actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
 						actionsForTurn = [...actionsForTurn, ...actions];
 					}

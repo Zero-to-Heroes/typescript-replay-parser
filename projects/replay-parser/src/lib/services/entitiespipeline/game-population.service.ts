@@ -88,9 +88,9 @@ export class GamePopulationService {
 		if (historyItem.entityDefintion.cardID) {
 			newAttributes.cardID = historyItem.entityDefintion.cardID;
 		}
-		if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
-			console.log('enriching', historyItem);
-		}
+		// if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
+		// 	// console.log('enriching', historyItem);
+		// }
 		const entity: Entity = entities
 			.get(historyItem.entityDefintion.id, Entity.create({ id: historyItem.entityDefintion.id } as Entity))
 			.update(newAttributes as EntityDefinition);
@@ -106,9 +106,9 @@ export class GamePopulationService {
 		if (historyItem.entityDefintion.cardID) {
 			newAttributes.cardID = historyItem.entityDefintion.cardID;
 		}
-		if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
-			console.log('enriching', historyItem);
-		}
+		// if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
+		// 	// console.log('enriching', historyItem);
+		// }
 		const entity: Entity = entities
 			.get(historyItem.entityDefintion.id, Entity.create({ id: historyItem.entityDefintion.id } as Entity))
 			.update(newAttributes as EntityDefinition);
@@ -132,9 +132,9 @@ export class GamePopulationService {
 	}
 
 	private addTagInformation(item: TagChangeHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {
-		if (item.tag.entity === 73 || item.tag.entity === 74) {
-			console.log('enriching', item);
-		}
+		// if (item.tag.entity === 73 || item.tag.entity === 74) {
+		// 	// console.log('enriching', item);
+		// }
 		if (item.tag.tag === GameTag.SECRET && item.tag.value === 1) {
 			const entity: Entity = entities
 				.get(item.tag.entity)
@@ -155,9 +155,9 @@ export class GamePopulationService {
 	}
 
 	private addEntityInformation(item: ShowEntityHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {
-		if (item.entityDefintion.id === 73 || item.entityDefintion.id === 74) {
-			console.log('enriching', item);
-		}
+		// if (item.entityDefintion.id === 73 || item.entityDefintion.id === 74) {
+		// 	// console.log('enriching', item);
+		// }
 		let result = entities;
 		if (item.entityDefintion.tags.get(GameTag[GameTag.SECRET]) === 1) {
 			const entity: Entity = entities.get(item.entityDefintion.id).update({

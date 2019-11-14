@@ -19,24 +19,24 @@ export class TurnParserService {
 	public createTurns(game: Game, history: readonly HistoryItem[]): Game {
 		let turns: Map<number, Turn> = game.turns;
 		let turnNumber = turns.size;
-		console.log('last hiustory item', history[history.length - 1]);
+		// console.log('last history item', history[history.length - 1]);
 		for (const item of history) {
 			if (turnNumber === 0 && this.isMulligan(item, game)) {
-				console.log('adding mulligan turn', item);
+				// console.log('adding mulligan turn', item);
 				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
 			} else if (turnNumber === 0 && this.isMulliganDone(item, game)) {
 				// The proper mulligan input could not be parsed
-				this.logger.warn('Could not detect mulligan input, creating mulligan turn');
+				// this.logger.warn('Could not detect mulligan input, creating mulligan turn');
 				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as PlayerHistoryItem, turns);
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
 			} else if (this.isStartOfTurn(item, game)) {
-				console.log('adding new turn', turnNumber);
+				// console.log('adding new turn', turnNumber);
 				// Used for instance in Bob's encounters
 				if (!turns.has(0)) {
-					console.log('creating fake mulligan turn', turns, turns.toJS());
+					// console.log('creating fake mulligan turn', turns, turns.toJS());
 					const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as TagChangeHistoryItem, turns);
 					turns = turns.set(0, mulliganTurn);
 					turnNumber++;
@@ -46,7 +46,7 @@ export class TurnParserService {
 				turnNumber++;
 			}
 		}
-		this.logger.info('created turns', turns.toJS());
+		// this.logger.info('created turns', turns.toJS());
 		return Game.createGame(game, { turns } as Game);
 	}
 
