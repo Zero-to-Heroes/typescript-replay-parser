@@ -25,7 +25,7 @@ export class StartTurnParser implements Parser {
 		entitiesBeforeAction: Map<number, Entity>,
 		history: readonly HistoryItem[],
 	): Action[] {
-		console.log('current turn?', currentTurn);
+		// console.log('current turn?', currentTurn);
 		if (item.tag.tag === GameTag.MULLIGAN_STATE && item.tag.value === Mulligan.INPUT) {
 			return [
 				StartTurnAction.create(

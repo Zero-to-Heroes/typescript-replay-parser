@@ -118,9 +118,9 @@ export class StateProcessorService {
 			console.warn('[state-processor] could not update entity', historyItem.entityDefintion.id);
 			return entities;
 		}
-		if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
-			console.log('enriching state', historyItem);
-		}
+		// if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
+		// 	console.log('enriching state', historyItem);
+		// }
 		const entity: Entity = entities.get(historyItem.entityDefintion.id).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
 	}

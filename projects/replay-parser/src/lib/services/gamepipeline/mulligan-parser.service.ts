@@ -43,16 +43,16 @@ export class MulliganParserService {
 			.filter(entity => entity.getTag(GameTag.ZONE) === Zone.HAND)
 			.filter(entity => entity.cardID !== 'GAME_005') // Don't show the coin yet
 			.sort((a, b) => a.getTag(GameTag.ZONE_POSITION) - b.getTag(GameTag.ZONE_POSITION));
-		console.log('mulligan entities', mulliganEntities, mulliganEntities.map(entity => entity.tags.toJS()));
+		// console.log('mulligan entities', mulliganEntities, mulliganEntities.map(entity => entity.tags.toJS()));
 		// Hero selection phase
 		let isHeroSelection = false;
 		if (mulliganEntities.length > 0 && mulliganEntities[0].getCardType() === CardType.HERO) {
-			console.log('hero selection');
+			// console.log('hero selection');
 			isHeroSelection = true;
 		}
 
 		let isMulligan = !isHeroSelection && mulliganEntities.length > 0;
-		console.log('isMulligan?', isMulligan, mulliganEntities);
+		// console.log('isMulligan?', isMulligan, mulliganEntities);
 		if (action.activeSpell) {
 			isMulligan = false;
 		} else if (previousAction && previousAction.entities.get(1).getTag(GameTag.STEP) === Step.BEGIN_MULLIGAN) {

@@ -183,9 +183,9 @@ export class GameParserService {
 			try {
 				const itValue = xmlParsingIterator.next();
 				const history = itValue.value;
-				console.log(
-					'got next turn from parser\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
-				);
+				// console.log(
+				// 	'got next turn from parser\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
+				// );
 
 				// Preload the images we'll need early on
 				const preloadIterator = this.imagePreloader.preloadImages(history);
@@ -197,40 +197,40 @@ export class GameParserService {
 				}
 
 				let entities = this.gamePopulationService.initNewEntities(game, history);
-				console.log('game after initNewEntities', entities.toJS());
+				// console.log('game after initNewEntities', entities.toJS());
 				if (game.turns.size === 0) {
 					game = this.gameInitializer.initializePlayers(game, entities);
 					entities = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
-					console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
+					// console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
 				}
 
 				game = this.turnParser.createTurns(game, history);
-				console.log('game after turn creation', game, game.turns.toJS());
+				// console.log('game after turn creation', game, game.turns.toJS());
 				game = this.actionParser.parseActions(game, entities, history, config);
-				console.log('game after action pasring', game, game.turns.toJS());
+				// console.log('game after action pasring', game, game.turns.toJS());
 				if (game.turns.size > 0) {
 					game = this.activePlayerParser.parseActivePlayer(game);
-					console.log('game after parseActivePlayer', game, game.turns.toJS());
+					// console.log('game after parseActivePlayer', game, game.turns.toJS());
 					game = this.activeSpellParser.parseActiveSpell(game);
-					console.log('game after parseActiveSpell', game, game.turns.toJS());
+					// console.log('game after parseActiveSpell', game, game.turns.toJS());
 					game = this.targetsParser.parseTargets(game);
-					console.log('game after parseTargets', game, game.turns.toJS());
+					// console.log('game after parseTargets', game, game.turns.toJS());
 					game = this.mulliganParser.affectMulligan(game);
-					console.log('game after affectMulligan', game, game.turns.toJS());
+					// console.log('game after affectMulligan', game, game.turns.toJS());
 					game = this.endGameParser.parseEndGame(game);
-					console.log('game after parseEndGame', game, game.turns.toJS());
+					// console.log('game after parseEndGame', game, game.turns.toJS());
 					game = this.narrator.populateActionText(game);
-					console.log('game after populateActionText', game, game.turns.toJS());
+					// console.log('game after populateActionText', game, game.turns.toJS());
 					game = this.narrator.createGameStory(game);
-					console.log('game after createGameStory', game, game.turns.toJS());
+					// console.log('game after createGameStory', game, game.turns.toJS());
 					// if (counter === 4) {
 					// 	counter++;
 					// 	console.log('returning', counter);
 					// 	return [game, SMALL_PAUSE, 'Rendering game state'];
 					// }
-					counter++;
-					console.log('moving on', counter);
-					yield [game, SMALL_PAUSE, 'Rendering game state'];
+					// counter++;
+					// console.log('moving on', counter);
+					yield [game, SMALL_PAUSE, 'Parsed turn ' + counter++];
 				} else {
 					// if (counter++ === 3) {
 					// 	counter++;

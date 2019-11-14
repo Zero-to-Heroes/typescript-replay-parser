@@ -69,7 +69,7 @@ export class XmlParserService {
 			yield this.history;
 			this.history = [];
 		}
-		console.log('parsing over');
+		// console.log('parsing over');
 		testSaxes.close();
 		return this.history;
 	}

@@ -30,13 +30,18 @@ export class CardDrawParser implements Parser {
 		entitiesBeforeAction: Map<number, Entity>,
 		history: readonly HistoryItem[],
 	): Action[] {
-		if (currentTurn === 0) {
-			return;
-		}
+		if (item)
+			if (currentTurn === 0) {
+				return;
+			}
 
 		// We typically get a TagChange when the card is hidden, so typically when our opponent draws a card
 		if (item instanceof TagChangeHistoryItem) {
+			// if (item.tag.entity === 37) {
+			// 	console.warn('handling card draw from tagchange?', item);
+			// }
 			if (!entitiesBeforeAction.get(item.tag.entity)) {
+				// console.warn('could not get drawn entity from tag change', item);
 				return [];
 			}
 			const previousZone = entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.ZONE);
@@ -66,9 +71,19 @@ export class CardDrawParser implements Parser {
 						this.allCards,
 					),
 				];
+			} else {
+				// if (item.tag.entity === 37) {
+				// 	console.warn('invalid previous zone', previousZone);
+				// }
 			}
 		} else if (item instanceof ShowEntityHistoryItem) {
+			// if (item.entityDefintion.id === 37) {
+			// 	console.warn('hanndling card draw showentity?', item);
+			// }
 			if (!entitiesBeforeAction.get(item.entityDefintion.id)) {
+				// if (item.entityDefintion.id === 37) {
+				// 	console.warn('could not get drawn entity from showentity', item);
+				// }
 				return [];
 			}
 			const previousZone = entitiesBeforeAction.get(item.entityDefintion.id).getTag(GameTag.ZONE);
@@ -92,17 +107,24 @@ export class CardDrawParser implements Parser {
 						this.allCards,
 					),
 				];
+			} else {
+				// if (item.entityDefintion.id === 37) {
+				// 	console.warn('invalid previous zone from showentity?', previousZone, item);
+				// }
 			}
 		} else if (item instanceof FullEntityHistoryItem) {
 			if (!entitiesBeforeAction.get(item.entityDefintion.id)) {
+				// console.warn('could not get drawn entity from fullen', item);
 				return [];
 			}
 			const zone = item.entityDefintion.tags.get(GameTag[GameTag.ZONE]);
 			if (zone !== Zone.HAND) {
+				// console.warn('incorrect zone from showentity', item);
 				return [];
 			}
 			const previousZone = entitiesBeforeAction.get(item.entityDefintion.id).getTag(GameTag.ZONE);
 			if (previousZone && previousZone !== Zone.DECK) {
+				// console.warn('previous zone was not deck', item);
 				return;
 			}
 			const controller =

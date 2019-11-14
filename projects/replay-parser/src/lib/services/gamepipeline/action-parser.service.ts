@@ -84,7 +84,7 @@ export class ActionParserService {
 		// const start = Date.now();
 		// Because mulligan is effectively index -1; since there is a 0 turn after that
 		let currentTurn = game.turns.size - 1;
-		console.log('current turn at start', currentTurn);
+		// console.log('current turn at start', currentTurn);
 		let actionsForTurn: readonly Action[] = [];
 		let previousStateEntities: Map<number, Entity> = entities;
 		let previousProcessedItem: HistoryItem = history[0];
@@ -96,6 +96,7 @@ export class ActionParserService {
 		// let parserDurationForTurn = 0;
 		for (const item of history) {
 			// const start = Date.now();
+			const entitiesBeforeAction = previousStateEntities;
 			previousStateEntities = this.stateProcessorService.applyHistoryItem(previousStateEntities, item);
 			previousProcessedItem = item;
 			actionParsers.forEach(parser => {
@@ -107,13 +108,13 @@ export class ActionParserService {
 					const actions: Action[] = parser.parse(
 						item,
 						currentTurn,
-						previousStateEntities,
+						entitiesBeforeAction,
 						history,
 						game.players,
 					);
 					if (actions && actions.length > 0) {
 						// console.log('parser applies', parser, item);
-						actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
+						actionsForTurn = this.fillMissingEntities(actionsForTurn, entitiesBeforeAction);
 						actionsForTurn = [...actionsForTurn, ...actions];
 					}
 				}
@@ -139,7 +140,7 @@ export class ActionParserService {
 		actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
 		try {
 			if (currentTurn < 0) {
-				console.log('handling game init entity updates');
+				// console.log('handling game init entity updates');
 				return Game.createGame(game, { entitiesBeforeMulligan: previousStateEntities } as Game);
 			}
 			if (!game.turns.get(currentTurn)) {
