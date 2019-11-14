@@ -1,7 +1,9 @@
-import { GameTag, MetaTags } from '@firestone-hs/reference-data';
+import { GameTag, MetaTags, Mulligan, Step } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
-import { parser, SAXParser, Tag } from 'sax';
+import { Tag } from 'sax';
+// import { parser, SAXParser, Tag } from 'sax';
+import { NotForced, SaxesParser, SaxesTag } from 'saxes';
 import { ActionHistoryItem } from '../models/history/action-history-item';
 import { ChangeEntityHistoryItem } from '../models/history/change-entity-history-item';
 import { ChoicesHistoryItem } from '../models/history/choices-history-item';
@@ -41,20 +43,39 @@ export class XmlParserService {
 
 	constructor(private logger: NGXLogger) {}
 
-	public parseXml(xmlAsString: string): readonly HistoryItem[] {
+	public *parseXml(xmlAsString: string): IterableIterator<readonly HistoryItem[]> {
 		this.reset();
-		const saxParser: SAXParser = parser(true, {
-			trim: true,
-		});
-		saxParser.onopentag = (tag: Tag) => this.onOpenTag(tag);
-		saxParser.onclosetag = (tagName: string) => this.onCloseTag();
-		saxParser.onerror = error => this.logger.error('Error while parsing xml', error);
-		saxParser.write(xmlAsString).end();
+
+		const testSaxes = new SaxesParser({} as NotForced);
+		testSaxes.onopentag = (tag: SaxesTag) => this.onOpenTag(tag);
+		testSaxes.onclosetag = tagName => this.onCloseTag();
+		testSaxes.onerror = error => this.logger.error('Error while parsing xml', error);
+
+		// https://stackoverflow.com/questions/12001953/javascript-and-regex-split-string-and-keep-the-separator
+		const chunks = xmlAsString.split(
+			new RegExp(`(?=<TagChange.*tag="${GameTag.STEP}" value="${Step.MAIN_READY}".*/>)`),
+		);
+		const chunksWithMulligan = [
+			...chunks[0].split(
+				new RegExp(`(?=<TagChange.*tag="${GameTag.MULLIGAN_STATE}" value="${Mulligan.INPUT}".*/>)`),
+				2,
+			),
+			...chunks.slice(1),
+		];
+		// console.log('xml chunks', chunks);
+		for (const chunk of chunksWithMulligan) {
+			// console.log('writing chunk', chunk);
+			testSaxes.write(chunk);
+			yield this.history;
+			this.history = [];
+		}
+		console.log('parsing over');
+		testSaxes.close();
 		return this.history;
 	}
 
-	onOpenTag(tag: Tag) {
-		this.stack.push(tag);
+	onOpenTag(tag: SaxesTag) {
+		this.stack.push(tag as Tag);
 		if (this[`${this.state[this.state.length - 1]}State`]) {
 			this[`${this.state[this.state.length - 1]}State`](tag);
 		}

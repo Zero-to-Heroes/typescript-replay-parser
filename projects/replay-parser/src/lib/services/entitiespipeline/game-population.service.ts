@@ -10,6 +10,7 @@ import { HistoryItem } from '../../models/history/history-item';
 import { PlayerHistoryItem } from '../../models/history/player-history-item';
 import { ShowEntityHistoryItem } from '../../models/history/show-entity-history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { Game } from '../../models/models';
 import { EntityDefinition } from '../../models/parser/entity-definition';
 import { AllCardsService } from '../all-cards.service';
 
@@ -19,16 +20,19 @@ import { AllCardsService } from '../all-cards.service';
 export class GamePopulationService {
 	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-	public populateInitialEntities(history: readonly HistoryItem[]): Map<number, Entity> {
+	public initNewEntities(game: Game, history: readonly HistoryItem[]): Game {
 		// Map of entityId - entity definition
-		const entities: Map<number, Entity> = Map();
+		const entities: Map<number, Entity> = game.entities;
 		const entitiesAfterInit: Map<number, Entity> = this.initializeEntities(history, entities);
 		const entitiesAfterMissingInfo: Map<number, Entity> = this.completeMissingInformation(
 			history,
 			entitiesAfterInit,
 		);
 		const entitiesAfterBasicData: Map<number, Entity> = this.addBasicData(entitiesAfterMissingInfo);
-		return entitiesAfterBasicData;
+		return Game.createGame(game, {
+			entities: entitiesAfterBasicData,
+		});
+		// return entitiesAfterBasicData;
 	}
 
 	private initializeEntities(history: readonly HistoryItem[], entities: Map<number, Entity>): Map<number, Entity> {
@@ -82,6 +86,9 @@ export class GamePopulationService {
 		if (historyItem.entityDefintion.cardID) {
 			newAttributes.cardID = historyItem.entityDefintion.cardID;
 		}
+		if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
+			console.log('enriching', historyItem);
+		}
 		const entity: Entity = entities
 			.get(historyItem.entityDefintion.id, Entity.create({ id: historyItem.entityDefintion.id } as Entity))
 			.update(newAttributes as EntityDefinition);
@@ -96,6 +103,9 @@ export class GamePopulationService {
 		// Same here
 		if (historyItem.entityDefintion.cardID) {
 			newAttributes.cardID = historyItem.entityDefintion.cardID;
+		}
+		if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
+			console.log('enriching', historyItem);
 		}
 		const entity: Entity = entities
 			.get(historyItem.entityDefintion.id, Entity.create({ id: historyItem.entityDefintion.id } as Entity))
@@ -120,6 +130,9 @@ export class GamePopulationService {
 	}
 
 	private addTagInformation(item: TagChangeHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {
+		if (item.tag.entity === 73 || item.tag.entity === 74) {
+			console.log('enriching', item);
+		}
 		if (item.tag.tag === GameTag.SECRET && item.tag.value === 1) {
 			const entity: Entity = entities
 				.get(item.tag.entity)
@@ -140,6 +153,9 @@ export class GamePopulationService {
 	}
 
 	private addEntityInformation(item: ShowEntityHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {
+		if (item.entityDefintion.id === 73 || item.entityDefintion.id === 74) {
+			console.log('enriching', item);
+		}
 		let result = entities;
 		if (item.entityDefintion.tags.get(GameTag[GameTag.SECRET]) === 1) {
 			const entity: Entity = entities.get(item.entityDefintion.id).update({

@@ -27,7 +27,8 @@ export class EndGameParserService {
 			newActions.push(turn.actions[i]);
 		}
 		if (!(turn.actions[turn.actions.length - 1] instanceof EndGameAction)) {
-			throw new Error('invalid last action' + turn.actions[turn.actions.length - 1].textRaw);
+			this.logger.log('invalid last action' + turn.actions[turn.actions.length - 1].textRaw, turn);
+			return turn;
 		}
 		const newEndGame = this.enrichAction(turn.actions[turn.actions.length - 1] as EndGameAction);
 		newActions.push(newEndGame);

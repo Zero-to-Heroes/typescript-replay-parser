@@ -31,6 +31,13 @@ export class MulliganParserService {
 	}
 
 	private enrichAction(action: Action, previousAction: Action): Action {
+		console.log(
+			'enriching action',
+			action,
+			action.entities.toJS(),
+			action.entities.get(73).tags.toJS(),
+			action.entities.get(74).tags.toJS(),
+		);
 		const mulliganEntities = action.entities
 			.toArray()
 			.filter(entity => entity.getTag(GameTag.ZONE) === Zone.HAND)

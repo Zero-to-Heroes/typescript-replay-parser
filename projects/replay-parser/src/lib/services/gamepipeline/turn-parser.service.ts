@@ -19,7 +19,8 @@ export class TurnParserService {
 
 	public createTurns(game: Game, history: readonly HistoryItem[]): Game {
 		let turns: Map<number, Turn> = Map<number, Turn>();
-		let turnNumber = 0;
+		let turnNumber = game.turns.size;
+		console.log('last hiustory item', history[history.length - 1]);
 		for (const item of history) {
 			if (turnNumber === 0 && this.isMulligan(item, game)) {
 				// console.log('adding mulligan turn');

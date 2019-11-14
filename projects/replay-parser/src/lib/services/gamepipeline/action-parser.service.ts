@@ -75,17 +75,19 @@ export class ActionParserService {
 		];
 	}
 
-	public *parseActions(
+	public parseActions(
 		game: Game,
 		history: readonly HistoryItem[],
 		config: ActionParserConfig = new ActionParserConfig(),
-	): IterableIterator<[Game, number]> {
+	): Game {
 		// const start = Date.now();
-		let currentTurn = 0;
+		// Because mulligan is effectively index -1; since there is a 0 turn after that
+		let currentTurn = game.turns.size - 1;
+		console.log('current turn at start', currentTurn);
 		let actionsForTurn: readonly Action[] = [];
 		let previousStateEntities: Map<number, Entity> = game.entities;
 		let previousProcessedItem: HistoryItem = history[0];
-		let turns: Map<number, Turn> = Map<number, Turn>();
+		// let turns: Map<number, Turn> = game.turns;
 		// Recreating this every time lets the parsers store state and emit the action only when necessary
 		const actionParsers: Parser[] = this.registerActionParsers(config);
 
@@ -93,17 +95,14 @@ export class ActionParserService {
 		// let parserDurationForTurn = 0;
 		for (const item of history) {
 			// const start = Date.now();
+			previousStateEntities = this.stateProcessorService.applyHistoryItem(previousStateEntities, item);
+			previousProcessedItem = item;
 			actionParsers.forEach(parser => {
 				if (parser.applies(item)) {
 					// const start = Date.now();
 					// When we perform an action, we want to show the result of the state updates until the next action is
 					// played.
-					previousStateEntities = this.stateProcessorService.applyHistoryUntilNow(
-						previousStateEntities,
-						history,
-						previousProcessedItem,
-						item,
-					);
+					// console.log('parser might apply', parser, item);
 					const actions: Action[] = parser.parse(
 						item,
 						currentTurn,
@@ -112,67 +111,18 @@ export class ActionParserService {
 						game.players,
 					);
 					if (actions && actions.length > 0) {
+						console.log('parser applies', parser, item);
 						actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
 						actionsForTurn = [...actionsForTurn, ...actions];
-						previousProcessedItem = item;
 					}
-					// const time = Date.now() - start;
-					// if (time > 2) {
-					// 	this.logger.log('took', time, 'ms to apply parser', parser);
-					// }
 				}
 			});
-			// parserDurationForTurn += Date.now() - start;
-
-			const [updatedTurn, newCurrentTurn] = this.updateCurrentTurn(item, game, actionsForTurn, currentTurn);
-			currentTurn = newCurrentTurn;
-			// This whole process takes roughly 5-20ms depending on the turn
-			if (updatedTurn) {
-				// console.log('updated turn', currentTurn, game.turns);
-				// this.logger.log('took', parserDurationForTurn, 'ms to parse all history items in turn');
-				// parserDurationForTurn = 0;
-				// const start = Date.now();
-				// The last action is a start turn action, which we want to keep for the start
-				// of the next turn instead
-				const lastAction = actionsForTurn[actionsForTurn.length - 1];
-				actionsForTurn = actionsForTurn.slice(0, actionsForTurn.length - 1);
-				previousStateEntities = this.stateProcessorService.applyHistoryUntilNow(
-					previousStateEntities,
-					history,
-					previousProcessedItem,
-					item,
-				);
-				actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
-				// Sort actions based on their index (so that actions that were created from the same
-				// parent action can have a custom order)
-				actionsForTurn = this.sortActions(
-					actionsForTurn,
-					(a: Action, b: Action) => a.index - b.index || a.timestamp - b.timestamp,
-				);
-				// Give an opportunity to each parser to combine the actions it produced by merging them
-				// For instance, if we two card draws in a row, we might want to display them as a single
-				// action that draws two cards
-				actionsForTurn = this.reduceActions(actionParsers, actionsForTurn);
-				actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
-				const turnWithNewActions = updatedTurn.update({
-					actions: actionsForTurn,
-				});
-				const turnNumber = turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn);
-				turns = turns.set(turnNumber, turnWithNewActions);
-				actionsForTurn = [lastAction];
-				previousProcessedItem = item;
-				// Return something as soon as we can show something on screen, i.e the first turn
-				// this.logger.log('took', Date.now() - turnStart, 'ms to merge everything after turn', turnNumber);
-				yield [Game.createGame(game, { turns }), turnNumber];
-				// turnStart = Date.now();
-			}
 		}
 
-		previousStateEntities = this.stateProcessorService.applyHistoryUntilNow(
+		previousStateEntities = this.stateProcessorService.applyHistoryUntilEnd(
 			previousStateEntities,
 			history,
 			previousProcessedItem,
-			history[history.length - 1],
 		);
 		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
 		// Sort actions based on their index (so that actions that were created from the same
@@ -187,21 +137,26 @@ export class ActionParserService {
 		actionsForTurn = this.reduceActions(actionParsers, actionsForTurn);
 		actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
 		try {
+			if (currentTurn < 0) {
+				console.log('handling game init entity updates');
+				return Game.createGame(game, { entities: previousStateEntities });
+			}
 			if (!game.turns.get(currentTurn)) {
 				this.logger.warn('could not get current turn', currentTurn, game.turns.toJS());
 			}
 			const turnWithNewActions = game.turns.get(currentTurn).update({ actions: actionsForTurn });
-			turns = turns.set(
+			const turns = game.turns.set(
 				turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn),
 				turnWithNewActions,
 			);
-			actionsForTurn = [];
+			// actionsForTurn = [];
+			return Game.createGame(game, { turns });
 		} catch (e) {
-			this.logger.warn(currentTurn, turns.toJS(), actionsForTurn);
+			this.logger.warn(currentTurn, game.turns.toJS(), actionsForTurn);
 			this.logger.error(e);
+			return game;
 		}
 		// this.logger.log('took', Date.now() - start, 'ms for parseActions');
-		return [Game.createGame(game, { turns }), currentTurn];
 	}
 
 	private fillMissingEntities(

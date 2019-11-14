@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
-import { Entity } from '../models/game/entity';
 import { Game } from '../models/game/game';
 import { HistoryItem } from '../models/history/history-item';
 import { ActionParserConfig } from '../models/models';
@@ -131,6 +129,7 @@ export class GameParserService {
 			clearTimeout(this.processingTimeout);
 			this.processingTimeout = undefined;
 		}
+
 		await this.allCards.initializeCardsDb();
 		this.logPerf('Retrieved cards DB, parsing replay', start);
 
@@ -173,117 +172,81 @@ export class GameParserService {
 			return [null, SMALL_PAUSE, 'Invalid XML replay'];
 		}
 
-		const history: readonly HistoryItem[] = new XmlParserService(this.logger).parseXml(replayAsString);
-		this.logPerf('XML parsing', start);
-		if (!options || options.shouldYield) {
-			yield [null, SMALL_PAUSE, 'XML parsing done'];
-		}
+		// Do the parsing turn by turn
+		// let history: readonly HistoryItem[];
+		const xmlParsingIterator: IterableIterator<readonly HistoryItem[]> = new XmlParserService(this.logger).parseXml(
+			replayAsString,
+		);
+		let game: Game = Game.createGame({} as Game);
+		let counter = 0;
+		while (true) {
+			try {
+				const itValue = xmlParsingIterator.next();
+				const history = itValue.value;
+				console.log('got next turn from parser');
 
-		try {
-			const preloadIterator = this.imagePreloader.preloadImages(history);
-			while (true) {
-				const itValue = preloadIterator.next();
-				// if (!options || options.shouldYield) {
-				// 	yield [null, SMALL_PAUSE, null];
-				// }
+				// Preload the images we'll need early on
+				const preloadIterator = this.imagePreloader.preloadImages(history);
+				while (true) {
+					const itValue = preloadIterator.next();
+					if (itValue.done) {
+						break;
+					}
+				}
+
+				game = this.gamePopulationService.initNewEntities(game, history);
+				console.log('game after initNewEntities', game, game.turns.toJS());
+				if (game.turns.size === 0) {
+					game = this.gameInitializer.initializePlayers(game);
+					game = this.gameStateParser.populateEntitiesUntilMulliganState(game, history);
+					console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
+				}
+
+				game = this.turnParser.createTurns(game, history);
+				console.log('game after turn creation', game, game.turns.toJS());
+				game = this.actionParser.parseActions(game, history, config);
+				console.log('game after action pasring', game, game.turns.toJS());
+				if (game.turns.size > 0) {
+					game = this.activePlayerParser.parseActivePlayer(game);
+					console.log('game after parseActivePlayer', game, game.turns.toJS());
+					game = this.activeSpellParser.parseActiveSpell(game);
+					console.log('game after parseActiveSpell', game, game.turns.toJS());
+					game = this.targetsParser.parseTargets(game);
+					console.log('game after parseTargets', game, game.turns.toJS());
+					game = this.mulliganParser.affectMulligan(game);
+					console.log('game after affectMulligan', game, game.turns.toJS());
+					game = this.endGameParser.parseEndGame(game);
+					console.log('game after parseEndGame', game, game.turns.toJS());
+					game = this.narrator.populateActionText(game);
+					console.log('game after populateActionText', game, game.turns.toJS());
+					game = this.narrator.createGameStory(game);
+					console.log('game after createGameStory', game, game.turns.toJS());
+					if (counter === 0) {
+						counter++;
+						console.log('returning', counter);
+						return [game, SMALL_PAUSE, 'Rendering game state'];
+					}
+					counter++;
+					console.log('moving on', counter);
+					yield [game, SMALL_PAUSE, 'Rendering game state'];
+				} else {
+					if (counter === 0) {
+						counter++;
+						console.log('returning', counter, game.entities.get(73), game.entities.get(74));
+						return [game, SMALL_PAUSE, 'Rendering game state'];
+					}
+					counter++;
+				}
+
 				if (itValue.done) {
 					break;
 				}
-			}
-			// if (!options || options.shouldYield) {
-			// 	yield [null, SMALL_PAUSE, 'Images preloading started'];
-			// }
-			this.logPerf('Started image preloading', start);
-		} catch (e) {
-			this.logger.debug('not preloading images, probably in node environment');
-		}
-
-		const initialEntities = this.gamePopulationService.populateInitialEntities(history);
-		this.logPerf('Populating initial entities', start);
-		if (!options || options.shouldYield) {
-			yield [null, SMALL_PAUSE, 'Populated initial entities'];
-		}
-
-		const entities: Map<number, Entity> = this.gameStateParser.populateEntitiesUntilMulliganState(
-			history,
-			initialEntities,
-		);
-		this.logPerf('Populating entities with mulligan state', start);
-		if (!options || options.shouldYield) {
-			yield [null, SMALL_PAUSE, 'Prepared Mulligan state'];
-		}
-
-		const gameWithPlayers: Game = this.gameInitializer.initializeGameWithPlayers(history, entities);
-		this.logPerf('initializeGameWithPlayers', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithPlayers, SMALL_PAUSE, 'Initialized Game'];
-		}
-
-		const gameWithTurns: Game = this.turnParser.createTurns(gameWithPlayers, history);
-		this.logPerf('createTurns', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithTurns, SMALL_PAUSE, 'Created turns'];
-		}
-
-		const iterator = this.actionParser.parseActions(gameWithTurns, history, config);
-		let previousStep = gameWithTurns;
-		while (true) {
-			const itValue = iterator.next();
-			const step = itValue.value[0] || previousStep;
-			previousStep = step;
-			if (!options || options.shouldYield) {
-				yield [step, SMALL_PAUSE, 'Finished processing turn ' + itValue.value[1]];
-			}
-			if (itValue.done) {
-				break;
+			} catch (e) {
+				console.error('could not proceed', e);
+				return [game, SMALL_PAUSE, 'Rendering game state'];
 			}
 		}
-		this.logPerf('parseActions', start);
-
-		if (options && options.skipUi) {
-			return [previousStep, SMALL_PAUSE, 'Rendering game state'];
-		}
-
-		const gameWithActivePlayer: Game = this.activePlayerParser.parseActivePlayer(previousStep);
-		this.logPerf('activePlayerParser', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithActivePlayer, SMALL_PAUSE, 'Parsed active players'];
-		}
-
-		const gameWithActiveSpell: Game = this.activeSpellParser.parseActiveSpell(gameWithActivePlayer);
-		this.logPerf('activeSpellParser', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithActiveSpell, SMALL_PAUSE, 'Parsed active spells'];
-		}
-
-		const gameWithTargets: Game = this.targetsParser.parseTargets(gameWithActiveSpell);
-		this.logPerf('targets', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithTargets, SMALL_PAUSE, 'Parsed targets'];
-		}
-
-		const gameWithMulligan: Game = this.mulliganParser.affectMulligan(gameWithTargets);
-		this.logPerf('affectMulligan', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithMulligan, SMALL_PAUSE, null];
-		}
-
-		const gameWithEndGame: Game = this.endGameParser.parseEndGame(gameWithMulligan);
-		this.logPerf('parseEndGame', start);
-		if (!options || options.shouldYield) {
-			yield [gameWithEndGame, SMALL_PAUSE, 'Parsed end game'];
-		}
-
-		const gameWithNarrator: Game = this.narrator.populateActionText(gameWithEndGame);
-		this.logPerf('populateActionText', start);
-		// console.log(gameWithNarrator.fullStoryRaw);
-		if (!options || options.shouldYield) {
-			yield [gameWithNarrator, SMALL_PAUSE, 'Populated actions text'];
-		}
-
-		const gameWithFullStory: Game = this.narrator.createGameStory(gameWithNarrator);
-		this.logPerf('game story', start);
-		return [gameWithFullStory, SMALL_PAUSE, 'Rendering game state'];
+		return [game, SMALL_PAUSE, 'Rendering game state'];
 	}
 
 	private logPerf<T>(what: string, start: number, result?: T): T {

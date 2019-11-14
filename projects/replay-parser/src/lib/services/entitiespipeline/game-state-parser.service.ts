@@ -6,15 +6,14 @@ import { FullEntityHistoryItem } from '../../models/history/full-entity-history-
 import { HistoryItem } from '../../models/history/history-item';
 import { ShowEntityHistoryItem } from '../../models/history/show-entity-history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { Game } from '../../models/models';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class GameStateParserService {
-	public populateEntitiesUntilMulliganState(
-		history: readonly HistoryItem[],
-		entities: Map<number, Entity>,
-	): Map<number, Entity> {
+	public populateEntitiesUntilMulliganState(game: Game, history: readonly HistoryItem[]): Game {
+		let entities = game.entities;
 		for (const item of history) {
 			if (item instanceof TagChangeHistoryItem) {
 				const tagChange: TagChangeHistoryItem = item as TagChangeHistoryItem;
@@ -36,7 +35,9 @@ export class GameStateParserService {
 				entities = this.updateWithFullEntity(item, entities);
 			}
 		}
-		return entities;
+		return Game.createGame(game, {
+			entities: entities,
+		});
 	}
 
 	private updateWithTagChange(historyItem: TagChangeHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {

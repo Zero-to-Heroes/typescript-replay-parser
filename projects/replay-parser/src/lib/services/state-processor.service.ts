@@ -83,23 +83,22 @@ export class StateProcessorService {
 		GameTag.NUM_CARDS_PLAYED_THIS_TURN,
 	];
 
-	public applyHistoryUntilNow(
+	public applyHistoryUntilEnd(
 		previousStateEntities: Map<number, Entity>,
 		history: readonly HistoryItem[],
 		previousProcessedItem: HistoryItem,
-		item: HistoryItem,
 	): Map<number, Entity> {
 		const startIndex = history.indexOf(previousProcessedItem);
-		const stopIndex = history.indexOf(item);
-		const futureHistory = history.slice(startIndex, stopIndex);
+		const futureHistory = history.slice(startIndex);
 		let newStateEntities = previousStateEntities;
+		console.log('applying history until now', startIndex, futureHistory, history);
 		for (const historyItem of futureHistory) {
-			newStateEntities = this.applyHistory(newStateEntities, historyItem);
+			newStateEntities = this.applyHistoryItem(newStateEntities, historyItem);
 		}
 		return newStateEntities;
 	}
 
-	private applyHistory(entities: Map<number, Entity>, item: HistoryItem): Map<number, Entity> {
+	public applyHistoryItem(entities: Map<number, Entity>, item: HistoryItem): Map<number, Entity> {
 		if (item instanceof TagChangeHistoryItem) {
 			return this.updateWithTagChange(item, entities);
 		} else if (item instanceof ShowEntityHistoryItem || item instanceof FullEntityHistoryItem) {
@@ -118,6 +117,9 @@ export class StateProcessorService {
 		if (!entities.get(historyItem.entityDefintion.id)) {
 			console.warn('[state-processor] could not update entity', historyItem.entityDefintion.id);
 			return entities;
+		}
+		if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
+			console.log('enriching state', historyItem);
 		}
 		const entity: Entity = entities.get(historyItem.entityDefintion.id).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
