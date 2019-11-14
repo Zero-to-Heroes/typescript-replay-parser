@@ -5,7 +5,6 @@ import { NGXLogger } from 'ngx-logger';
 import { ActionTurn } from '../../models/game/action-turn';
 import { Game } from '../../models/game/game';
 import { MulliganTurn } from '../../models/game/mulligan-turn';
-import { PlayerEntity } from '../../models/game/player-entity';
 import { Turn } from '../../models/game/turn';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
@@ -48,7 +47,7 @@ export class TurnParserService {
 			}
 		}
 		this.logger.info('created turns', turns.toJS());
-		return Game.createGame(game, { turns });
+		return Game.createGame(game, { turns } as Game);
 	}
 
 	private parseTurn(currentTurnNumber: number, item: TagChangeHistoryItem, turns: Map<number, Turn>): ActionTurn {
@@ -85,8 +84,7 @@ export class TurnParserService {
 		return (
 			item instanceof TagChangeHistoryItem &&
 			item.tag.tag === GameTag.MULLIGAN_STATE &&
-			item.tag.value === Mulligan.INPUT &&
-			this.isPlayerEntity(item.tag.entity, game)
+			item.tag.value === Mulligan.INPUT
 		);
 	}
 
@@ -96,8 +94,7 @@ export class TurnParserService {
 				item.entityDefintion.tags.get(GameTag[GameTag.MULLIGAN_STATE]) === Mulligan.DONE) ||
 			(item instanceof TagChangeHistoryItem &&
 				item.tag.tag === GameTag.MULLIGAN_STATE &&
-				item.tag.value === Mulligan.DONE &&
-				this.isPlayerEntity(item.tag.entity, game))
+				item.tag.value === Mulligan.DONE)
 		);
 	}
 
@@ -110,9 +107,9 @@ export class TurnParserService {
 		);
 	}
 
-	private isPlayerEntity(entityId: number, game: Game) {
-		return game.entities.get(entityId) instanceof PlayerEntity;
-	}
+	// private isPlayerEntity(entityId: number, game: Game) {
+	// 	return game.entities.get(entityId) instanceof PlayerEntity;
+	// }
 
 	private isGameEntity(entityId: number, game: Game) {
 		return entityId === 1;

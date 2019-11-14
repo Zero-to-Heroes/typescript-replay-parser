@@ -20,18 +20,20 @@ import { AllCardsService } from '../all-cards.service';
 export class GamePopulationService {
 	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-	public initNewEntities(game: Game, history: readonly HistoryItem[]): Game {
+	public initNewEntities(game: Game, history: readonly HistoryItem[]): Map<number, Entity> {
 		// Map of entityId - entity definition
-		const entities: Map<number, Entity> = game.entities;
+
+		const entities: Map<number, Entity> = game.getLatestParsedState();
 		const entitiesAfterInit: Map<number, Entity> = this.initializeEntities(history, entities);
 		const entitiesAfterMissingInfo: Map<number, Entity> = this.completeMissingInformation(
 			history,
 			entitiesAfterInit,
 		);
 		const entitiesAfterBasicData: Map<number, Entity> = this.addBasicData(entitiesAfterMissingInfo);
-		return Game.createGame(game, {
-			entities: entitiesAfterBasicData,
-		});
+		return entitiesAfterBasicData;
+		// return Game.createGame(game, {
+		// 	entities: entitiesAfterBasicData,
+		// } as Game);
 		// return entitiesAfterBasicData;
 	}
 

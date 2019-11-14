@@ -4,7 +4,6 @@ import { PlayerEntity } from './player-entity';
 import { Turn } from './turn';
 
 export class Game {
-	readonly entities: Map<number, Entity> = Map();
 	readonly players: readonly PlayerEntity[] = [];
 	readonly turns: Map<number, Turn> = Map<number, Turn>();
 	readonly fullStoryRaw: string;
@@ -13,9 +12,19 @@ export class Game {
 	readonly formatType: number;
 	readonly scenarioID: number;
 
+	readonly entitiesBeforeMulligan: Map<number, Entity> = Map();
+
 	private constructor() {}
 
 	public static createGame(baseGame: Game, newAttributes?: any): Game {
 		return Object.assign(new Game(), { ...baseGame }, { ...newAttributes });
+	}
+
+	public getLatestParsedState(): Map<number, Entity> {
+		if (this.turns.size === 0 || this.turns.last().actions.length === 0) {
+			return this.entitiesBeforeMulligan;
+		}
+		const lastTurn = this.turns.last();
+		return lastTurn.actions[lastTurn.actions.length - 1].entities;
 	}
 }

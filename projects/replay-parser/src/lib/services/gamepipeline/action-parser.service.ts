@@ -77,6 +77,7 @@ export class ActionParserService {
 
 	public parseActions(
 		game: Game,
+		entities: Map<number, Entity>,
 		history: readonly HistoryItem[],
 		config: ActionParserConfig = new ActionParserConfig(),
 	): Game {
@@ -85,7 +86,7 @@ export class ActionParserService {
 		let currentTurn = game.turns.size - 1;
 		console.log('current turn at start', currentTurn);
 		let actionsForTurn: readonly Action[] = [];
-		let previousStateEntities: Map<number, Entity> = game.entities;
+		let previousStateEntities: Map<number, Entity> = entities;
 		let previousProcessedItem: HistoryItem = history[0];
 		// let turns: Map<number, Turn> = game.turns;
 		// Recreating this every time lets the parsers store state and emit the action only when necessary
@@ -139,7 +140,7 @@ export class ActionParserService {
 		try {
 			if (currentTurn < 0) {
 				console.log('handling game init entity updates');
-				return Game.createGame(game, { entities: previousStateEntities });
+				return Game.createGame(game, { entitiesBeforeMulligan: previousStateEntities } as Game);
 			}
 			if (!game.turns.get(currentTurn)) {
 				this.logger.warn('could not get current turn', currentTurn, game.turns.toJS());
@@ -150,7 +151,7 @@ export class ActionParserService {
 				turnWithNewActions,
 			);
 			// actionsForTurn = [];
-			return Game.createGame(game, { turns });
+			return Game.createGame(game, { turns } as Game);
 		} catch (e) {
 			this.logger.warn(currentTurn, game.turns.toJS(), actionsForTurn);
 			this.logger.error(e);

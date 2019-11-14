@@ -26,7 +26,7 @@ export class NarratorService {
 			const enrichedTurn = turn.update({ actions: enrichedActions });
 			turnsWithActions = turnsWithActions.set(i, enrichedTurn);
 		}
-		return Game.createGame(game, { turns: turnsWithActions });
+		return Game.createGame(game, { turns: turnsWithActions } as Game);
 	}
 
 	public createGameStory(game: Game): Game {
@@ -37,6 +37,6 @@ export class NarratorService {
 			.reduce((a, b) => a.concat(b), []);
 		const fullStoryRaw: string = allActions.map(action => action.textRaw).join('\n');
 		this.logger.debug('[narrator] full story', fullStoryRaw);
-		return Game.createGame(game, { fullStoryRaw: '\n' + fullStoryRaw });
+		return Game.createGame(game, { fullStoryRaw: '\n' + fullStoryRaw } as Game);
 	}
 }

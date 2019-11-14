@@ -12,8 +12,11 @@ import { Game } from '../../models/models';
 	providedIn: 'root',
 })
 export class GameStateParserService {
-	public populateEntitiesUntilMulliganState(game: Game, history: readonly HistoryItem[]): Game {
-		let entities = game.entities;
+	public updateEntitiesUntilMulliganState(
+		game: Game,
+		entities: Map<number, Entity>,
+		history: readonly HistoryItem[],
+	): Map<number, Entity> {
 		for (const item of history) {
 			if (item instanceof TagChangeHistoryItem) {
 				const tagChange: TagChangeHistoryItem = item as TagChangeHistoryItem;
@@ -35,9 +38,7 @@ export class GameStateParserService {
 				entities = this.updateWithFullEntity(item, entities);
 			}
 		}
-		return Game.createGame(game, {
-			entities: entities,
-		});
+		return entities;
 	}
 
 	private updateWithTagChange(historyItem: TagChangeHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {

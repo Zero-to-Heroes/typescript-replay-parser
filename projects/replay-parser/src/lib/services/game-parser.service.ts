@@ -196,17 +196,17 @@ export class GameParserService {
 					}
 				}
 
-				game = this.gamePopulationService.initNewEntities(game, history);
-				console.log('game after initNewEntities', game, game.turns.toJS());
+				let entities = this.gamePopulationService.initNewEntities(game, history);
+				console.log('game after initNewEntities', entities.toJS());
 				if (game.turns.size === 0) {
-					game = this.gameInitializer.initializePlayers(game);
-					game = this.gameStateParser.populateEntitiesUntilMulliganState(game, history);
+					game = this.gameInitializer.initializePlayers(game, entities);
+					entities = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
 					console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
 				}
 
 				game = this.turnParser.createTurns(game, history);
 				console.log('game after turn creation', game, game.turns.toJS());
-				game = this.actionParser.parseActions(game, history, config);
+				game = this.actionParser.parseActions(game, entities, history, config);
 				console.log('game after action pasring', game, game.turns.toJS());
 				if (game.turns.size > 0) {
 					game = this.activePlayerParser.parseActivePlayer(game);
@@ -223,7 +223,7 @@ export class GameParserService {
 					console.log('game after populateActionText', game, game.turns.toJS());
 					game = this.narrator.createGameStory(game);
 					console.log('game after createGameStory', game, game.turns.toJS());
-					if (counter === 2) {
+					if (counter === 3) {
 						counter++;
 						console.log('returning', counter);
 						return [game, SMALL_PAUSE, 'Rendering game state'];
@@ -232,9 +232,9 @@ export class GameParserService {
 					console.log('moving on', counter);
 					yield [game, SMALL_PAUSE, 'Rendering game state'];
 				} else {
-					if (counter++ === 2) {
+					if (counter++ === 3) {
 						counter++;
-						console.log('returning', counter, game.entities.get(73), game.entities.get(74));
+						// console.log('returning', counter, game.entities.get(73), game.entities.get(74));
 						return [game, SMALL_PAUSE, 'Rendering game state'];
 					}
 					// counter++;

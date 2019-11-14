@@ -17,7 +17,7 @@ export class MulliganParserService {
 		const mulliganTurn = game.turns.get(0);
 		const enrichedMulligan = this.enrichTurn(mulliganTurn);
 		turns = turns.set(0, enrichedMulligan);
-		return Game.createGame(game, { turns });
+		return Game.createGame(game, { turns } as Game);
 	}
 
 	private enrichTurn(turn: Turn): Turn {

@@ -18,7 +18,7 @@ export class EndGameParserService {
 		const lastTurn = turns.get(turns.size - 1);
 		const enrichedLastTurn = this.enrichTurn(lastTurn);
 		turns = turns.set(turns.size - 1, enrichedLastTurn);
-		return Game.createGame(game, { turns });
+		return Game.createGame(game, { turns } as Game);
 	}
 
 	private enrichTurn(turn: Turn): Turn {

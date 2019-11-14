@@ -32,7 +32,7 @@ export class ActiveSpellParserService {
 			const enrichedTurn = this.enrichTurn(turn);
 			turns = turns.set(i, enrichedTurn);
 		}
-		return Game.createGame(game, { turns });
+		return Game.createGame(game, { turns } as Game);
 	}
 
 	private enrichTurn(turn: Turn): Turn {

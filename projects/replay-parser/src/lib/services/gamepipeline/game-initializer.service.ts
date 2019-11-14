@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CardType } from '@firestone-hs/reference-data';
+import { Map } from 'immutable';
 import { Entity } from '../../models/game/entity';
 import { Game } from '../../models/game/game';
 import { GameHepler } from '../../models/game/game-helper';
@@ -9,14 +10,14 @@ import { PlayerEntity } from '../../models/game/player-entity';
 	providedIn: 'root',
 })
 export class GameInitializerService {
-	public initializePlayers(game: Game): Game {
-		const players: PlayerEntity[] = game.entities
+	public initializePlayers(game: Game, entities: Map<number, Entity>): Game {
+		const players: PlayerEntity[] = entities
 			.filter((entity: Entity) => entity.getCardType() === CardType.PLAYER)
 			.map(entity => entity as PlayerEntity)
 			.toArray();
 		let player1 = players[0];
 		let player2 = players[1];
-		const firstPlayerHand: readonly Entity[] = GameHepler.getPlayerHand(game.entities, players[0].playerId);
+		const firstPlayerHand: readonly Entity[] = GameHepler.getPlayerHand(entities, players[0].playerId);
 		if (
 			// All game modes known today have the main player have at least 3 cards in hand
 			firstPlayerHand.length < 3 ||
@@ -32,7 +33,7 @@ export class GameInitializerService {
 			[player1, player2] = [player2, player1];
 		}
 		return Game.createGame(game, {
-			players: [player1, player2],
-		});
+			players: [player1, player2] as readonly PlayerEntity[],
+		} as Game);
 	}
 }
