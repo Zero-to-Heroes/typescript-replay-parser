@@ -7,6 +7,7 @@ import { Entity } from '../../models/game/entity';
 import { Game } from '../../models/game/game';
 import { Turn } from '../../models/game/turn';
 import { HistoryItem } from '../../models/history/history-item';
+import { ActionParserConfig } from '../../models/models';
 import { AttachingEnchantmentParser } from '../action/attaching-enchantment-parser';
 import { AttackParser } from '../action/attack-parser';
 import { CardBurnParser } from '../action/card-burn-parser';
@@ -45,7 +46,7 @@ export class ActionParserService {
 		private stateProcessorService: StateProcessorService,
 	) {}
 
-	private registerActionParsers(): Parser[] {
+	private registerActionParsers(config: ActionParserConfig): Parser[] {
 		return [
 			new StartTurnParser(this.allCards),
 			new MulliganCardParser(this.allCards, this.logger),
@@ -64,7 +65,7 @@ export class ActionParserService {
 			new DiscoveryPickParser(this.allCards, this.logger),
 			new SummonsParser(this.allCards),
 			new SecretRevealedParser(this.allCards),
-			new AttachingEnchantmentParser(this.allCards),
+			new AttachingEnchantmentParser(this.allCards, config),
 			new DamageParser(this.allCards, this.logger),
 			new CardDiscardParser(this.allCards, this.logger),
 			new OptionsParser(this.allCards, this.logger),
@@ -74,7 +75,11 @@ export class ActionParserService {
 		];
 	}
 
-	public *parseActions(game: Game, history: readonly HistoryItem[]): IterableIterator<[Game, number]> {
+	public *parseActions(
+		game: Game,
+		history: readonly HistoryItem[],
+		config: ActionParserConfig = new ActionParserConfig(),
+	): IterableIterator<[Game, number]> {
 		// const start = Date.now();
 		let currentTurn = 0;
 		let actionsForTurn: readonly Action[] = [];
@@ -82,7 +87,7 @@ export class ActionParserService {
 		let previousProcessedItem: HistoryItem = history[0];
 		let turns: Map<number, Turn> = Map<number, Turn>();
 		// Recreating this every time lets the parsers store state and emit the action only when necessary
-		const actionParsers: Parser[] = this.registerActionParsers();
+		const actionParsers: Parser[] = this.registerActionParsers(config);
 
 		// let turnStart = Date.now();
 		// let parserDurationForTurn = 0;

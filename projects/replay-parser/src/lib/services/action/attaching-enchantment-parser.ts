@@ -9,12 +9,13 @@ import { PowerTargetAction } from '../../models/action/power-target-action';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
+import { ActionParserConfig } from '../../models/models';
 import { AllCardsService } from '../all-cards.service';
 import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class AttachingEnchantmentParser implements Parser {
-	constructor(private allCards: AllCardsService) {}
+	constructor(private readonly allCards: AllCardsService, private readonly config: ActionParserConfig) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.ZONE && item.tag.value === Zone.PLAY;
@@ -26,6 +27,10 @@ export class AttachingEnchantmentParser implements Parser {
 		entitiesBeforeAction: Map<number, Entity>,
 		history: readonly HistoryItem[],
 	): Action[] {
+		if (!this.config.showEnchantments) {
+			return [];
+		}
+
 		const entityId = item.tag.entity;
 		const entity = entitiesBeforeAction.get(entityId);
 		if (!entity) {

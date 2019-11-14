@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { Entity } from '../models/game/entity';
 import { Game } from '../models/game/game';
 import { HistoryItem } from '../models/history/history-item';
+import { ActionParserConfig } from '../models/models';
 import { AllCardsService } from './all-cards.service';
 import { GamePopulationService } from './entitiespipeline/game-population.service';
 import { GameStateParserService } from './entitiespipeline/game-state-parser.service';
@@ -121,7 +122,8 @@ export class GameParserService {
 
 	public async parse(
 		replayAsString: string,
-		options?: GameParsingOptions,
+		options?: TechnicalParsingOptions,
+		config: ActionParserConfig = new ActionParserConfig(),
 	): Promise<Observable<[Game, string, boolean]>> {
 		const start = Date.now();
 		this.cancelled = false;
@@ -136,6 +138,7 @@ export class GameParserService {
 			replayAsString,
 			start,
 			options,
+			config,
 		);
 		return Observable.create(observer => {
 			this.buildObservableFunction(observer, iterator);
@@ -163,7 +166,8 @@ export class GameParserService {
 	private *createGamePipeline(
 		replayAsString: string,
 		start: number,
-		options?: GameParsingOptions,
+		options: TechnicalParsingOptions,
+		config: ActionParserConfig,
 	): IterableIterator<[Game, number, string]> {
 		if (!replayAsString || replayAsString.length == 0) {
 			return [null, SMALL_PAUSE, 'Invalid XML replay'];
@@ -221,7 +225,7 @@ export class GameParserService {
 			yield [gameWithTurns, SMALL_PAUSE, 'Created turns'];
 		}
 
-		const iterator = this.actionParser.parseActions(gameWithTurns, history);
+		const iterator = this.actionParser.parseActions(gameWithTurns, history, config);
 		let previousStep = gameWithTurns;
 		while (true) {
 			const itValue = iterator.next();
@@ -293,7 +297,7 @@ export interface GameProcessingStep {
 	shouldBubble: boolean;
 }
 
-export interface GameParsingOptions {
+export interface TechnicalParsingOptions {
 	readonly shouldYield: number;
 	readonly skipUi: boolean;
 }

@@ -2,6 +2,7 @@
  * Public API Surface of replay-parser
  */
 
+export * from './action-parser-config';
 export * from './action/attaching-enchantment-action';
 export * from './action/attack-action';
 export * from './action/card-burn-action';
