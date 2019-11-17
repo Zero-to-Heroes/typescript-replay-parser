@@ -79,7 +79,7 @@ export class XmlParserService {
 		}
 		// console.log('parsing over');
 		testSaxes.close();
-		return this.history;
+		return null;
 	}
 
 	onOpenTag(tag: SaxesTag) {

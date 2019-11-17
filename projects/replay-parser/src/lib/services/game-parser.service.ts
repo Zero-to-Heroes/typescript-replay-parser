@@ -183,6 +183,12 @@ export class GameParserService {
 			try {
 				const itValue = xmlParsingIterator.next();
 				const history = itValue.value;
+
+				if (itValue.done) {
+					console.log('history parsing over', itValue);
+					break;
+				}
+
 				// console.log(
 				// 	'got next turn from parser\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
 				// );
@@ -240,10 +246,6 @@ export class GameParserService {
 					// 	return [game, SMALL_PAUSE, 'Rendering game state'];
 					// }
 					// counter++;
-				}
-
-				if (itValue.done) {
-					break;
 				}
 			} catch (e) {
 				console.error('could not proceed', e);

@@ -29,6 +29,7 @@ export class EndGameParser implements Parser {
 		history: readonly HistoryItem[],
 		players: readonly PlayerEntity[],
 	): Action[] {
+		console.log('end game action', item);
 		return [
 			EndGameAction.create(
 				{
@@ -61,6 +62,7 @@ export class EndGameParser implements Parser {
 			...(previousAction.winStatus || []),
 			...(currentAction.winStatus || []),
 		];
+		console.log('merging actions', winStatus, previousAction);
 		return previousAction.updateAction<EndGameAction>({
 			winStatus,
 		} as EndGameAction);
