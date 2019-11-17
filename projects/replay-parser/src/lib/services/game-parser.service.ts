@@ -180,94 +180,89 @@ export class GameParserService {
 		let game: Game = Game.createGame({} as Game);
 		let counter = 0;
 		while (true) {
-			try {
-				const itValue = xmlParsingIterator.next();
-				const history = itValue.value;
+			const itValue = xmlParsingIterator.next();
+			const history = itValue.value;
 
+			if (itValue.done) {
+				console.log('history parsing over', itValue);
+				break;
+			}
+
+			// const debug = game.turns.size === 33;
+			// console.log(
+			// 	'handling turn',
+			// 	game.turns.size,
+			// 	counter,
+			// 	'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
+			// );
+
+			// Preload the images we'll need early on
+			const preloadIterator = this.imagePreloader.preloadImages(history);
+			while (true) {
+				const itValue = preloadIterator.next();
 				if (itValue.done) {
-					console.log('history parsing over', itValue);
 					break;
 				}
+			}
 
-				// const debug = game.turns.size === 33;
-				// console.log(
-				// 	'handling turn',
-				// 	game.turns.size,
-				// 	counter,
-				// 	'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
-				// );
+			let entities = this.gamePopulationService.initNewEntities(game, history);
+			// if (debug || game.turns.size === 32) {
+			// 	console.log('=======game after initNewEntities', entities.toJS(), entities.get(507));
+			// }
+			if (game.turns.size === 0) {
+				game = this.gameInitializer.initializePlayers(game, entities);
+				entities = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
+				// console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
+			}
 
-				// Preload the images we'll need early on
-				const preloadIterator = this.imagePreloader.preloadImages(history);
-				while (true) {
-					const itValue = preloadIterator.next();
-					if (itValue.done) {
-						break;
-					}
+			game = this.turnParser.createTurns(game, history);
+			// console.log('game after turn creation', game, game.turns.toJS());
+			game = this.actionParser.parseActions(game, entities, history, config);
+			// console.log(
+			// 	'game after action pasring',
+			// 	game.getLatestParsedState().toJS(),
+			// 	game.getLatestParsedState().get(507),
+			// );
+			if (game.turns.size > 0) {
+				game = this.activePlayerParser.parseActivePlayerForLastTurn(game);
+				// console.log('game after parseActivePlayer', game, game.turns.toJS());
+				game = this.activeSpellParser.parseActiveSpellForLastTurn(game);
+				// console.log('game after parseActiveSpell', game, game.turns.toJS());
+				game = this.targetsParser.parseTargetsForLastTurn(game);
+				// console.log('game after parseTargets', game, game.turns.toJS());
+				if (game.turns.size === 1) {
+					game = this.mulliganParser.affectMulligan(game);
 				}
-
-				let entities = this.gamePopulationService.initNewEntities(game, history);
-				// if (debug || game.turns.size === 32) {
-				// 	console.log('=======game after initNewEntities', entities.toJS(), entities.get(507));
+				// console.log('game after affectMulligan', game, game.turns.toJS());
+				game = this.endGameParser.parseEndGame(game);
+				// console.log('game after parseEndGame', game, game.turns.toJS());
+				game = this.narrator.populateActionTextForLastTurn(game);
+				// console.log('game after populateActionText', game, game.turns.toJS());
+				game = this.narrator.createGameStoryForLastTurn(game);
+				// console.log('game after createGameStory', game, game.turns.toJS());
+				// if (counter === 4) {
+				// 	counter++;
+				// 	console.log('returning', counter);
+				// 	return [game, SMALL_PAUSE, 'Rendering game state'];
 				// }
-				if (game.turns.size === 0) {
-					game = this.gameInitializer.initializePlayers(game, entities);
-					entities = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
-					// console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
-				}
+				// counter++;
+				// console.log('moving on', counter);
+				// if (game.turns.size === 33) {
+				// 	console.log(
+				// 		'entities at end of turn',
+				// 		game.getLatestParsedState().toJS(),
+				// 		game.getLatestParsedState().get(507),
+				// 	);
+				// }
 
-				game = this.turnParser.createTurns(game, history);
-				// console.log('game after turn creation', game, game.turns.toJS());
-				game = this.actionParser.parseActions(game, entities, history, config);
-				// console.log(
-				// 	'game after action pasring',
-				// 	game.getLatestParsedState().toJS(),
-				// 	game.getLatestParsedState().get(507),
-				// );
-				if (game.turns.size > 0) {
-					game = this.activePlayerParser.parseActivePlayerForLastTurn(game);
-					// console.log('game after parseActivePlayer', game, game.turns.toJS());
-					game = this.activeSpellParser.parseActiveSpellForLastTurn(game);
-					// console.log('game after parseActiveSpell', game, game.turns.toJS());
-					game = this.targetsParser.parseTargetsForLastTurn(game);
-					// console.log('game after parseTargets', game, game.turns.toJS());
-					if (game.turns.size === 1) {
-						game = this.mulliganParser.affectMulligan(game);
-					}
-					// console.log('game after affectMulligan', game, game.turns.toJS());
-					game = this.endGameParser.parseEndGame(game);
-					// console.log('game after parseEndGame', game, game.turns.toJS());
-					game = this.narrator.populateActionTextForLastTurn(game);
-					// console.log('game after populateActionText', game, game.turns.toJS());
-					game = this.narrator.createGameStoryForLastTurn(game);
-					// console.log('game after createGameStory', game, game.turns.toJS());
-					// if (counter === 4) {
-					// 	counter++;
-					// 	console.log('returning', counter);
-					// 	return [game, SMALL_PAUSE, 'Rendering game state'];
-					// }
-					// counter++;
-					// console.log('moving on', counter);
-					// if (game.turns.size === 33) {
-					// 	console.log(
-					// 		'entities at end of turn',
-					// 		game.getLatestParsedState().toJS(),
-					// 		game.getLatestParsedState().get(507),
-					// 	);
-					// }
-
-					yield [game, SMALL_PAUSE, 'Parsed turn ' + counter++];
-				} else {
-					// if (counter++ === 3) {
-					// 	counter++;
-					// 	// console.log('returning', counter, game.entities.get(73), game.entities.get(74));
-					// 	return [game, SMALL_PAUSE, 'Rendering game state'];
-					// }
-					// counter++;
-				}
-			} catch (e) {
-				console.error('could not proceed', e);
-				return [game, SMALL_PAUSE, 'Rendering game state'];
+				yield [game, SMALL_PAUSE, 'Parsed turn ' + counter++];
+			} else {
+				// if (counter++ === 3) {
+				// 	counter++;
+				// 	// console.log('returning', counter, game.entities.get(73), game.entities.get(74));
+				// 	return [game, SMALL_PAUSE, 'Rendering game state'];
+				// }
+				// counter++;
 			}
 		}
 		console.log('parsing done, returning');
