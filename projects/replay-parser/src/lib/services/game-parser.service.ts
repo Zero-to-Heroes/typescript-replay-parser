@@ -209,19 +209,21 @@ export class GameParserService {
 				game = this.actionParser.parseActions(game, entities, history, config);
 				// console.log('game after action pasring', game, game.turns.toJS());
 				if (game.turns.size > 0) {
-					game = this.activePlayerParser.parseActivePlayer(game);
+					game = this.activePlayerParser.parseActivePlayerForLastTurn(game);
 					// console.log('game after parseActivePlayer', game, game.turns.toJS());
-					game = this.activeSpellParser.parseActiveSpell(game);
+					game = this.activeSpellParser.parseActiveSpellForLastTurn(game);
 					// console.log('game after parseActiveSpell', game, game.turns.toJS());
-					game = this.targetsParser.parseTargets(game);
+					game = this.targetsParser.parseTargetsForLastTurn(game);
 					// console.log('game after parseTargets', game, game.turns.toJS());
-					game = this.mulliganParser.affectMulligan(game);
+					if (game.turns.size === 1) {
+						game = this.mulliganParser.affectMulligan(game);
+					}
 					// console.log('game after affectMulligan', game, game.turns.toJS());
 					game = this.endGameParser.parseEndGame(game);
 					// console.log('game after parseEndGame', game, game.turns.toJS());
-					game = this.narrator.populateActionText(game);
+					game = this.narrator.populateActionTextForLastTurn(game);
 					// console.log('game after populateActionText', game, game.turns.toJS());
-					game = this.narrator.createGameStory(game);
+					game = this.narrator.createGameStoryForLastTurn(game);
 					// console.log('game after createGameStory', game, game.turns.toJS());
 					// if (counter === 4) {
 					// 	counter++;

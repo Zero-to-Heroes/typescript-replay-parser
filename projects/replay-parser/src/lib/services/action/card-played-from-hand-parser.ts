@@ -23,9 +23,6 @@ export class CardPlayedFromHandParser implements Parser {
 		history: readonly HistoryItem[],
 	): Action[] {
 		if (item instanceof ActionHistoryItem && parseInt(item.node.attributes.type) === BlockType.PLAY) {
-			if (parseInt(item.node.attributes.entity) === 38) {
-				console.warn('handling defile?', item);
-			}
 			// The case of a ShowEntity (or FullEntity) when we didn't previously know the
 			// card. In that case, a ShowEntity (or FullEntity) element is created that contains
 			// the tag with the proper zone
@@ -51,16 +48,31 @@ export class CardPlayedFromHandParser implements Parser {
 					}
 				}
 			}
+			if (parseInt(item.node.attributes.entity) === 51) {
+				console.warn('handling other defile?', item, result);
+			}
 			return result;
 		} else if (item instanceof TagChangeHistoryItem) {
 			// The case of a ShowEntity command when the card was already known - basically
 			// when we play our own card. In that case, the tags are already known, and
 			// tag changes are the only things we care about
+			if (item.tag.entity === 51) {
+				console.warn(
+					'handling other defile from tag change?',
+					item,
+					entitiesBeforeAction.get(item.tag.entity),
+					entitiesBeforeAction.get(item.tag.entity) && entitiesBeforeAction.get(item.tag.entity).tags.toJS(),
+				);
+			}
 			if (item.tag.tag === GameTag.ZONE && item.tag.value === Zone.PLAY) {
 				if (
 					entitiesBeforeAction.get(item.tag.entity) &&
-					entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CARDTYPE) !== CardType.ENCHANTMENT
+					entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CARDTYPE) !== CardType.ENCHANTMENT &&
+					entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.ZONE) === Zone.HAND
 				) {
+					if (item.tag.entity === 51) {
+						console.warn('yes, handling other defile from tag change?', item);
+					}
 					return [
 						CardPlayedFromHandAction.create(
 							{

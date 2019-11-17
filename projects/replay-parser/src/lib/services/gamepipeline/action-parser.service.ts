@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
-import { StartTurnAction } from '../../models/action/start-turn-action';
 import { Entity } from '../../models/game/entity';
 import { Game } from '../../models/game/game';
-import { Turn } from '../../models/game/turn';
 import { HistoryItem } from '../../models/history/history-item';
 import { ActionParserConfig } from '../../models/models';
 import { AttachingEnchantmentParser } from '../action/attaching-enchantment-parser';
@@ -186,35 +184,31 @@ export class ActionParserService {
 				console.warn('BBBB', actionsForTurn);
 			}
 			const newEntities = actionsForTurn[i].entities ? actionsForTurn[i].entities : previousStateEntities;
-			const entitiesAfterDamageUpdate: Map<number, Entity> = this.isDamageAction(actionsForTurn[i])
-				? newEntities.map(entity => this.updateDamageForEntity(actionsForTurn[i], entity)).toMap()
-				: newEntities;
+			const entitiesAfterDamageUpdate: Map<number, Entity> = newEntities
+				.map(entity => this.updateDamageForEntity(actionsForTurn[i], entity))
+				.toMap();
 			newActionsForTurn.push(actionsForTurn[i].update(entitiesAfterDamageUpdate));
 		}
 		return newActionsForTurn;
 	}
 
-	private isDamageAction(action: Action): boolean {
-		return 'damages' in action;
+	private updateDamageForEntity(action: Action, entity: Entity): Entity {
+		const damages: Map<number, number> = action.damages;
+		const damage = damages.get(entity.id);
+		return entity.updateDamage(damage);
 	}
 
-	private updateDamageForEntity(damageAction: Action, entity: Entity): Entity {
-		const damages: Map<number, number> = damageAction.damages;
-		const damage = damages.get(entity.id, 0);
-		return damage ? entity.updateDamage(damage) : entity;
-	}
-
-	private updateCurrentTurn(item: HistoryItem, game: Game, actions: readonly Action[], currentTurn): [Turn, number] {
-		if (
-			actions.length > 1 &&
-			actions[actions.length - 1] instanceof StartTurnAction &&
-			!(actions[actions.length - 1] as StartTurnAction).isStartOfMulligan
-		) {
-			const turnToUpdate: Turn = game.turns.get(currentTurn);
-			return [turnToUpdate, currentTurn + 1];
-		}
-		return [null, currentTurn];
-	}
+	// private updateCurrentTurn(item: HistoryItem, game: Game, actions: readonly Action[], currentTurn): [Turn, number] {
+	// 	if (
+	// 		actions.length > 1 &&
+	// 		actions[actions.length - 1] instanceof StartTurnAction &&
+	// 		!(actions[actions.length - 1] as StartTurnAction).isStartOfMulligan
+	// 	) {
+	// 		const turnToUpdate: Turn = game.turns.get(currentTurn);
+	// 		return [turnToUpdate, currentTurn + 1];
+	// 	}
+	// 	return [null, currentTurn];
+	// }
 
 	private reduceActions(actionParsers: Parser[], actionsForTurn: readonly Action[]): readonly Action[] {
 		let reducedActions = actionsForTurn;

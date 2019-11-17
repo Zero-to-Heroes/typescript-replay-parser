@@ -13,14 +13,12 @@ import { AllCardsService } from '../all-cards.service';
 export class TargetsParserService {
 	constructor(private logger: NGXLogger, private allCards: AllCardsService) {}
 
-	public parseTargets(game: Game): Game {
+	public parseTargetsForLastTurn(game: Game): Game {
 		let turns = game.turns;
 		const numberOfTurns = turns.size;
-		for (let i = 0; i < numberOfTurns; i++) {
-			const turn = game.turns.get(i);
-			const enrichedTurn = this.enrichTurn(turn);
-			turns = turns.set(i, enrichedTurn);
-		}
+		const turn = game.turns.get(numberOfTurns - 1);
+		const enrichedTurn = this.enrichTurn(turn);
+		turns = turns.set(numberOfTurns - 1, enrichedTurn);
 		return Game.createGame(game, { turns } as Game);
 	}
 

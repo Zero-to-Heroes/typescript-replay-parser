@@ -35,6 +35,8 @@ export class PowerTargetParser implements Parser {
 		return true;
 	}
 
+	debug = false;
+
 	public parse(
 		item: MetadataHistoryItem,
 		currentTurn: number,
@@ -52,6 +54,9 @@ export class PowerTargetParser implements Parser {
 		) {
 			return;
 		}
+		if (parseInt(parentAction.node.attributes.entity) === 51) {
+			this.debug = true;
+		}
 		// TODO: hard-code Malchezaar?
 		if (meta.info) {
 			return meta.info
@@ -67,6 +72,15 @@ export class PowerTargetParser implements Parser {
 		info: Info,
 	): PowerTargetAction[] {
 		const entityId = parseInt(item.node.attributes.entity);
+		if (this.debug) {
+			console.warn(
+				'building power target action action for defile 51',
+				entityId,
+				info.entity,
+				entities.get(entityId),
+				entities.get(entityId) && entities.get(entityId).tags.toJS(),
+			);
+		}
 		// Prevent a spell from targeting itself
 		if (
 			entityId === info.entity &&
@@ -145,6 +159,7 @@ export class PowerTargetParser implements Parser {
 		} else if (previousAction instanceof AttachingEnchantmentAction) {
 			return previousAction;
 		} else if (previousAction instanceof CardPlayedFromHandAction) {
+			console.warn('merging power target with played from hand', previousAction, currentAction);
 			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
 				entities: currentAction.entities,
 				originId: previousAction.entityId,

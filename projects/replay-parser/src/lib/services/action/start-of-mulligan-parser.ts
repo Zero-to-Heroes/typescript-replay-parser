@@ -1,4 +1,4 @@
-import { GameTag, Step } from '@firestone-hs/reference-data';
+import { GameTag, Mulligan } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { Action } from '../../models/action/action';
 import { StartTurnAction } from '../../models/action/start-turn-action';
@@ -17,8 +17,8 @@ export class StartOfMulliganParser implements Parser {
 	public applies(item: HistoryItem): boolean {
 		return (
 			item instanceof TagChangeHistoryItem &&
-			item.tag.tag === GameTag.STEP &&
-			item.tag.value === Step.BEGIN_MULLIGAN
+			item.tag.tag === GameTag.MULLIGAN_STATE &&
+			item.tag.value === Mulligan.INPUT
 		);
 	}
 
@@ -32,6 +32,7 @@ export class StartOfMulliganParser implements Parser {
 			return [];
 		}
 		this.numberOfMulligansDone++;
+		console.log('starting mulligan action', item);
 		return [
 			StartTurnAction.create(
 				{

@@ -1,4 +1,4 @@
-import { GameTag, MetaTags, Mulligan, Step } from '@firestone-hs/reference-data';
+import { GameTag, MetaTags, Mulligan, Step, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Tag } from 'sax';
@@ -10,6 +10,7 @@ import { ChoicesHistoryItem } from '../models/history/choices-history-item';
 import { ChosenEntityHistoryItem } from '../models/history/chosen-entities-history-item';
 import { FullEntityHistoryItem } from '../models/history/full-entity-history-item';
 import { GameHistoryItem } from '../models/history/game-history-item';
+import { HideEntityHistoryItem } from '../models/history/hide-entity-history-item';
 import { HistoryItem } from '../models/history/history-item';
 import { MetadataHistoryItem } from '../models/history/metadata-history-item';
 import { OptionsHistoryItem } from '../models/history/options-history-item';
@@ -51,20 +52,27 @@ export class XmlParserService {
 		testSaxes.onclosetag = tagName => this.onCloseTag();
 		testSaxes.onerror = error => this.logger.error('Error while parsing xml', error);
 
+		// We want to have:
+		// - a chunk with pre-mulligan stuff, to setup the board
+		// - one chunk with both mulligans
+		// - one chunk for each turn
+		const mulliganSplits = xmlAsString.split(
+			new RegExp(`(?=<TagChange.*tag="${GameTag.MULLIGAN_STATE}" value="${Mulligan.INPUT}".*/>)`),
+		);
+		// We isolate the pre-mulligan stuff
+		const [setupChunk, ...gameChunks] = mulliganSplits;
+		// console.log('setupChunk', setupChunk);
+		// Then the other chunks are handled only on a turn-by-turn basis
+		const gameXml = gameChunks.join('');
+		// console.log('gameXml', gameXml);
 		// https://stackoverflow.com/questions/12001953/javascript-and-regex-split-string-and-keep-the-separator
-		const chunks = xmlAsString.split(
+		const chunks = gameXml.split(
 			new RegExp(`(?=<TagChange.*tag="${GameTag.STEP}" value="${Step.MAIN_READY}".*/>)`),
 		);
-		const chunksWithMulligan = [
-			...chunks[0].split(
-				new RegExp(`(?=<TagChange.*tag="${GameTag.MULLIGAN_STATE}" value="${Mulligan.INPUT}".*/>)`),
-				2,
-			),
-			...chunks.slice(1),
-		];
-		// console.log('xml chunks', chunks);
-		for (const chunk of chunksWithMulligan) {
-			// console.log('writing chunk', chunk);
+		// console.log('chunks', chunks);
+		const splitChunks = [setupChunk, ...chunks];
+		for (const chunk of splitChunks) {
+			console.log('writing chunk', chunk);
 			testSaxes.write(chunk);
 			yield this.history;
 			this.history = [];
@@ -208,18 +216,27 @@ export class XmlParserService {
 				}
 				break;
 			case 'HideEntity':
-				const hideAttributes: EntityDefinition = {
-					id: parseInt(node.attributes.entity || node.attributes.id),
-					index: this.index++,
-					parentIndex: this.stack[this.stack.length - 2].index,
-					tags: this.entityDefinition.tags, // Avoid the hassle of merging tags, just get the ones from source
-				};
-				Object.assign(this.entityDefinition, hideAttributes);
-
-				let hideEntities: readonly number[] = this.stack[this.stack.length - 2].hideEntities || [];
-				hideEntities = [...hideEntities, this.entityDefinition.id];
-				this.stack[this.stack.length - 2].hideEntities = hideEntities;
+				const hideEntityHistoryItem = Object.assign(
+					new HideEntityHistoryItem(this.index++, this.buildTimestamp(ts)),
+					{
+						entity: parseInt(node.attributes.entity),
+						zone: parseInt(node.attributes.zone) as Zone,
+					} as HideEntityHistoryItem,
+				);
+				this.enqueueHistoryItem(hideEntityHistoryItem);
 				break;
+			// const hideAttributes: EntityDefinition = {
+			// 	id: parseInt(node.attributes.entity || node.attributes.id),
+			// 	index: this.index++,
+			// 	parentIndex: this.stack[this.stack.length - 2].index,
+			// 	tags: this.entityDefinition.tags, // Avoid the hassle of merging tags, just get the ones from source
+			// };
+			// Object.assign(this.entityDefinition, hideAttributes);
+
+			// let hideEntities: readonly number[] = this.stack[this.stack.length - 2].hideEntities || [];
+			// hideEntities = [...hideEntities, this.entityDefinition.id];
+			// this.stack[this.stack.length - 2].hideEntities = hideEntities;
+			// break;
 			case 'TagChange':
 				const tag: EntityTag = {
 					index: this.index++,
