@@ -77,10 +77,10 @@ export class ActiveSpellParserService {
 			activeSpell = action.originId;
 		} else if (
 			action instanceof SummonAction &&
-			action.entities.get(action.origin) &&
-			action.entities.get(action.origin).getTag(GameTag.CARDTYPE) === CardType.SPELL
+			action.entities.get(action.originId) &&
+			action.entities.get(action.originId).getTag(GameTag.CARDTYPE) === CardType.SPELL
 		) {
-			activeSpell = action.origin;
+			activeSpell = action.originId;
 		} else if (
 			action instanceof SecretRevealedAction &&
 			action.entities.get(action.entityId) &&

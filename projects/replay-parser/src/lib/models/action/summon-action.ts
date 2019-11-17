@@ -5,7 +5,6 @@ import { Entity } from '../game/entity';
 import { Action } from './action';
 
 export class SummonAction extends Action {
-	readonly origin: number;
 	readonly entityIds: readonly number[];
 
 	constructor(allCards: AllCardsService) {
@@ -23,7 +22,7 @@ export class SummonAction extends Action {
 	}
 
 	public enrichWithText(): SummonAction {
-		const originCardId = ActionHelper.getCardId(this.entities, this.origin);
+		const originCardId = ActionHelper.getCardId(this.entities, this.originId);
 		const originCardName = this.allCards.getCard(originCardId).name;
 		const summonCardNames = this.entityIds
 			.map(entityId => ActionHelper.getCardId(this.entities, entityId))

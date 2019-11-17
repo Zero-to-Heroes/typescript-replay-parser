@@ -29,10 +29,10 @@ export class DiscoverParser implements Parser {
 				{
 					timestamp: item.timestamp,
 					index: item.index,
-					origin: item.choices.source,
+					originId: item.choices.source,
 					ownerId: item.choices.playerID,
 					choices: item.choices.cards,
-				},
+				} as DiscoverAction,
 				this.allCards,
 			),
 		];

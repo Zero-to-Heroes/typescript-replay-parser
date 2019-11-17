@@ -49,9 +49,9 @@ export class SummonsParser implements Parser {
 					{
 						timestamp: item.timestamp,
 						index: entity.index,
-						entityIds: [entity.id],
-						origin: parseInt(item.node.attributes.entity),
-					},
+						entityIds: [entity.id] as readonly number[],
+						originId: parseInt(item.node.attributes.entity),
+					} as SummonAction,
 					this.allCards,
 				);
 			});
@@ -69,7 +69,7 @@ export class SummonsParser implements Parser {
 		if (!(previousAction instanceof SummonAction) || !(currentAction instanceof SummonAction)) {
 			return false;
 		}
-		if ((previousAction as SummonAction).origin !== (currentAction as SummonAction).origin) {
+		if ((previousAction as SummonAction).originId !== (currentAction as SummonAction).originId) {
 			return false;
 		}
 		return true;
@@ -81,9 +81,9 @@ export class SummonsParser implements Parser {
 				timestamp: previousAction.timestamp,
 				index: previousAction.index,
 				entities: currentAction.entities,
-				origin: currentAction.origin,
+				originId: currentAction.originId,
 				entityIds: uniq([...uniq(previousAction.entityIds || []), ...uniq(currentAction.entityIds || [])]),
-			},
+			} as SummonAction,
 			this.allCards,
 		);
 	}

@@ -11,7 +11,7 @@ import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
 import { MetadataHistoryItem } from '../../models/history/metadata-history-item';
-import { CardPlayedFromHandAction } from '../../models/models';
+import { CardPlayedFromHandAction, SummonAction } from '../../models/models';
 import { Info } from '../../models/parser/info';
 import { MetaData } from '../../models/parser/metadata';
 import { AllCardsService } from '../all-cards.service';
@@ -139,6 +139,9 @@ export class PowerTargetParser implements Parser {
 		if (previousAction instanceof CardPlayedFromHandAction) {
 			return previousAction.entityId === currentAction.originId;
 		}
+		if (previousAction instanceof SummonAction) {
+			return previousAction.originId === currentAction.originId;
+		}
 		return false;
 	}
 
@@ -157,6 +160,8 @@ export class PowerTargetParser implements Parser {
 				]) as readonly number[],
 			} as PowerTargetAction);
 		} else if (previousAction instanceof AttachingEnchantmentAction) {
+			return previousAction;
+		} else if (previousAction instanceof SummonAction) {
 			return previousAction;
 		} else if (previousAction instanceof CardPlayedFromHandAction) {
 			console.warn('merging power target with played from hand', previousAction, currentAction);

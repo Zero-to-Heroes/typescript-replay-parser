@@ -6,7 +6,6 @@ import { PlayerEntity } from '../game/player-entity';
 import { Action } from './action';
 
 export class DiscoverAction extends Action {
-	readonly origin: number;
 	readonly ownerId: number;
 	readonly choices: readonly number[];
 	readonly chosen: readonly number[];
@@ -48,7 +47,7 @@ export class DiscoverAction extends Action {
 		if (!chosenCards) {
 			console.warn(
 				'Trying to do a discover action with an empty chosen array, aborting',
-				this.origin,
+				this.originId,
 				this.ownerId,
 				this.choices,
 				this.chosen,
