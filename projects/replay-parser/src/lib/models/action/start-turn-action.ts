@@ -20,7 +20,6 @@ export class StartTurnAction extends Action {
 	}
 
 	public enrichWithText(): StartTurnAction {
-		console.log('is hero selection.', this.isHeroSelection);
 		const textRaw = this.isHeroSelection
 			? 'Hero selection'
 			: this.isMulligan

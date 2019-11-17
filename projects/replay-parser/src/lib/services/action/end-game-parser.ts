@@ -29,7 +29,7 @@ export class EndGameParser implements Parser {
 		history: readonly HistoryItem[],
 		players: readonly PlayerEntity[],
 	): Action[] {
-		console.log('end game action', item);
+		// console.log('end game action', item);
 		return [
 			EndGameAction.create(
 				{

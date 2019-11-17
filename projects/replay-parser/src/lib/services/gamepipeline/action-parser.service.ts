@@ -78,6 +78,7 @@ export class ActionParserService {
 		entities: Map<number, Entity>,
 		history: readonly HistoryItem[],
 		config: ActionParserConfig = new ActionParserConfig(),
+		debug = false,
 	): Game {
 		// const start = Date.now();
 		// Because mulligan is effectively index -1; since there is a 0 turn after that
@@ -96,6 +97,9 @@ export class ActionParserService {
 			// const start = Date.now();
 			const entitiesBeforeAction = previousStateEntities;
 			previousStateEntities = this.stateProcessorService.applyHistoryItem(previousStateEntities, item);
+			// if (debug) {
+			// 	console.log('is entity present', entitiesBeforeAction.has(507), previousStateEntities.has(507), item);
+			// }
 			previousProcessedItem = item;
 			actionParsers.forEach(parser => {
 				if (parser.applies(item)) {
@@ -124,6 +128,9 @@ export class ActionParserService {
 			history,
 			previousProcessedItem,
 		);
+		// if (debug) {
+		// 	console.log('is entity present', previousStateEntities.has(507));
+		// }
 		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
 		// Sort actions based on their index (so that actions that were created from the same
 		// parent action can have a custom order)
@@ -131,11 +138,17 @@ export class ActionParserService {
 			actionsForTurn,
 			(a: Action, b: Action) => a.index - b.index || a.timestamp - b.timestamp,
 		);
+		// if (debug) {
+		// 	console.log('is entity present after sort', actionsForTurn[actionsForTurn.length - 1].entities.has(507));
+		// }
 		// Give an opportunity to each parser to combine the actions it produced by merging them
 		// For instance, if we two card draws in a row, we might want to display them as a single
 		// action that draws two cards
 		actionsForTurn = this.reduceActions(actionParsers, actionsForTurn);
 		actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
+		// if (debug) {
+		// 	console.log('is entity present after damage', actionsForTurn[actionsForTurn.length - 1].entities.has(507));
+		// }
 		try {
 			if (currentTurn < 0) {
 				// console.log('handling game init entity updates');
@@ -145,12 +158,33 @@ export class ActionParserService {
 				this.logger.warn('could not get current turn', currentTurn, game.turns.toJS());
 			}
 			const turnWithNewActions = game.turns.get(currentTurn).update({ actions: actionsForTurn });
-			const turns = game.turns.set(
-				turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn),
-				turnWithNewActions,
-			);
+			// if (debug) {
+			// 	console.log(
+			// 		'is entity present after turnWithNewActions',
+			// 		turnWithNewActions.actions[turnWithNewActions.actions.length - 1].entities.has(507),
+			// 	);
+			// }
+			const turnNumber = turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn);
+			const turns = game.turns.set(turnNumber, turnWithNewActions);
 			// actionsForTurn = [];
-			return Game.createGame(game, { turns } as Game);
+			// if (debug) {
+			// 	console.log(
+			// 		'is entity present after turns set',
+			// 		turns.get(turnNumber).actions[turns.get(turnNumber).actions.length - 1].entities.has(507),
+			// 	);
+			// }
+			const result = Game.createGame(game, { turns } as Game);
+			// if (debug) {
+			// 	console.log(
+			// 		'is entity present after result',
+			// 		result.turns
+			// 			.get(turnNumber)
+			// 			.actions[result.turns.get(turnNumber).actions.length - 1].entities.has(507),
+			// 	);
+			// 	console.log('is entity present after result with getlaststate', result.getLatestParsedState().has(507));
+			// 	console.log('turn', turnNumber, result.turns.get(turnNumber));
+			// }
+			return result;
 		} catch (e) {
 			this.logger.warn(currentTurn, game.turns.toJS(), actionsForTurn);
 			this.logger.error(e);

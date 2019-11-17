@@ -61,7 +61,7 @@ export abstract class Action {
 				})
 				.join(', ');
 		}
-		const textRaw = `\t${originCardName} targets ${targetCardNames}. ${damageText}`;
+		const textRaw = `\t${originCardName} targets ${targetCardNames}. \n${damageText}`;
 		return textRaw;
 	}
 }

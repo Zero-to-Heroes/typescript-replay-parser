@@ -21,7 +21,7 @@ import { ImagePreloaderService } from './image-preloader.service';
 import { StateProcessorService } from './state-processor.service';
 import { XmlParserService } from './xml-parser.service';
 
-const SMALL_PAUSE = 7;
+const SMALL_PAUSE = 15;
 
 @Injectable({
 	providedIn: 'root',
@@ -189,8 +189,12 @@ export class GameParserService {
 					break;
 				}
 
+				// const debug = game.turns.size === 33;
 				// console.log(
-				// 	'got next turn from parser\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
+				// 	'handling turn',
+				// 	game.turns.size,
+				// 	counter,
+				// 	'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
 				// );
 
 				// Preload the images we'll need early on
@@ -203,7 +207,9 @@ export class GameParserService {
 				}
 
 				let entities = this.gamePopulationService.initNewEntities(game, history);
-				// console.log('game after initNewEntities', entities.toJS());
+				// if (debug || game.turns.size === 32) {
+				// 	console.log('=======game after initNewEntities', entities.toJS(), entities.get(507));
+				// }
 				if (game.turns.size === 0) {
 					game = this.gameInitializer.initializePlayers(game, entities);
 					entities = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
@@ -213,7 +219,11 @@ export class GameParserService {
 				game = this.turnParser.createTurns(game, history);
 				// console.log('game after turn creation', game, game.turns.toJS());
 				game = this.actionParser.parseActions(game, entities, history, config);
-				// console.log('game after action pasring', game, game.turns.toJS());
+				// console.log(
+				// 	'game after action pasring',
+				// 	game.getLatestParsedState().toJS(),
+				// 	game.getLatestParsedState().get(507),
+				// );
 				if (game.turns.size > 0) {
 					game = this.activePlayerParser.parseActivePlayerForLastTurn(game);
 					// console.log('game after parseActivePlayer', game, game.turns.toJS());
@@ -238,6 +248,14 @@ export class GameParserService {
 					// }
 					// counter++;
 					// console.log('moving on', counter);
+					// if (game.turns.size === 33) {
+					// 	console.log(
+					// 		'entities at end of turn',
+					// 		game.getLatestParsedState().toJS(),
+					// 		game.getLatestParsedState().get(507),
+					// 	);
+					// }
+
 					yield [game, SMALL_PAUSE, 'Parsed turn ' + counter++];
 				} else {
 					// if (counter++ === 3) {

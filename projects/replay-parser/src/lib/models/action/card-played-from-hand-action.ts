@@ -35,9 +35,9 @@ export class CardPlayedFromHandAction extends Action {
 		const targetText = super.generateTargetsText();
 		const targetTextToDisplay = targetText && targetText.length > 0 ? `\n${targetText}` : '';
 		const textRaw = `\t${ownerName} ${playVerb} ${cardName}${targetTextToDisplay}`;
-		if (this.entityId === 38) {
-			console.warn('defile action', ownerName, cardEntity, cardId, card, cardName, targetText);
-		}
+		// if (this.entityId === 38) {
+		// 	console.warn('defile action', ownerName, cardEntity, cardId, card, cardName, targetText);
+		// }
 		// console.log('enriching card played from hand action text', targetText, textRaw);
 		return Object.assign(new CardPlayedFromHandAction(this.allCards), this, {
 			textRaw,

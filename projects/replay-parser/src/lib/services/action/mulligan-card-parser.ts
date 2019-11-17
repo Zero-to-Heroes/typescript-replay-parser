@@ -35,7 +35,6 @@ export class MulliganCardParser implements Parser {
 		entitiesBeforeAction: Map<number, Entity>,
 		history: readonly HistoryItem[],
 	): Action[] {
-		console.log('current turn', currentTurn, item);
 		if (currentTurn > 0) {
 			return;
 		}

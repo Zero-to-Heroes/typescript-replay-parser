@@ -91,7 +91,7 @@ export class StateProcessorService {
 		const startIndex = history.indexOf(previousProcessedItem);
 		const futureHistory = history.slice(startIndex);
 		let newStateEntities = previousStateEntities;
-		console.log('applying history until now', startIndex, futureHistory, history);
+		// console.log('applying history until now', startIndex, futureHistory, history);
 		for (const historyItem of futureHistory) {
 			newStateEntities = this.applyHistoryItem(newStateEntities, historyItem);
 		}

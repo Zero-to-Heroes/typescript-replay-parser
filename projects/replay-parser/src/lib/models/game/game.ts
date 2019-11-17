@@ -24,7 +24,8 @@ export class Game {
 		if (this.turns.size === 0 || this.turns.last().actions.length === 0) {
 			return this.entitiesBeforeMulligan;
 		}
-		const lastTurn = this.turns.last();
+		const lastTurn = this.turns.get(this.turns.size - 1);
+		// console.log('last turn', lastTurn, this.turns.toJS());
 		return lastTurn.actions[lastTurn.actions.length - 1].entities;
 	}
 }
