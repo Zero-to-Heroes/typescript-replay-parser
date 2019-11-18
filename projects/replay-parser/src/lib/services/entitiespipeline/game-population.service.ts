@@ -3,6 +3,7 @@ import { CardType, GameTag } from '@firestone-hs/reference-data';
 import { fromJS, Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Entity } from '../../models/game/entity';
+import { GameEntity } from '../../models/game/game-entity';
 import { PlayerEntity } from '../../models/game/player-entity';
 import { FullEntityHistoryItem } from '../../models/history/full-entity-history-item';
 import { GameHistoryItem } from '../../models/history/game-history-item';
@@ -70,9 +71,10 @@ export class GamePopulationService {
 	}
 
 	private initializeGame(historyItem: GameHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {
-		const entity: Entity = Entity.create({
+		const base = Object.assign(new GameEntity(), {
 			id: historyItem.entityDefintion.id,
-		} as Entity).update(historyItem.entityDefintion);
+		} as GameEntity);
+		const entity: GameEntity = GameEntity.create(base).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
 	}
 

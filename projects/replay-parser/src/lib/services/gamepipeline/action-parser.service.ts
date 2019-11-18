@@ -128,16 +128,22 @@ export class ActionParserService {
 			history,
 			previousProcessedItem,
 		);
+		// console.log('previousStateEntities after history parsing', previousStateEntities.toJS());
 		// if (debug) {
 		// 	console.log('is entity present', previousStateEntities.has(507));
 		// }
 		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
+		// console.log(
+		// 	'actionsForTurn after fillMissingEntities',
+		// 	actionsForTurn[actionsForTurn.length - 1].entities.toJS(),
+		// );
 		// Sort actions based on their index (so that actions that were created from the same
 		// parent action can have a custom order)
 		actionsForTurn = this.sortActions(
 			actionsForTurn,
 			(a: Action, b: Action) => a.index - b.index || a.timestamp - b.timestamp,
 		);
+		// console.log('actionsForTurn after sortActions', actionsForTurn[actionsForTurn.length - 1].entities.toJS());
 		// if (debug) {
 		// 	console.log('is entity present after sort', actionsForTurn[actionsForTurn.length - 1].entities.has(507));
 		// }
@@ -145,7 +151,12 @@ export class ActionParserService {
 		// For instance, if we two card draws in a row, we might want to display them as a single
 		// action that draws two cards
 		actionsForTurn = this.reduceActions(actionParsers, actionsForTurn);
+		// console.log('actionsForTurn after reduceActions', actionsForTurn[actionsForTurn.length - 1].entities.toJS());
 		actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
+		// console.log(
+		// 	'actionsForTurn after addDamageToEntities',
+		// 	actionsForTurn[actionsForTurn.length - 1].entities.toJS(),
+		// );
 		// if (debug) {
 		// 	console.log('is entity present after damage', actionsForTurn[actionsForTurn.length - 1].entities.has(507));
 		// }
@@ -166,6 +177,10 @@ export class ActionParserService {
 			// }
 			const turnNumber = turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn);
 			const turns = game.turns.set(turnNumber, turnWithNewActions);
+			// console.log(
+			// 	'turnWithNewActions',
+			// 	turnWithNewActions.actions[turnWithNewActions.actions.length - 1].entities.toJS(),
+			// );
 			// actionsForTurn = [];
 			// if (debug) {
 			// 	console.log(
@@ -174,16 +189,7 @@ export class ActionParserService {
 			// 	);
 			// }
 			const result = Game.createGame(game, { turns } as Game);
-			// if (debug) {
-			// 	console.log(
-			// 		'is entity present after result',
-			// 		result.turns
-			// 			.get(turnNumber)
-			// 			.actions[result.turns.get(turnNumber).actions.length - 1].entities.has(507),
-			// 	);
-			// 	console.log('is entity present after result with getlaststate', result.getLatestParsedState().has(507));
-			// 	console.log('turn', turnNumber, result.turns.get(turnNumber));
-			// }
+			// console.log('oriejg', result.getLatestParsedState().toJS());
 			return result;
 		} catch (e) {
 			this.logger.warn(currentTurn, game.turns.toJS(), actionsForTurn);

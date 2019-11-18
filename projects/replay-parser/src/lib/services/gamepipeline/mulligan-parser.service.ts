@@ -3,6 +3,7 @@ import { CardType, GameTag, Step, Zone } from '@firestone-hs/reference-data';
 import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { Game } from '../../models/game/game';
+import { GameEntity } from '../../models/game/game-entity';
 import { Turn } from '../../models/game/turn';
 import { AllCardsService } from '../all-cards.service';
 
@@ -53,9 +54,16 @@ export class MulliganParserService {
 
 		let isMulligan = !isHeroSelection && mulliganEntities.length > 0;
 		// console.log('isMulligan?', isMulligan, mulliganEntities);
+		// console.log('previous entities', previousAction && previousAction.entities.toJS());
 		if (action.activeSpell) {
 			isMulligan = false;
-		} else if (previousAction && previousAction.entities.get(1).getTag(GameTag.STEP) === Step.BEGIN_MULLIGAN) {
+		} else if (
+			previousAction &&
+			previousAction.entities
+				.toArray()
+				.find(entity => entity instanceof GameEntity)
+				.getTag(GameTag.STEP) === Step.BEGIN_MULLIGAN
+		) {
 			isMulligan = previousAction.isMulligan;
 		}
 		return action.updateAction({ isMulligan, isHeroSelection } as Action);

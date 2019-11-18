@@ -62,7 +62,7 @@ export class EndGameParser implements Parser {
 			...(previousAction.winStatus || []),
 			...(currentAction.winStatus || []),
 		];
-		console.log('merging actions', winStatus, previousAction);
+		// console.log('merging actions', winStatus, previousAction);
 		return previousAction.updateAction<EndGameAction>({
 			winStatus,
 		} as EndGameAction);

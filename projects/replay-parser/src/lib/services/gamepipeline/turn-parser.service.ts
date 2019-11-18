@@ -4,6 +4,7 @@ import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { ActionTurn } from '../../models/game/action-turn';
 import { Game } from '../../models/game/game';
+import { GameEntity } from '../../models/game/game-entity';
 import { MulliganTurn } from '../../models/game/mulligan-turn';
 import { Turn } from '../../models/game/turn';
 import { HistoryItem } from '../../models/history/history-item';
@@ -111,7 +112,7 @@ export class TurnParserService {
 	// 	return game.entities.get(entityId) instanceof PlayerEntity;
 	// }
 
-	private isGameEntity(entityId: number, game: Game) {
-		return entityId === 1;
+	private isGameEntity(entityId: number, game: Game): boolean {
+		return game.getLatestParsedState().get(entityId) instanceof GameEntity;
 	}
 }

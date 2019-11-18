@@ -216,13 +216,9 @@ export class GameParserService {
 			}
 
 			game = this.turnParser.createTurns(game, history);
-			// console.log('game after turn creation', game, game.turns.toJS());
+			console.log('game after turn creation', game.turns.size);
 			game = this.actionParser.parseActions(game, entities, history, config);
-			// console.log(
-			// 	'game after action pasring',
-			// 	game.getLatestParsedState().toJS(),
-			// 	game.getLatestParsedState().get(507),
-			// );
+			// console.log('game after action pasring', game.getLatestParsedState().toJS());
 			if (game.turns.size > 0) {
 				game = this.activePlayerParser.parseActivePlayerForLastTurn(game);
 				// console.log('game after parseActivePlayer', game, game.turns.toJS());
