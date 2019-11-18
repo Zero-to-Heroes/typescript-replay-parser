@@ -215,8 +215,12 @@ export class GameParserService {
 				// console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
 			}
 
+			if (game.turns.size === 1) {
+				return;
+			}
+
 			game = this.turnParser.createTurns(game, history);
-			console.log('game after turn creation', game.turns.size);
+			// console.log('game after turn creation', game.turns.size);
 			game = this.actionParser.parseActions(game, entities, history, config);
 			// console.log('game after action pasring', game.getLatestParsedState().toJS());
 			if (game.turns.size > 0) {
