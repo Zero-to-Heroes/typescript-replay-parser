@@ -5,6 +5,7 @@
 export * from './action-parser-config';
 export * from './action/attaching-enchantment-action';
 export * from './action/attack-action';
+export * from './action/bacon-opponent-revealed-action';
 export * from './action/card-burn-action';
 export * from './action/card-discard-action';
 export * from './action/card-draw-action';

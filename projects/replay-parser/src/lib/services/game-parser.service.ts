@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
 import { Game } from '../models/game/game';
 import { HistoryItem } from '../models/history/history-item';
-import { ActionParserConfig } from '../models/models';
+import { ActionParserConfig, GameHistoryItem } from '../models/models';
 import { AllCardsService } from './all-cards.service';
 import { GamePopulationService } from './entitiespipeline/game-population.service';
 import { GameStateParserService } from './entitiespipeline/game-state-parser.service';
@@ -181,11 +181,22 @@ export class GameParserService {
 		let counter = 0;
 		while (true) {
 			const itValue = xmlParsingIterator.next();
-			const history = itValue.value;
+			const history: readonly HistoryItem[] = itValue.value;
 
 			if (itValue.done) {
 				console.log('history parsing over', itValue);
 				break;
+			}
+
+			if (history[0] instanceof GameHistoryItem) {
+				const gameHistory: GameHistoryItem = history[0] as GameHistoryItem;
+				game = Object.assign(game, {
+					buildNumber: gameHistory.buildNumber,
+					formatType: gameHistory.formatType,
+					gameType: gameHistory.gameType,
+					scenarioID: gameHistory.scenarioID,
+				} as Game);
+				console.log('assign meta data to game', game);
 			}
 
 			// const debug = game.turns.size === 33;
@@ -215,9 +226,9 @@ export class GameParserService {
 				// console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
 			}
 
-			if (game.turns.size === 1) {
-				return;
-			}
+			// if (game.turns.size === 1) {
+			// 	return;
+			// }
 
 			game = this.turnParser.createTurns(game, history);
 			// console.log('game after turn creation', game.turns.size);

@@ -71,9 +71,13 @@ export class GamePopulationService {
 	}
 
 	private initializeGame(historyItem: GameHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {
-		const base = Object.assign(new GameEntity(), {
+		const base: GameEntity = Object.assign(new GameEntity(), {
 			id: historyItem.entityDefintion.id,
-		} as GameEntity);
+			buildNumber: historyItem.buildNumber,
+			formatType: historyItem.formatType,
+			gameType: historyItem.gameType,
+			scenarioID: historyItem.scenarioID,
+		});
 		const entity: GameEntity = GameEntity.create(base).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
 	}

@@ -8,6 +8,7 @@ import { HistoryItem } from '../../models/history/history-item';
 import { ActionParserConfig } from '../../models/models';
 import { AttachingEnchantmentParser } from '../action/attaching-enchantment-parser';
 import { AttackParser } from '../action/attack-parser';
+import { BaconOpponentRevealedParser } from '../action/bacon-opponent-revealed-parser';
 import { CardBurnParser } from '../action/card-burn-parser';
 import { CardDiscardParser } from '../action/card-discard-parser';
 import { CardDrawParser } from '../action/card-draw-parser';
@@ -70,6 +71,7 @@ export class ActionParserService {
 			new EndGameParser(this.logger, this.allCards),
 			new FatigueDamageParser(this.allCards, this.logger),
 			new QuestCompletedParser(this.allCards, this.logger),
+			new BaconOpponentRevealedParser(this.allCards, this.logger),
 		];
 	}
 

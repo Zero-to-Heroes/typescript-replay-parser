@@ -42,6 +42,11 @@ export class XmlParserService {
 	private metaData: MetaData;
 	private timestamp: number;
 
+	private buildNumber: number;
+	private gameType: number;
+	private formatType: number;
+	private scenarioID: number;
+
 	constructor(private logger: NGXLogger) {}
 
 	public *parseXml(xmlAsString: string): IterableIterator<readonly HistoryItem[]> {
@@ -104,6 +109,10 @@ export class XmlParserService {
 			case 'Game':
 				this.initialTimestamp = this.tsToSeconds(node.attributes.ts);
 				this.timestamp = 0;
+				this.buildNumber = parseInt(node.attributes.buildNumber);
+				this.gameType = parseInt(node.attributes.gameType);
+				this.formatType = parseInt(node.attributes.formatType);
+				this.scenarioID = parseInt(node.attributes.scenarioID);
 				break;
 			case 'Action':
 			case 'Block':
@@ -416,11 +425,16 @@ export class XmlParserService {
 		switch (node.name) {
 			case 'GameEntity':
 				this.state.pop();
-				const gameItem: GameHistoryItem = new GameHistoryItem(
-					this.entityDefinition,
-					this.buildTimestamp(ts),
-					node.index,
+				const gameItem: GameHistoryItem = Object.assign(
+					new GameHistoryItem(this.entityDefinition, this.buildTimestamp(ts), node.index),
+					{
+						buildNumber: this.buildNumber,
+						formatType: this.formatType,
+						gameType: this.gameType,
+						scenarioID: this.scenarioID,
+					} as GameHistoryItem,
 				);
+
 				this.enqueueHistoryItem(gameItem);
 				this.entityDefinition = { tags: Map() };
 				break;

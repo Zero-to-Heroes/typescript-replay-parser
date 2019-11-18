@@ -19,8 +19,4 @@ export class GameHepler {
 	public static isPlayerEntity(entityId: number, entities: Map<number, Entity>) {
 		return entities.get(entityId) instanceof PlayerEntity;
 	}
-
-	public static isGameEntity(entityId: number, entities: Map<number, Entity>) {
-		return entityId === 1;
-	}
 }
