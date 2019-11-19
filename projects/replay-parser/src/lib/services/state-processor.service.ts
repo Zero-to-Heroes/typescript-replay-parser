@@ -81,6 +81,16 @@ export class StateProcessorService {
 
 		GameTag.NUM_RESOURCES_SPENT_THIS_GAME,
 		GameTag.NUM_CARDS_PLAYED_THIS_TURN,
+
+		GameTag.BACON_HERO_CAN_BE_DRAFTED,
+		GameTag.PLAYER_LEADERBOARD_PLACE,
+		// Tech level of the card, equivalent to the new mana cost
+		GameTag.TECH_LEVEL,
+		GameTag.TECH_LEVEL_MANA_GEM,
+		GameTag.PLAYER_TECH_LEVEL,
+		GameTag.BOARD_VISUAL_STATE,
+		// Used to know what button is active in a specific slot
+		GameTag.GAME_MODE_BUTTON_SLOT,
 	];
 
 	public applyHistoryUntilEnd(

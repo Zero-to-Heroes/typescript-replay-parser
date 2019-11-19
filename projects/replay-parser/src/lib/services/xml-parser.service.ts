@@ -77,7 +77,7 @@ export class XmlParserService {
 		// console.log('chunks', chunks);
 		const splitChunks = [setupChunk, ...chunks];
 		for (const chunk of splitChunks) {
-			console.log('writing chunk', chunk);
+			// console.log('writing chunk', chunk);
 			testSaxes.write(chunk);
 			yield this.history;
 			this.history = [];

@@ -21,7 +21,7 @@ import { ImagePreloaderService } from './image-preloader.service';
 import { StateProcessorService } from './state-processor.service';
 import { XmlParserService } from './xml-parser.service';
 
-const SMALL_PAUSE = 15;
+const SMALL_PAUSE = 30;
 
 @Injectable({
 	providedIn: 'root',
@@ -197,6 +197,10 @@ export class GameParserService {
 					scenarioID: gameHistory.scenarioID,
 				} as Game);
 				console.log('assign meta data to game', game);
+			}
+
+			if (game.turns.size === 5) {
+				return;
 			}
 
 			// const debug = game.turns.size === 33;

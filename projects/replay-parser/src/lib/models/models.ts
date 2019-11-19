@@ -3,9 +3,11 @@
  */
 
 export * from './action-parser-config';
+export * from './action/action';
 export * from './action/attaching-enchantment-action';
 export * from './action/attack-action';
-export * from './action/bacon-opponent-revealed-action';
+export * from './action/battlegrounds/bacon-board-visual-state-action';
+export * from './action/battlegrounds/bacon-opponent-revealed-action';
 export * from './action/card-burn-action';
 export * from './action/card-discard-action';
 export * from './action/card-draw-action';
@@ -34,6 +36,7 @@ export * from './action/summon-action';
 export * from './game/action-turn';
 export * from './game/entity';
 export * from './game/game';
+export * from './game/game-entity';
 export * from './game/game-helper';
 export * from './game/mulligan-turn';
 export * from './game/player-entity';

@@ -85,7 +85,7 @@ export class MulliganCardChoiceParser implements Parser {
 			return previousAction;
 		}
 		if (previousAction instanceof MulliganCardChoiceAction) {
-			console.log('merging into previous mulligan action', previousAction, currentAction);
+			// console.log('merging into previous mulligan action', previousAction, currentAction);
 			return MulliganCardChoiceAction.create(
 				{
 					timestamp: previousAction.timestamp,
@@ -100,7 +100,7 @@ export class MulliganCardChoiceParser implements Parser {
 				this.allCards,
 			);
 		} else {
-			console.log('merging into previous turn action', previousAction, currentAction);
+			// console.log('merging into previous turn action', previousAction, currentAction);
 			return StartTurnAction.create(
 				{
 					turn: previousAction.turn,
