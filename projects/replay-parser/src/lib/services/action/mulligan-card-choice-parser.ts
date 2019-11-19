@@ -35,7 +35,7 @@ export class MulliganCardChoiceParser implements Parser {
 		// Here "playerID" actually refers to the player entity ID (and not the playerID)
 		const playerHand = this.getHandEntityIds(entitiesBeforeAction, item.tag.playerID);
 		const mulligan = playerHand.filter(entityId => keptCards.indexOf(entityId) === -1);
-		console.log('considering choice', item, players, playerHand, mulligan);
+		// console.log('considering choice', item, players, playerHand, mulligan);
 		if (item.tag.playerID === players[0].id) {
 			return [
 				MulliganCardChoiceAction.create(

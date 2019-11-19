@@ -8,6 +8,7 @@ import { HistoryItem } from '../../models/history/history-item';
 import { ActionParserConfig } from '../../models/models';
 import { AttachingEnchantmentParser } from '../action/attaching-enchantment-parser';
 import { AttackParser } from '../action/attack-parser';
+import { BaconBattleOverParser } from '../action/battlegrounds/bacon-battle-over-parser';
 import { BaconBoardVisualStateParser } from '../action/battlegrounds/bacon-board-visual-state-parser';
 import { BaconOpponentRevealedParser } from '../action/battlegrounds/bacon-opponent-revealed-parser';
 import { CardBurnParser } from '../action/card-burn-parser';
@@ -74,6 +75,7 @@ export class ActionParserService {
 			new QuestCompletedParser(this.allCards, this.logger),
 			new BaconOpponentRevealedParser(this.allCards, this.logger),
 			new BaconBoardVisualStateParser(this.allCards),
+			new BaconBattleOverParser(this.allCards),
 		];
 	}
 
