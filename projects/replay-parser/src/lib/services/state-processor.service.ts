@@ -91,6 +91,7 @@ export class StateProcessorService {
 		GameTag.BOARD_VISUAL_STATE,
 		// Used to know what button is active in a specific slot
 		GameTag.GAME_MODE_BUTTON_SLOT,
+		GameTag.NEXT_OPPONENT_PLAYER_ID,
 	];
 
 	public applyHistoryUntilEnd(
