@@ -134,11 +134,20 @@ export class ActionParserService {
 			history,
 			previousProcessedItem,
 		);
+		// console.log(
+		// 	'after history applied until end 150',
+		// 	previousStateEntities.get(150) && previousStateEntities.get(150).tags.toJS(),
+		// );
 		// console.log('previousStateEntities after history parsing', previousStateEntities.toJS());
 		// if (debug) {
 		// 	console.log('is entity present', previousStateEntities.has(507));
 		// }
 		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
+		// console.log(
+		// 	'after fillMissingEntities 150',
+		// 	actionsForTurn[actionsForTurn.length - 1].entities.get(150) &&
+		// 		actionsForTurn[actionsForTurn.length - 1].entities.get(150).tags.toJS(),
+		// );
 		// console.log(
 		// 	'actionsForTurn after fillMissingEntities',
 		// 	actionsForTurn[actionsForTurn.length - 1].entities.toJS(),
@@ -149,6 +158,11 @@ export class ActionParserService {
 			actionsForTurn,
 			(a: Action, b: Action) => a.index - b.index || a.timestamp - b.timestamp,
 		);
+		// console.log(
+		// 	'after sortActions 150',
+		// 	actionsForTurn[actionsForTurn.length - 1].entities.get(150) &&
+		// 		actionsForTurn[actionsForTurn.length - 1].entities.get(150).tags.toJS(),
+		// );
 		// console.log('actionsForTurn after sortActions', actionsForTurn[actionsForTurn.length - 1].entities.toJS());
 		// if (debug) {
 		// 	console.log('is entity present after sort', actionsForTurn[actionsForTurn.length - 1].entities.has(507));
@@ -157,8 +171,18 @@ export class ActionParserService {
 		// For instance, if we two card draws in a row, we might want to display them as a single
 		// action that draws two cards
 		actionsForTurn = this.reduceActions(actionParsers, actionsForTurn);
+		// console.log(
+		// 	'after reduceActions 150',
+		// 	actionsForTurn[actionsForTurn.length - 1].entities.get(150) &&
+		// 		actionsForTurn[actionsForTurn.length - 1].entities.get(150).tags.toJS(),
+		// );
 		// console.log('actionsForTurn after reduceActions', actionsForTurn[actionsForTurn.length - 1].entities.toJS());
 		actionsForTurn = this.addDamageToEntities(actionsForTurn, previousStateEntities);
+		// console.log(
+		// 	'after addDamageToEntities 150',
+		// 	actionsForTurn[actionsForTurn.length - 1].entities.get(150) &&
+		// 		actionsForTurn[actionsForTurn.length - 1].entities.get(150).tags.toJS(),
+		// );
 		// console.log(
 		// 	'actionsForTurn after addDamageToEntities',
 		// 	actionsForTurn[actionsForTurn.length - 1].entities.toJS(),
@@ -262,13 +286,16 @@ export class ActionParserService {
 			// console.log('reducing', parser, actionsForTurn);
 			reducedActions = parser.reduce(reducedActions);
 		}
+		// console.log('finished round of reduces');
 		// Because the different parsers can interact with each other, we need to apply all
 		// of them until the result doesn't change anymore
 		// This looks heavy in perf, but there aren't many actions, and it lets us
 		// handle each action type independently, which makes for more separated concerns
 		if (!this.areEqual(reducedActions, actionsForTurn)) {
+			// console.log('going for another round');
 			return this.reduceActions(actionParsers, reducedActions);
 		}
+		// console.log('fully finished');
 		return reducedActions;
 	}
 

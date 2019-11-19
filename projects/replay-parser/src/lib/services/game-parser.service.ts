@@ -199,7 +199,7 @@ export class GameParserService {
 				console.log('assign meta data to game', game);
 			}
 
-			if (game.turns.size === 5) {
+			if (game.turns.size === 3) {
 				return;
 			}
 
@@ -221,6 +221,11 @@ export class GameParserService {
 			}
 
 			let entities = this.gamePopulationService.initNewEntities(game, history);
+			// console.log(
+			// 	'entity 150 initNewEntities',
+			// 	entities.get(150) && entities.get(150).tags.toJS(),
+			// 	entities.get(150),
+			// );
 			// if (debug || game.turns.size === 32) {
 			// 	console.log('=======game after initNewEntities', entities.toJS(), entities.get(507));
 			// }
@@ -237,13 +242,45 @@ export class GameParserService {
 			game = this.turnParser.createTurns(game, history);
 			// console.log('game after turn creation', game.turns.size);
 			game = this.actionParser.parseActions(game, entities, history, config);
+			// console.log(
+			// 	'entity 150 parseActions',
+			// 	game.getLatestParsedState().get(150) &&
+			// 		game
+			// 			.getLatestParsedState()
+			// 			.get(150)
+			// 			.tags.toJS(),
+			// );
 			// console.log('game after action pasring', game.getLatestParsedState().toJS());
 			if (game.turns.size > 0) {
 				game = this.activePlayerParser.parseActivePlayerForLastTurn(game);
+				// console.log(
+				// 	'entity 150 parseActivePlayerForLastTurn',
+				// 	game.getLatestParsedState().get(150) &&
+				// 		game
+				// 			.getLatestParsedState()
+				// 			.get(150)
+				// 			.tags.toJS(),
+				// );
 				// console.log('game after parseActivePlayer', game, game.turns.toJS());
 				game = this.activeSpellParser.parseActiveSpellForLastTurn(game);
+				// console.log(
+				// 	'entity 150 parseActiveSpellForLastTurn',
+				// 	game.getLatestParsedState().get(150) &&
+				// 		game
+				// 			.getLatestParsedState()
+				// 			.get(150)
+				// 			.tags.toJS(),
+				// );
 				// console.log('game after parseActiveSpell', game, game.turns.toJS());
 				game = this.targetsParser.parseTargetsForLastTurn(game);
+				// console.log(
+				// 	'entity 150 parseTargetsForLastTurn',
+				// 	game.getLatestParsedState().get(150) &&
+				// 		game
+				// 			.getLatestParsedState()
+				// 			.get(150)
+				// 			.tags.toJS(),
+				// );
 				// console.log('game after parseTargets', game, game.turns.toJS());
 				if (game.turns.size === 1) {
 					game = this.mulliganParser.affectMulligan(game);
@@ -254,6 +291,14 @@ export class GameParserService {
 				game = this.narrator.populateActionTextForLastTurn(game);
 				// console.log('game after populateActionText', game, game.turns.toJS());
 				game = this.narrator.createGameStoryForLastTurn(game);
+				// console.log(
+				// 	'entity 150 createGameStoryForLastTurn',
+				// 	game.getLatestParsedState().get(150) &&
+				// 		game
+				// 			.getLatestParsedState()
+				// 			.get(150)
+				// 			.tags.toJS(),
+				// );
 				// console.log('game after createGameStory', game, game.turns.toJS());
 				// if (counter === 4) {
 				// 	counter++;

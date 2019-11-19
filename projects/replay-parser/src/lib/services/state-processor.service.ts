@@ -105,6 +105,7 @@ export class StateProcessorService {
 		for (const historyItem of futureHistory) {
 			newStateEntities = this.applyHistoryItem(newStateEntities, historyItem);
 		}
+		// console.log('after history applied 150', newStateEntities.get(150) && newStateEntities.get(150).tags.toJS());
 		return newStateEntities;
 	}
 
@@ -132,6 +133,17 @@ export class StateProcessorService {
 		// 	console.log('enriching state', historyItem);
 		// }
 		const entity: Entity = entities.get(historyItem.entityDefintion.id).update(historyItem.entityDefintion);
+		// if (entity.id === 150) {
+		// 	console.log(
+		// 		'updating with 150',
+		// 		entity,
+		// 		entity.tags.toJS(),
+		// 		entities
+		// 			.set(entity.id, entity)
+		// 			.get(150)
+		// 			.tags.toJS(),
+		// 	);
+		// }
 		return entities.set(entity.id, entity);
 	}
 

@@ -62,6 +62,11 @@ export class BaconBattleOverParser implements Parser {
 		previousAction: BaconBattleOverAction,
 		currentAction: BaconBattleOverAction,
 	): BaconBattleOverAction {
+		// console.log(
+		// 	'reduce 150',
+		// 	previousAction.entities.get(150) && previousAction.entities.get(150).tags.toJS(),
+		// 	previousAction,
+		// );
 		return previousAction;
 	}
 }

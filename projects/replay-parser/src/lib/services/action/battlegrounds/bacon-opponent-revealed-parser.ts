@@ -63,13 +63,21 @@ export class BaconOpponentRevealedParser implements Parser {
 		previousAction: BaconOpponentRevealedAction,
 		currentAction: BaconOpponentRevealedAction,
 	): BaconOpponentRevealedAction {
-		return BaconOpponentRevealedAction.create(
+		const result = BaconOpponentRevealedAction.create(
 			{
+				entities: currentAction.entities,
 				timestamp: previousAction.timestamp,
 				index: previousAction.index,
 				opponentIds: [...previousAction.opponentIds, ...currentAction.opponentIds] as readonly number[],
 			} as BaconOpponentRevealedAction,
 			this.allCards,
 		);
+		// console.log(
+		// 	'reduce 150 bacoin',
+		// 	previousAction.entities.get(150) && previousAction.entities.get(150).tags.toJS(),
+		// 	result.entities.get(150) && result.entities.get(150).tags.toJS(),
+		// 	previousAction,
+		// );
+		return result;
 	}
 }

@@ -74,19 +74,52 @@ export class ActionHelper {
 		// console.log('considering actions to merge', actions);
 		for (let i = 0; i < actions.length; i++) {
 			const currentAction = actions[i];
+			// console.log(
+			// 	'reduce 150',
+			// 	previousAction && previousAction.entities.get(150) && previousAction.entities.get(150).tags.toJS(),
+			// 	currentAction && currentAction.entities.get(150) && currentAction.entities.get(150).tags.toJS(),
+			// 	previousAction,
+			// 	currentAction,
+			// );
 			if (shouldMerge(previousAction, currentAction)) {
+				// console.log('merging');
 				const index = result.indexOf(previousAction);
 				previousAction = combiner(previousAction as T, currentAction as T);
+				// console.log(
+				// 	'new previous action',
+				// 	previousAction.entities.get(150) && previousAction.entities.get(150).tags.toJS(),
+				// 	previousAction,
+				// );
 				result[index] = previousAction;
 			} else if (shouldSwap && shouldSwap(previousAction, currentAction)) {
+				// console.log('swapping', previousAction, currentAction);
 				const index = result.indexOf(previousAction);
-				result[index] = currentAction;
-				result[index + 1] = previousAction;
+				const previousEntities = previousAction.entities;
+				const previousIndex = previousAction.index;
+				const previousTs = previousAction.timestamp;
+				const currentEntities = currentAction.entities;
+				const currentIndex = currentAction.index;
+				const currentTs = currentAction.timestamp;
+				result[index] = Object.assign(currentAction, {
+					entities: previousEntities,
+					index: previousIndex,
+					timestamp: previousTs,
+				} as Action);
+				result[index + 1] = Object.assign(previousAction, {
+					entities: currentEntities,
+					index: currentIndex,
+					timestamp: currentTs,
+				} as Action);
 			} else {
+				// console.log('doing nothing');
 				previousAction = currentAction;
 				result.push(currentAction);
 			}
 		}
+		// console.log(
+		// 	'finished',
+		// 	result[result.length - 1].entities.get(150) && result[result.length - 1].entities.get(150).tags.toJS(),
+		// );
 		return result;
 	}
 }
