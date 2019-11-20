@@ -9,6 +9,7 @@ import { CardTargetAction } from '../../models/action/card-target-action';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
+import { ActionButtonUsedAction } from '../../models/models';
 import { AllCardsService } from '../all-cards.service';
 import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
@@ -59,7 +60,7 @@ export class CardTargetParser implements Parser {
 	}
 
 	public reduce(actions: readonly Action[]): readonly Action[] {
-		return ActionHelper.combineActions<CardTargetAction | AttachingEnchantmentAction>(
+		return ActionHelper.combineActions<Action>(
 			actions,
 			(previous, current) => this.shouldMergeActions(previous, current),
 			(previous, current) => this.mergeActions(previous, current),
@@ -72,6 +73,9 @@ export class CardTargetParser implements Parser {
 				return true;
 			}
 		}
+		if (previousAction instanceof ActionButtonUsedAction) {
+			return previousAction.entityId === currentAction.originId;
+		}
 		if (previousAction instanceof AttachingEnchantmentAction && currentAction instanceof CardTargetAction) {
 			if (
 				previousAction.originId === currentAction.originId &&
@@ -83,10 +87,7 @@ export class CardTargetParser implements Parser {
 		return false;
 	}
 
-	private mergeActions(
-		previousAction: CardTargetAction | AttachingEnchantmentAction,
-		currentAction: CardTargetAction | AttachingEnchantmentAction,
-	): CardTargetAction | AttachingEnchantmentAction {
+	private mergeActions(previousAction: Action, currentAction: Action): Action {
 		if (currentAction instanceof AttachingEnchantmentAction) {
 			this.logger.warn(
 				'incorrect AttachingEnchantmentAction as current action for card-target-parser',
@@ -94,7 +95,18 @@ export class CardTargetParser implements Parser {
 			);
 			return;
 		}
-		if (previousAction instanceof CardTargetAction) {
+		if (previousAction instanceof ActionButtonUsedAction) {
+			console.log('merging actions', previousAction, currentAction);
+			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
+				entities: currentAction.entities,
+				entityId: previousAction.entityId,
+				originId: currentAction.originId,
+				targetIds: uniq([
+					...uniq(previousAction.targetIds || []),
+					...uniq(currentAction.targetIds || []),
+				]) as readonly number[],
+			} as ActionButtonUsedAction);
+		} else if (previousAction instanceof CardTargetAction) {
 			return CardTargetAction.create(
 				{
 					timestamp: previousAction.timestamp,

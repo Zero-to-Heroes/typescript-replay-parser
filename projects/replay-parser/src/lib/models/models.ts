@@ -4,6 +4,7 @@
 
 export * from './action-parser-config';
 export * from './action/action';
+export * from './action/action-button-used-action';
 export * from './action/attaching-enchantment-action';
 export * from './action/attack-action';
 export * from './action/battlegrounds/bacon-board-visual-state-action';
@@ -22,7 +23,6 @@ export * from './action/fatigue-damage-action';
 export * from './action/has-target';
 export * from './action/has-targets';
 export * from './action/healing-action';
-export * from './action/hero-power-used-action';
 export * from './action/minion-death-action';
 export * from './action/mulligan-card-action';
 export * from './action/mulligan-card-choice-action';

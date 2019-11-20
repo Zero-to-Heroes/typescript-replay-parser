@@ -21,7 +21,7 @@ import { ImagePreloaderService } from './image-preloader.service';
 import { StateProcessorService } from './state-processor.service';
 import { XmlParserService } from './xml-parser.service';
 
-const SMALL_PAUSE = 30;
+const SMALL_PAUSE = 15;
 
 @Injectable({
 	providedIn: 'root',
@@ -184,7 +184,7 @@ export class GameParserService {
 			const history: readonly HistoryItem[] = itValue.value;
 
 			if (itValue.done) {
-				console.log('history parsing over', itValue);
+				// console.log('history parsing over', itValue);
 				break;
 			}
 
@@ -199,7 +199,7 @@ export class GameParserService {
 				console.log('assign meta data to game', game);
 			}
 
-			if (game.turns.size === 3) {
+			if (game.turns.size === 6) {
 				return;
 			}
 

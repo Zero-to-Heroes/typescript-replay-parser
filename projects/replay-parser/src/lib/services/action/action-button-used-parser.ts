@@ -1,7 +1,7 @@
 import { BlockType, CardType, GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { Action } from '../../models/action/action';
-import { HeroPowerUsedAction } from '../../models/action/hero-power-used-action';
+import { ActionButtonUsedAction } from '../../models/action/action-button-used-action';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
@@ -29,9 +29,9 @@ export class HeroPowerUsedParser implements Parser {
 		if (!entity) {
 			return [];
 		}
-		if (entity.getTag(GameTag.CARDTYPE) === CardType.HERO_POWER) {
+		if (entity.getTag(GameTag.CARDTYPE) === CardType.HERO_POWER || entity.getTag(GameTag.BACON_ACTION_CARD) === 1) {
 			return [
-				HeroPowerUsedAction.create(
+				ActionButtonUsedAction.create(
 					{
 						timestamp: item.timestamp,
 						index: item.index,

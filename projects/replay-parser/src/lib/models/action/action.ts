@@ -45,8 +45,8 @@ export abstract class Action {
 			return null;
 		}
 		const originCardId = ActionHelper.getCardId(this.entities, this.originId);
-		const targetCardIds = this.targetIds.map(entityId => ActionHelper.getCardId(this.entities, entityId));
 		const originCardName = this.allCards.getCard(originCardId).name;
+		const targetCardIds = this.targetIds.map(entityId => ActionHelper.getCardId(this.entities, entityId));
 		const cardIds = targetCardIds.map(cardId => this.allCards.getCard(cardId));
 		const targetCardNames = cardIds.some(card => !card || !card.name)
 			? `${cardIds.length} cards`

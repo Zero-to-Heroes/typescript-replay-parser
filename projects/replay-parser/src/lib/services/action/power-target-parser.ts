@@ -11,7 +11,7 @@ import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
 import { MetadataHistoryItem } from '../../models/history/metadata-history-item';
-import { CardPlayedFromHandAction, SummonAction } from '../../models/models';
+import { ActionButtonUsedAction, CardPlayedFromHandAction, SummonAction } from '../../models/models';
 import { Info } from '../../models/parser/info';
 import { MetaData } from '../../models/parser/metadata';
 import { AllCardsService } from '../all-cards.service';
@@ -110,6 +110,9 @@ export class PowerTargetParser implements Parser {
 		if (previousAction instanceof PowerTargetAction) {
 			return previousAction.originId === currentAction.originId;
 		}
+		if (previousAction instanceof ActionButtonUsedAction) {
+			return previousAction.entityId === currentAction.originId;
+		}
 		// Spells that target would trigger twice otherwise
 		if (previousAction instanceof CardTargetAction) {
 			return previousAction.originId === currentAction.originId;
@@ -149,6 +152,12 @@ export class PowerTargetParser implements Parser {
 			return previousAction;
 		} else if (previousAction instanceof SummonAction) {
 			return previousAction;
+		} else if (previousAction instanceof ActionButtonUsedAction) {
+			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
+				entities: currentAction.entities,
+				entityId: previousAction.entityId,
+				targetIds: [...previousAction.targetIds, ...currentAction.targetIds] as readonly number[],
+			} as ActionButtonUsedAction);
 		} else if (previousAction instanceof CardPlayedFromHandAction) {
 			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
 				entities: currentAction.entities,
