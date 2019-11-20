@@ -199,9 +199,9 @@ export class GameParserService {
 				console.log('assign meta data to game', game);
 			}
 
-			if (game.turns.size === 6) {
-				return;
-			}
+			// if (game.turns.size === 6) {
+			// 	return;
+			// }
 
 			// const debug = game.turns.size === 33;
 			// console.log(

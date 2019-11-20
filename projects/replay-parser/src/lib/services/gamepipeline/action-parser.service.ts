@@ -6,7 +6,7 @@ import { Entity } from '../../models/game/entity';
 import { Game } from '../../models/game/game';
 import { HistoryItem } from '../../models/history/history-item';
 import { ActionParserConfig } from '../../models/models';
-import { HeroPowerUsedParser } from '../action/action-button-used-parser';
+import { ActionButtonUsedParser } from '../action/action-button-used-parser';
 import { AttachingEnchantmentParser } from '../action/attaching-enchantment-parser';
 import { AttackParser } from '../action/attack-parser';
 import { BaconBattleOverParser } from '../action/battlegrounds/bacon-battle-over-parser';
@@ -55,7 +55,7 @@ export class ActionParserService {
 			new StartOfMulliganParser(this.allCards),
 			new CardDrawParser(this.allCards, this.logger),
 			new CardBurnParser(this.allCards, this.logger),
-			new HeroPowerUsedParser(this.allCards),
+			new ActionButtonUsedParser(this.allCards),
 			new CardPlayedFromHandParser(this.allCards),
 			new SecretPlayedFromHandParser(this.allCards),
 			new AttackParser(this.allCards),

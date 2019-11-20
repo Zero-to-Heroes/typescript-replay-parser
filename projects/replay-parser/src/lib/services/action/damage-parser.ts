@@ -35,6 +35,9 @@ export class DamageParser implements Parser {
 		const previousDamageTag = entity.getTag(GameTag.DAMAGE);
 		const previousDamage = !previousDamageTag || previousDamageTag === -1 ? 0 : previousDamageTag;
 		const damageTaken = item.tag.value - previousDamage;
+		// if (entity.id === 641) {
+		// 	console.log('adding damage action', item, damageTaken, previousDamageTag, entity.tags.toJS());
+		// }
 		if (damageTaken > 0) {
 			return [
 				DamageAction.create(

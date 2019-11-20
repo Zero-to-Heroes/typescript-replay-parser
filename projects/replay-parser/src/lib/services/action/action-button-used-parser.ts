@@ -8,7 +8,7 @@ import { HistoryItem } from '../../models/history/history-item';
 import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
-export class HeroPowerUsedParser implements Parser {
+export class ActionButtonUsedParser implements Parser {
 	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {

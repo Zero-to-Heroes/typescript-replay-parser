@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CardType, GameTag } from '@firestone-hs/reference-data';
+import { CardType, GameTag, GameType } from '@firestone-hs/reference-data';
 import { fromJS, Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Entity } from '../../models/game/entity';
@@ -78,7 +78,13 @@ export class GamePopulationService {
 			gameType: historyItem.gameType,
 			scenarioID: historyItem.scenarioID,
 		});
-		const entity: GameEntity = GameEntity.create(base).update(historyItem.entityDefintion);
+		let entity: GameEntity = GameEntity.create(base).update(historyItem.entityDefintion);
+		// Battlegrounds doesn't have the right board state set at start
+		if (historyItem.gameType === GameType.GT_BATTLEGROUNDS) {
+			console.log('initializing game entity with visual state', entity.tags.toJS(), entity);
+			entity = entity.updateTag(GameTag.BOARD_VISUAL_STATE, 1);
+			console.log('updated', entity.tags.toJS(), entity);
+		}
 		return entities.set(entity.id, entity);
 	}
 
