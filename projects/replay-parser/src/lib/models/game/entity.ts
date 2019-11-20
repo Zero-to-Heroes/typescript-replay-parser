@@ -22,6 +22,10 @@ export class Entity {
 		return this.getTag(GameTag.CARDTYPE);
 	}
 
+	public getZone() {
+		return this.getTag(GameTag.ZONE);
+	}
+
 	public getTag(tag: GameTag): number {
 		return !this.tags ? -1 : this.tags.get(GameTag[tag]);
 	}
