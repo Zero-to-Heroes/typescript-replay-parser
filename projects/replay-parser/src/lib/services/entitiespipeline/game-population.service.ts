@@ -81,9 +81,9 @@ export class GamePopulationService {
 		let entity: GameEntity = GameEntity.create(base).update(historyItem.entityDefintion);
 		// Battlegrounds doesn't have the right board state set at start
 		if (historyItem.gameType === GameType.GT_BATTLEGROUNDS) {
-			console.log('initializing game entity with visual state', entity.tags.toJS(), entity);
+			// console.log('initializing game entity with visual state', entity.tags.toJS(), entity);
 			entity = entity.updateTag(GameTag.BOARD_VISUAL_STATE, 1);
-			console.log('updated', entity.tags.toJS(), entity);
+			// console.log('updated', entity.tags.toJS(), entity);
 		}
 		return entities.set(entity.id, entity);
 	}

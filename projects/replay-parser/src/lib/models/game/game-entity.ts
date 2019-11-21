@@ -38,4 +38,8 @@ export class GameEntity extends Entity {
 	public updateDamage(damage: number): GameEntity {
 		return this;
 	}
+
+	public isBattlegrounds(): boolean {
+		return this.getTag(GameTag.TECH_LEVEL_MANA_GEM) === 1;
+	}
 }

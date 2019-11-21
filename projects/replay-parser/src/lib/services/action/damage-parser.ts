@@ -9,7 +9,7 @@ import { PowerTargetAction } from '../../models/action/power-target-action';
 import { Entity } from '../../models/game/entity';
 import { HistoryItem } from '../../models/history/history-item';
 import { TagChangeHistoryItem } from '../../models/history/tag-change-history-item';
-import { CardPlayedFromHandAction } from '../../models/models';
+import { CardPlayedFromHandAction, FullEntityHistoryItem, GameEntity, GameHepler } from '../../models/models';
 import { AllCardsService } from '../all-cards.service';
 import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
@@ -35,9 +35,26 @@ export class DamageParser implements Parser {
 		const previousDamageTag = entity.getTag(GameTag.DAMAGE);
 		const previousDamage = !previousDamageTag || previousDamageTag === -1 ? 0 : previousDamageTag;
 		const damageTaken = item.tag.value - previousDamage;
-		// if (entity.id === 641) {
-		// 	console.log('adding damage action', item, damageTaken, previousDamageTag, entity.tags.toJS());
-		// }
+		// If we are in battlegrounds, things are a bit trickier. We don't want to show the
+		// damage taken by the opponent hero at the start of a battle
+		const gameEntity: GameEntity = GameHepler.getGameEntity(entitiesBeforeAction) as GameEntity;
+		if (gameEntity.isBattlegrounds()) {
+			const historyIndex = history.indexOf(item);
+			if (historyIndex > 0) {
+				const previous = history[historyIndex - 1];
+				if (
+					previous instanceof FullEntityHistoryItem &&
+					previous.entityDefintion.cardID &&
+					previous.entityDefintion.cardID.indexOf('TB_BaconShop_HP_') !== -1
+				) {
+					return [];
+				}
+			}
+		}
+
+		if (entity.id === 641) {
+			console.log('adding damage action', item, damageTaken, previousDamageTag, entity.tags.toJS());
+		}
 		if (damageTaken > 0) {
 			return [
 				DamageAction.create(

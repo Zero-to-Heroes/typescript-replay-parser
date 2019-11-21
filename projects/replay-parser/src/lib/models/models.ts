@@ -7,6 +7,7 @@ export * from './action/action';
 export * from './action/action-button-used-action';
 export * from './action/attaching-enchantment-action';
 export * from './action/attack-action';
+export * from './action/battlegrounds/bacon-battle-over-action';
 export * from './action/battlegrounds/bacon-board-visual-state-action';
 export * from './action/battlegrounds/bacon-opponent-revealed-action';
 export * from './action/card-burn-action';
