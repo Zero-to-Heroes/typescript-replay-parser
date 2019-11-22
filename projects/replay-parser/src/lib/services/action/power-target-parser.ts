@@ -156,7 +156,10 @@ export class PowerTargetParser implements Parser {
 			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
 				entities: currentAction.entities,
 				entityId: previousAction.entityId,
-				targetIds: [...previousAction.targetIds, ...currentAction.targetIds] as readonly number[],
+				targetIds: uniq([
+					...uniq(previousAction.targetIds || []),
+					...uniq(currentAction.targetIds || []),
+				]) as readonly number[],
 			} as ActionButtonUsedAction);
 		} else if (previousAction instanceof CardPlayedFromHandAction) {
 			return ActionHelper.mergeIntoFirstAction(previousAction, currentAction, {
