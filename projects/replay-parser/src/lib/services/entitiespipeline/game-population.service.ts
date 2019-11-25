@@ -21,14 +21,22 @@ import { AllCardsService } from '../all-cards.service';
 export class GamePopulationService {
 	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
 
-	public initNewEntities(game: Game, history: readonly HistoryItem[]): Map<number, Entity> {
+	public initNewEntities(
+		game: Game,
+		history: readonly HistoryItem[],
+		entityCardIdMapping: Map<number, string>,
+	): Map<number, Entity> {
 		// Map of entityId - entity definition
 
 		const entities: Map<number, Entity> = game.getLatestParsedState();
 		const entitiesAfterInit: Map<number, Entity> = this.initializeEntities(history, entities);
+		const entitiesAfterFillingCardIds: Map<number, Entity> = this.addMissingCardIds(
+			entitiesAfterInit,
+			entityCardIdMapping,
+		);
 		const entitiesAfterMissingInfo: Map<number, Entity> = this.completeMissingInformation(
 			history,
-			entitiesAfterInit,
+			entitiesAfterFillingCardIds,
 		);
 		const entitiesAfterBasicData: Map<number, Entity> = this.addBasicData(entitiesAfterMissingInfo);
 		return entitiesAfterBasicData;
@@ -52,6 +60,22 @@ export class GamePopulationService {
 			}
 		}
 		return result;
+	}
+
+	private addMissingCardIds(
+		entitiesAfterInit: Map<number, Entity>,
+		entityCardIdMapping: Map<number, string>,
+	): Map<number, Entity> {
+		return entitiesAfterInit
+			.map((entity, entityId) => {
+				if (!entity.cardID) {
+					return entity.update({
+						cardID: entityCardIdMapping.get(entityId),
+					} as EntityDefinition);
+				}
+				return entity;
+			})
+			.toMap();
 	}
 
 	private initializePlayer(historyItem: PlayerHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {

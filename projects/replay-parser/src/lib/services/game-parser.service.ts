@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
 import { Game } from '../models/game/game';
@@ -172,6 +173,28 @@ export class GameParserService {
 			return [null, SMALL_PAUSE, 'Invalid XML replay'];
 		}
 
+		console.log('preparing entity / acrd ID mapping');
+		let entityCardId: Map<number, string> = Map.of();
+		const fullEntityIdCardIdMatcher = new RegExp(/id="(.*?)" cardID="(.*?)"/g);
+		const fullEntityMatchResult = replayAsString.match(fullEntityIdCardIdMatcher);
+		for (let match of fullEntityMatchResult) {
+			const result = new RegExp(/id="(.*?)" cardID="(.*?)"/g).exec(match);
+			if (result) {
+				entityCardId = entityCardId.set(parseInt(result[1]), result[2]);
+			}
+		}
+		const showEntityIdCardIdMatcher = new RegExp(/cardID="(.*?)" entity="(.*?)"/g);
+		const showEntityMatchResult = replayAsString.match(showEntityIdCardIdMatcher);
+		for (let match of showEntityMatchResult) {
+			// console.log("updating with show', result", copy);
+			const result = new RegExp(/cardID="(.*?)" entity="(.*?)"/g).exec(match);
+			if (result) {
+				// console.log('result', result);
+				entityCardId = entityCardId.set(parseInt(result[2]), result[1]);
+			}
+		}
+		console.log('mapping done', entityCardId.size);
+
 		// Do the parsing turn by turn
 		// let history: readonly HistoryItem[];
 		const xmlParsingIterator: IterableIterator<readonly HistoryItem[]> = new XmlParserService(this.logger).parseXml(
@@ -220,7 +243,7 @@ export class GameParserService {
 				}
 			}
 
-			let entities = this.gamePopulationService.initNewEntities(game, history);
+			let entities = this.gamePopulationService.initNewEntities(game, history, entityCardId);
 			// console.log(
 			// 	'entity 150 initNewEntities',
 			// 	entities.get(150) && entities.get(150).tags.toJS(),
