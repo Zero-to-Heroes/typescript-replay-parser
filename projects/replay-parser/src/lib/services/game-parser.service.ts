@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ScenarioId } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
@@ -220,6 +221,12 @@ export class GameParserService {
 					scenarioID: gameHistory.scenarioID,
 				} as Game);
 				console.log('assign meta data to game', game);
+			}
+
+			// Battlegrounds tutorial
+			if (game.scenarioID === ScenarioId.BATTLEGROUNDS) {
+				console.log('Battlegrounds tutorial not supported, returning');
+				return [null, SMALL_PAUSE, 'Batllegrounds tutorial is not supported'];
 			}
 
 			// if (game.turns.size === 30) {
