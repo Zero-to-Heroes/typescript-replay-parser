@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
+import { of } from 'rxjs';
+import { catchError, timeout } from 'rxjs/operators';
 
 const CARDS_CDN_URL = 'https://static.zerotoheroes.com/hearthstone/jsoncards/cards.json';
 
@@ -31,33 +33,45 @@ export class AllCardsService {
 	}
 
 	public async initializeCardsDb(): Promise<void> {
+		this.logger.debug('[all-cards] initializing card db');
 		return new Promise<void>((resolve, reject) => {
 			if (this.allCards) {
-				this.logger.debug('[all-cards] already loaded all cards', this.allCards.length);
+				this.logger.debug('[all-cards] already loaded all cards');
 				resolve();
 				return;
 			}
-			this.http.get('./cards.json').subscribe(
-				(result: any[]) => {
-					this.logger.debug('[all-cards] retrieved all cards locally', result.length);
-					this.allCards = result;
-					resolve();
-				},
-				error => {
-					this.logger.debug('[all-cards] Could not retrieve cards locally, getting them from CDN', error);
-					this.http.get(CARDS_CDN_URL).subscribe(
-						(result: any[]) => {
-							this.logger.debug('[all-cards] retrieved all cards from CDN', result.length);
+			this.logger.debug('[all-cards] retrieving local cards');
+			this.http
+				.get('./cards.json')
+				.pipe(
+					timeout(200),
+					catchError((error, caught) => {
+						this.logger.debug('[all-cards] Could not retrieve cards locally, getting them from CDN', error);
+						this.http.get(CARDS_CDN_URL).subscribe(
+							(result: any[]) => {
+								this.logger.debug('[all-cards] retrieved all cards from CDN');
+								this.allCards = result;
+								resolve();
+								return of(null);
+							},
+							error => {
+								this.logger.debug('[all-cards] Could not retrieve cards from CDN', error);
+								return of(null);
+							},
+						);
+						return of(null);
+					}),
+				)
+				.subscribe(
+					(result: any[]) => {
+						if (result) {
+							this.logger.debug('[all-cards] retrieved all cards locally');
 							this.allCards = result;
 							resolve();
-						},
-						error => {
-							this.logger.debug('[all-cards] Could not retrieve cards from CDN', error);
-							reject();
-						},
-					);
-				},
-			);
+						}
+					},
+					error => {},
+				);
 		});
 	}
 }
