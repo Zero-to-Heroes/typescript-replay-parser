@@ -29,7 +29,7 @@ export class BaconBattleOverParser implements Parser {
 			return [];
 		}
 		const entity = entitiesBeforeAction.get(item.tag.entity);
-		if (entity.getCardType() !== CardType.HERO) {
+		if (!entity || entity.getCardType() !== CardType.HERO) {
 			return [];
 		}
 		if (item.tag.value === 0) {
