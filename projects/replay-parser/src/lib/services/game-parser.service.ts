@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ScenarioId } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
@@ -49,76 +48,76 @@ export class GameParserService {
 	private cancelled: boolean;
 	private processingTimeout;
 
-	public static async create(): Promise<GameParserService> {
-		const getRequest = (url: string): Promise<any> => {
-			return new Promise<any>(function(resolve, reject) {
-				console.log('preparing XMLHttpRequest replacemenet');
-				let requestIssuer;
-				try {
-					requestIssuer = XMLHttpRequest;
-				} catch (e) {
-					console.log('redefining XMLHttpRequest');
-					requestIssuer = require('xhr2');
-				}
-				const request = new requestIssuer();
-				request.onload = function() {
-					if (this.status === 200) {
-						resolve(this.response);
-					} else {
-						reject(new Error(this.statusText));
-					}
-				};
-				// request.onerror = function() {
-				// 	reject(new Error('requestIssuer Error: ' + this.statusText));
-				// };
-				request.open('GET', url);
-				request.send();
-			});
-		};
-		const cardsStr = await getRequest('https://static.zerotoheroes.com/hearthstone/jsoncards/cards.json');
-		const cardsArray: any[] = JSON.parse(cardsStr);
-		console.log('loaded', cardsArray.length, 'cards');
-		const logger: NGXLogger = {
-			debug: (message: any, ...additional: any[]) => {}, // Turn off debug logs
-			log: (message: any, ...additional: any[]) => console.log(message, additional),
-			info: (message: any, ...additional: any[]) => console.info(message, additional),
-			warn: (message: any, ...additional: any[]) => console.warn(message, additional),
-			error: (message: any, ...additional: any[]) => console.error(message, additional),
-		} as NGXLogger;
-		const httpClient: HttpClient = {} as HttpClient;
-		const allCards = new AllCardsService(httpClient, logger);
-		allCards['allCards'] = cardsArray;
-		const stateProcessor = new StateProcessorService(logger);
-		const actionParser = new ActionParserService(logger, allCards, stateProcessor);
-		const turnParser = new TurnParserService(logger);
-		const imagePreloader = new ImagePreloaderService(logger, allCards);
-		const gamePopulationService = new GamePopulationService(allCards, logger);
-		const gameStateParser = new GameStateParserService();
-		const gameInitializer = new GameInitializerService();
-		const activePlayerParser = new ActivePlayerParserService(logger, allCards);
-		const activeSpellParser = new ActiveSpellParserService(logger, allCards);
-		const targetsParser = new TargetsParserService(logger, allCards);
-		const mulliganParser = new MulliganParserService(logger, allCards);
-		const endGameParser = new EndGameParserService(logger, allCards);
-		const narrator = new NarratorService(logger);
-		return new GameParserService(
-			allCards,
-			actionParser,
-			turnParser,
-			imagePreloader,
-			gamePopulationService,
-			gameStateParser,
-			gameInitializer,
-			activePlayerParser,
-			activeSpellParser,
-			targetsParser,
-			mulliganParser,
-			endGameParser,
-			narrator,
-			logger,
-			stateProcessor,
-		);
-	}
+	// public static async create(): Promise<GameParserService> {
+	// 	const getRequest = (url: string): Promise<any> => {
+	// 		return new Promise<any>(function(resolve, reject) {
+	// 			console.log('preparing XMLHttpRequest replacemenet');
+	// 			let requestIssuer;
+	// 			try {
+	// 				requestIssuer = XMLHttpRequest;
+	// 			} catch (e) {
+	// 				console.log('redefining XMLHttpRequest');
+	// 				requestIssuer = require('xhr2');
+	// 			}
+	// 			const request = new requestIssuer();
+	// 			request.onload = function() {
+	// 				if (this.status === 200) {
+	// 					resolve(this.response);
+	// 				} else {
+	// 					reject(new Error(this.statusText));
+	// 				}
+	// 			};
+	// 			// request.onerror = function() {
+	// 			// 	reject(new Error('requestIssuer Error: ' + this.statusText));
+	// 			// };
+	// 			request.open('GET', url);
+	// 			request.send();
+	// 		});
+	// 	};
+	// 	const cardsStr = await getRequest('https://static.zerotoheroes.com/hearthstone/jsoncards/cards.json');
+	// 	const cardsArray: any[] = JSON.parse(cardsStr);
+	// 	console.log('loaded', cardsArray.length, 'cards');
+	// 	const logger: NGXLogger = {
+	// 		debug: (message: any, ...additional: any[]) => {}, // Turn off debug logs
+	// 		log: (message: any, ...additional: any[]) => console.log(message, additional),
+	// 		info: (message: any, ...additional: any[]) => console.info(message, additional),
+	// 		warn: (message: any, ...additional: any[]) => console.warn(message, additional),
+	// 		error: (message: any, ...additional: any[]) => console.error(message, additional),
+	// 	} as NGXLogger;
+	// 	const httpClient: HttpClient = {} as HttpClient;
+	// 	const allCards = new AllCardsService(httpClient, logger);
+	// 	allCards['allCards'] = cardsArray;
+	// 	const stateProcessor = new StateProcessorService(logger);
+	// 	const actionParser = new ActionParserService(logger, allCards, stateProcessor);
+	// 	const turnParser = new TurnParserService(logger);
+	// 	const imagePreloader = new ImagePreloaderService(logger, allCards);
+	// 	const gamePopulationService = new GamePopulationService(allCards, logger);
+	// 	const gameStateParser = new GameStateParserService();
+	// 	const gameInitializer = new GameInitializerService();
+	// 	const activePlayerParser = new ActivePlayerParserService(logger, allCards);
+	// 	const activeSpellParser = new ActiveSpellParserService(logger, allCards);
+	// 	const targetsParser = new TargetsParserService(logger, allCards);
+	// 	const mulliganParser = new MulliganParserService(logger, allCards);
+	// 	const endGameParser = new EndGameParserService(logger, allCards);
+	// 	const narrator = new NarratorService(logger);
+	// 	return new GameParserService(
+	// 		allCards,
+	// 		actionParser,
+	// 		turnParser,
+	// 		imagePreloader,
+	// 		gamePopulationService,
+	// 		gameStateParser,
+	// 		gameInitializer,
+	// 		activePlayerParser,
+	// 		activeSpellParser,
+	// 		targetsParser,
+	// 		mulliganParser,
+	// 		endGameParser,
+	// 		narrator,
+	// 		logger,
+	// 		stateProcessor,
+	// 	);
+	// }
 
 	public async parse(
 		replayAsString: string,

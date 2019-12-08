@@ -30,6 +30,12 @@
       ],
       "hs-replay-xml-parser/*": [
         "dist/hs-replay-xml-parser/*"
+      ],
+      "coliseum-components": [
+        "dist/coliseum-components"
+      ],
+      "coliseum-components/*": [
+        "dist/coliseum-components/*"
       ]
     }
   },

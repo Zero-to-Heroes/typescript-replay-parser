@@ -1,0 +1,13 @@
+{
+	"name": "@firestone-hs/coliseum-components",
+	"version": "0.0.3",
+	"peerDependencies": {
+		"@angular/animations": "~8.2.9",
+		"@angular/common": "^8.2.9",
+		"@angular/core": "^8.2.9",
+		"@angular/forms": "8.2.9",
+		"@firestone-hs/replay-parser": "^1.1.5",
+		"ng2-fittext": "^1.2.8",
+		"ngx-logger": "3.3.11"
+	}
+}
