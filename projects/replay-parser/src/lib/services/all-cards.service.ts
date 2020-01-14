@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { of } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
+import { ReferenceCard } from '../models/reference-cards/reference-card';
 
 const CARDS_CDN_URL = 'https://static.zerotoheroes.com/hearthstone/jsoncards/cards.json';
 
@@ -10,7 +11,7 @@ const CARDS_CDN_URL = 'https://static.zerotoheroes.com/hearthstone/jsoncards/car
 	providedIn: 'root',
 })
 export class AllCardsService {
-	private allCards: any[];
+	private allCards: ReferenceCard[];
 
 	constructor(private http: HttpClient, private logger: NGXLogger) {
 		// We don't call it in the constructor because we want the app to be in control
@@ -20,15 +21,24 @@ export class AllCardsService {
 
 	// We keep this synchronous because we ensure, in the game init pipeline, that loading cards
 	// is the first thing we do
-	public getCard(id: string): any {
+	public getCard(id: string): ReferenceCard {
 		const candidates = this.allCards.filter(card => card.id === id);
 		if (!candidates || candidates.length === 0) {
 			this.logger.debug('Could not find card for id', id);
-			return {};
+			return {} as ReferenceCard;
 		}
 		return candidates[0];
 	}
-	public getCards(): any[] {
+
+	public getCardFromDbfId(dbfId: number): ReferenceCard {
+		return this.allCards.find(card => card.dbfId === dbfId);
+	}
+
+	public getCardsFromDbfIds(dbfIds: number[]): ReferenceCard[] {
+		return this.allCards.filter(card => dbfIds.indexOf(card.dbfId) !== -1);
+	}
+
+	public getCards(): ReferenceCard[] {
 		return this.allCards;
 	}
 
