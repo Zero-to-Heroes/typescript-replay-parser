@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 import { ReferenceCard } from '../models/reference-cards/reference-card';
 
-const CARDS_CDN_URL = 'https://static.zerotoheroes.com/hearthstone/jsoncards/cards.json';
+const CARDS_CDN_URL = 'https://static.zerotoheroes.com/hearthstone/jsoncards/cards.json?v=2';
 
 @Injectable({
 	providedIn: 'root',
