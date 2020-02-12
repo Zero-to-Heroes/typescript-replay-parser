@@ -22,6 +22,10 @@ export class AllCardsService {
 	// We keep this synchronous because we ensure, in the game init pipeline, that loading cards
 	// is the first thing we do
 	public getCard(id: string): ReferenceCard {
+		if (!this.allCards) {
+			this.logger.debug('getCard', 'cards not initialized yet', id);
+			return {} as ReferenceCard;
+		}
 		const candidates = this.allCards.filter(card => card.id === id);
 		if (!candidates || candidates.length === 0) {
 			this.logger.debug('Could not find card for id', id);
@@ -31,10 +35,18 @@ export class AllCardsService {
 	}
 
 	public getCardFromDbfId(dbfId: number): ReferenceCard {
+		if (!this.allCards) {
+			this.logger.debug('getCardFromDbfId', 'cards not initialized yet', dbfId);
+			return {} as ReferenceCard;
+		}
 		return this.allCards.find(card => card.dbfId === dbfId);
 	}
 
 	public getCardsFromDbfIds(dbfIds: number[]): ReferenceCard[] {
+		if (!this.allCards) {
+			this.logger.debug('getCardsFromDbfIds', 'cards not initialized yet', dbfIds);
+			return [];
+		}
 		return this.allCards.filter(card => dbfIds.indexOf(card.dbfId) !== -1);
 	}
 
