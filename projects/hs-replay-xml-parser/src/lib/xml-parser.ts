@@ -11,6 +11,9 @@ import { PlayerOpponentValues } from './model/player-opponent-values';
 import { Replay } from './model/replay';
 
 export const parseHsReplayString = (replayString: string): Replay => {
+	if (!replayString || replayString.length === 0) {
+		return null;
+	}
 	// http://effbot.org/zone/element-xpath.htm
 	// http://effbot.org/zone/pythondoc-elementtree-ElementTree.htm
 	const elementTree = parse(replayString);
