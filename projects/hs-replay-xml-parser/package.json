@@ -1,6 +1,6 @@
 {
 	"name": "@firestone-hs/hs-replay-xml-parser",
-	"version": "0.0.19",
+	"version": "0.0.32",
 	"peerDependencies": {
 		"@firestone-hs/reference-data": "0.1.0",
 		"@types/elementtree": "^0.1.0",
