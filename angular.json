@@ -211,6 +211,41 @@
                     }
                 }
             }
+        },
+        "achievements": {
+            "projectType": "library",
+            "root": "projects/achievements",
+            "sourceRoot": "projects/achievements/src",
+            "prefix": "lib",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-ng-packagr:build",
+                    "options": {
+                        "tsConfig": "projects/achievements/tsconfig.lib.json",
+                        "project": "projects/achievements/ng-package.json"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/achievements/src/test.ts",
+                        "tsConfig": "projects/achievements/tsconfig.spec.json",
+                        "karmaConfig": "projects/achievements/karma.conf.js"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/achievements/tsconfig.lib.json",
+                            "projects/achievements/tsconfig.spec.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
         }
     },
     "defaultProject": "replay-action-parser"

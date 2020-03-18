@@ -12,16 +12,18 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	const elementTree = parse(replayString);
 	// console.log('elementTree');
 
-	const mainPlayerElement = elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'true');
+	const mainPlayerElement =
+		elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'true') ||
+		elementTree.findall('.//Player')[0]; // Should never happen, but a fallback just in case
 	const mainPlayerId = parseInt(mainPlayerElement.get('playerID'));
 	const mainPlayerName = mainPlayerElement.get('name');
 	const mainPlayerEntityId = mainPlayerElement.get('id');
 	const mainPlayerCardId = extractPlayerCardId(mainPlayerElement, mainPlayerEntityId, elementTree);
 	// console.log('mainPlayer');
 
-	const opponentPlayerElement = elementTree
-		.findall('.//Player')
-		.find(player => player.get('isMainPlayer') === 'false');
+	const opponentPlayerElement =
+		elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'false') ||
+		elementTree.findall('.//Player')[1];
 	const opponentPlayerId = parseInt(opponentPlayerElement.get('playerID'));
 	const opponentPlayerName = opponentPlayerElement.get('name');
 	const opponentPlayerEntityId = opponentPlayerElement.get('id');
