@@ -63,6 +63,3 @@ export * from './parser/entity-tag';
 export * from './parser/info';
 export * from './parser/metadata';
 export * from './parser/option';
-export * from './reference-cards/rarity.type';
-export * from './reference-cards/reference-card';
-export * from './reference-cards/reference-player-class';

@@ -1,6 +1,6 @@
 {
 	"name": "@firestone-hs/replay-parser",
-	"version": "1.1.13",
+	"version": "1.1.16",
 	"main": "bundles/firestone-replay-parser.umd.js",
 	"module": "fesm5/firestone-replay-parser.js",
 	"es2015": "fesm2015/firestone-replay-parser.js",
@@ -15,10 +15,11 @@
 		"@angular/common": "^8.2.9",
 		"@angular/core": "^8.2.9",
 		"@angular/platform-browser": "~8.2.9",
-		"@firestone-hs/reference-data": "0.1.23",
+		"@firestone-hs/reference-data": "0.1.25",
 		"immutable": "3.8.2",
 		"lodash-es": "4.17.15",
 		"ngx-logger": "3.3.11",
+		"node-fetch": "^2.6.0",
 		"sax": "1.2.4",
 		"tslib": "^1.9.0",
 		"rxjs": "6.4.0"
