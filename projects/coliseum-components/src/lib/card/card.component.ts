@@ -11,6 +11,7 @@ import { NGXLogger } from 'ngx-logger';
 			class="card"
 			[ngClass]="{ 'highlight': _option }"
 			cardResize
+			[aspectRatio]="aspectRatio"
 			cardTooltip
 			[tooltipEntity]="_entity"
 			[hasTooltip]="_showCard && _hasTooltip"
@@ -44,6 +45,8 @@ import { NGXLogger } from 'ngx-logger';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
+	@Input() aspectRatio: number = 120.0 / 187;
+
 	_entity: Entity;
 	_showCard = true;
 	_controller: Entity;

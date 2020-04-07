@@ -1,9 +1,11 @@
-import { Directive, ElementRef, HostListener, ViewRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Directive, ElementRef, HostListener, Input, ViewRef } from '@angular/core';
 
 @Directive({
 	selector: '[cardResize]',
 })
 export class CardResizeDirective implements AfterViewInit {
+	@Input() aspectRatio: number = 120.0 / 187;
+
 	constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {}
 
 	ngAfterViewInit() {
@@ -19,7 +21,7 @@ export class CardResizeDirective implements AfterViewInit {
 
 	private resize() {
 		const el = this.el.nativeElement;
-		const width = (120.0 / 187) * el.getBoundingClientRect().height;
+		const width = this.aspectRatio * el.getBoundingClientRect().height;
 		const textEl = this.el.nativeElement;
 		textEl.style.width = width + 'px';
 		if (!(this.cdr as ViewRef).destroyed) {
