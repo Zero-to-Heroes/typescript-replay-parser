@@ -1,55 +1,33 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "paths": {
-      "replay-parser": [
-        "dist/replay-parser"
-      ],
-      "replay-parser/*": [
-        "dist/replay-parser/*"
-      ],
-      "hs-replay-xml-parser": [
-        "dist/hs-replay-xml-parser"
-      ],
-      "hs-replay-xml-parser/*": [
-        "dist/hs-replay-xml-parser/*"
-      ],
-      "coliseum-components": [
-        "dist/coliseum-components"
-      ],
-      "coliseum-components/*": [
-        "dist/coliseum-components/*"
-      ],
-      "achievements": [
-        "dist/achievements"
-      ],
-      "achievements/*": [
-        "dist/achievements/*"
-      ]
-    }
-  },
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
-  },
-  "exclude": [
-    "dist"
-  ]
+	"compileOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./",
+		"outDir": "./dist/out-tsc",
+		"sourceMap": true,
+		"declaration": false,
+		"downlevelIteration": true,
+		"experimentalDecorators": true,
+		"module": "esnext",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"importHelpers": true,
+		"target": "es2015",
+		"typeRoots": ["node_modules/@types"],
+		"lib": ["es2018", "dom"],
+		"paths": {
+			"replay-parser": ["dist/replay-parser"],
+			"replay-parser/*": ["dist/replay-parser/*"],
+			"hs-replay-xml-parser": ["dist/hs-replay-xml-parser"],
+			"hs-replay-xml-parser/*": ["dist/hs-replay-xml-parser/*"],
+			"coliseum-components": ["dist/coliseum-components"],
+			"coliseum-components/*": ["dist/coliseum-components/*"],
+			"achievements": ["dist/achievements"],
+			"achievements/*": ["dist/achievements/*"]
+		}
+	},
+	"angularCompilerOptions": {
+		"fullTemplateTypeCheck": true,
+		"strictInjectionParameters": true
+	},
+	"exclude": ["dist"]
 }

@@ -1,4 +1,5 @@
-import { CardType, GameTag, GameType, PlayState } from '@firestone-hs/reference-data';
+import { BnetRegion, CardType, GameTag, GameType, PlayState } from '@firestone-hs/reference-data';
+import bigInt from 'big-integer';
 import { Element, ElementTree, parse } from 'elementtree';
 import { Replay } from './model/replay';
 
@@ -19,6 +20,10 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	const mainPlayerName = mainPlayerElement.get('name');
 	const mainPlayerEntityId = mainPlayerElement.get('id');
 	const mainPlayerCardId = extractPlayerCardId(mainPlayerElement, mainPlayerEntityId, elementTree);
+	const region: BnetRegion = bigInt(parseInt(mainPlayerElement.get('accountHi')))
+		.shiftRight(32)
+		.and(0xff)
+		.toJSNumber();
 	// console.log('mainPlayer');
 
 	const opponentPlayerElement =
@@ -51,6 +56,7 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 		opponentPlayerId: opponentPlayerId,
 		opponentPlayerName: opponentPlayerName,
 		opponentPlayerCardId: opponentPlayerCardId,
+		region: region,
 		gameFormat: gameFormat,
 		gameType: gameMode,
 		scenarioId: scenarioId,
