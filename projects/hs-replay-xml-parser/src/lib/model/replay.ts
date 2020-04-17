@@ -15,5 +15,5 @@ export class Replay {
 	readonly scenarioId: number;
 	readonly result: string;
 	readonly additionalResult: string;
-	readonly playCoin: string;
+	readonly playCoin: 'play' | 'coin';
 }
