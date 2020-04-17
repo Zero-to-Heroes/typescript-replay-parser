@@ -61,7 +61,7 @@ export class CardTextComponent {
 		this.text = undefined;
 		const originalCard = this.cards.getCard(cardId);
 		if (!originalCard.text) {
-			if (!(this.cdr as ViewRef).destroyed) {
+			if (!(this.cdr as ViewRef)?.destroyed) {
 				this.cdr.detectChanges();
 			}
 			return;
@@ -103,7 +103,7 @@ export class CardTextComponent {
 		// Text is not the same color for premium cards
 		this.premium = this._entity.getTag(GameTag.PREMIUM) === 1;
 
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}
@@ -115,7 +115,7 @@ export class CardTextComponent {
 
 	private resizeText() {
 		this.dirtyFlag = !this.dirtyFlag;
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}

@@ -94,7 +94,7 @@ export class BoardCardStatsComponent {
 		this.healthLeft = this._health - this._damage;
 		this.updateAttackClass(originalCard);
 		this.updateHealthClass(originalCard);
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}
@@ -127,7 +127,7 @@ export class BoardCardStatsComponent {
 		const fontSize = 0.2 * el.getBoundingClientRect().width;
 		const textEl = this.elRef.nativeElement.querySelector('.card-stats');
 		textEl.style.fontSize = fontSize + 'px';
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}

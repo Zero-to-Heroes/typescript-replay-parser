@@ -62,7 +62,7 @@ export class CardCostComponent {
 		} else if (this._cost > originalCost) {
 			this.costClass = 'higher-cost';
 		}
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}

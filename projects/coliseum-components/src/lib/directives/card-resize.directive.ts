@@ -24,14 +24,14 @@ export class CardResizeDirective implements AfterViewInit {
 		const width = this.aspectRatio * el.getBoundingClientRect().height;
 		const textEl = this.el.nativeElement;
 		textEl.style.width = width + 'px';
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 		setTimeout(() => {
 			el.dispatchEvent(new Event('card-resize', { bubbles: false }));
 			setTimeout(() => {
 				this.el.nativeElement.style.opacity = 1;
-				if (!(this.cdr as ViewRef).destroyed) {
+				if (!(this.cdr as ViewRef)?.destroyed) {
 					this.cdr.detectChanges();
 				}
 			});

@@ -1,12 +1,12 @@
 import {
-	AfterViewInit,
-	ChangeDetectionStrategy,
-	ChangeDetectorRef,
-	Component,
-	ElementRef,
-	HostListener,
-	Input,
-	ViewRef,
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    HostListener,
+    Input,
+    ViewRef
 } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
 import { NGXLogger } from 'ngx-logger';
@@ -71,7 +71,7 @@ export class CoinCostComponent implements AfterViewInit {
 		} else if (this._cost > originalCost) {
 			this.costClass = 'higher-cost';
 		}
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}
@@ -85,7 +85,7 @@ export class CoinCostComponent implements AfterViewInit {
 		const fontSize = 0.6 * el.getBoundingClientRect().width;
 		const textEl = this.elRef.nativeElement.querySelector('.cost');
 		textEl.style.fontSize = fontSize + 'px';
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 	}

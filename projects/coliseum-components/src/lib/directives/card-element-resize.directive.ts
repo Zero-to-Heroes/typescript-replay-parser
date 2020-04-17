@@ -15,7 +15,7 @@ export class CardElementResizeDirective implements AfterViewInit {
 
 	ngAfterViewInit() {
 		this.elRef.nativeElement.style.opacity = 0;
-		if (!(this.cdr as ViewRef).destroyed) {
+		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
 		if (!this.isCardElement) {
@@ -40,7 +40,7 @@ export class CardElementResizeDirective implements AfterViewInit {
 			} else {
 				this.elRef.nativeElement.style.removeProperty('opacity');
 			}
-			if (!(this.cdr as ViewRef).destroyed) {
+			if (!(this.cdr as ViewRef)?.destroyed) {
 				this.cdr.detectChanges();
 			}
 		}
