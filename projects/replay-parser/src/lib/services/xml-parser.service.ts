@@ -51,6 +51,10 @@ export class XmlParserService {
 
 	public *parseXml(xmlAsString: string): IterableIterator<readonly HistoryItem[]> {
 		this.reset();
+		if (!xmlAsString) {
+			console.error('[xml-parser] no xmlAsString provided');
+			return null;
+		}
 
 		const testSaxes = new SaxesParser({} as NotForced);
 		testSaxes.onopentag = (tag: SaxesTag) => this.onOpenTag(tag);
