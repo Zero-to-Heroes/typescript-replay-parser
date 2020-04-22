@@ -152,14 +152,18 @@ export class GameParserService {
 
 	private buildObservableFunction(observer, iterator: IterableIterator<[Game, number, string]>) {
 		// this.logger.info('calling next iteration');
-		const itValue = iterator.next();
-		// this.logger.info('calling next obersable', itValue, itValue.value);
-		observer.next([itValue.value[0], itValue.value[2], itValue.done]);
-		if (!itValue.done && !this.cancelled) {
-			this.processingTimeout = setTimeout(
-				() => this.buildObservableFunction(observer, iterator),
-				itValue.value[1],
-			);
+		try {
+			const itValue = iterator.next();
+			// this.logger.info('calling next obersable', itValue, itValue.value);
+			observer.next([itValue.value[0], itValue.value[2], itValue.done]);
+			if (!itValue.done && !this.cancelled) {
+				this.processingTimeout = setTimeout(
+					() => this.buildObservableFunction(observer, iterator),
+					itValue.value[1],
+				);
+			}
+		} catch (e) {
+			console.error('[game-parser] Exception in buildObservableFunction', e);
 		}
 	}
 
