@@ -26,7 +26,7 @@ export class CardRarityComponent {
 		}
 		this.image = `https://static.zerotoheroes.com/hearthstone/asset/manastorm/card/rarity-${CardRarity[
 			cardRarity
-		].toLowerCase()}.png`;
+		]?.toLowerCase()}.png`;
 	}
 
 	private buildRarity(originalCard): CardRarity {

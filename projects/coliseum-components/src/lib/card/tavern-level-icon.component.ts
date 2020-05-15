@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewRef } from '@angular/core';
 
 @Component({
 	selector: 'tavern-level-icon',
@@ -23,8 +23,18 @@ export class TavernLevelIconComponent {
 	stars: readonly number[];
 
 	@Input() set level(value: number) {
+		if (value === this.stars?.length) {
+			return;
+		}
 		this.stars = Array(value)
 			.fill(0)
 			.map((x, i) => i);
+		if (!(this.cdr as ViewRef)?.destroyed) {
+			this.cdr.detectChanges();
+		}
+	}
+
+	constructor(private readonly cdr: ChangeDetectorRef) {
+		cdr.detach();
 	}
 }

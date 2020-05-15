@@ -54,7 +54,10 @@ export class CardFrameComponent {
 
 	private buildFrame(cardClass: CardClass, cardType: CardType, premium: boolean): string {
 		const strClass =
-			cardType === CardType.HERO_POWER ? '' : premium ? '-premium' : '-' + CardClass[cardClass].toLowerCase();
-		return `frame-${CardType[cardType].toLowerCase()}${strClass}`;
+			cardType === CardType.HERO_POWER ? '' : premium ? '-premium' : '-' + CardClass[cardClass]?.toLowerCase();
+		if (!CardType[cardType]) {
+			console.warn('unknown card type', cardType)
+		}
+		return `frame-${CardType[cardType]?.toLowerCase()}${strClass}`;
 	}
 }
