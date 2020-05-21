@@ -218,6 +218,9 @@ export class GamePopulationService {
 	private addBasicData(entities: Map<number, Entity>): Map<number, Entity> {
 		return entities
 			.map((value: Entity) => {
+				if (!value.cardID) {
+					return value;
+				}
 				const card = this.allCards.getCard(value.cardID);
 				let newTags = Map<string, number>();
 				if (card) {
