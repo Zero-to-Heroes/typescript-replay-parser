@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'damage',
@@ -19,10 +18,10 @@ export class DamageComponent {
 	prefix: string;
 	_amount: number;
 
-	constructor(private elRef: ElementRef, private logger: NGXLogger, private cdr: ChangeDetectorRef) {}
+	constructor(private elRef: ElementRef, private cdr: ChangeDetectorRef) {}
 
 	@Input('amount') set amount(value: number) {
-		this.logger.debug('[damage] setting amount', value);
+		// console.log('[damage] setting amount', value);
 		this._amount = Math.abs(value);
 		if (value >= 0) {
 			this.prefix = '-';

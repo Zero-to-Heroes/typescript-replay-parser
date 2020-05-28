@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CardRarity } from '@firestone-hs/reference-data';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-rarity',
@@ -14,10 +13,10 @@ import { NGXLogger } from 'ngx-logger';
 export class CardRarityComponent {
 	image: string;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[card-rarity] setting cardId', cardId);
+		// console.log('[card-rarity] setting cardId', cardId);
 		this.image = undefined;
 		const originalCard = this.cards.getCard(cardId);
 		const cardRarity: CardRarity = this.buildRarity(originalCard);

@@ -2,7 +2,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CardClass, CardType, GameTag } from '@firestone-hs/reference-data';
 import { AllCardsService, Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-on-board',
@@ -70,13 +69,13 @@ export class CardOnBoardComponent {
 
 	in: string;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input() isMainPlayer: boolean;
 	@Input() isRecruitPhase: boolean;
 
 	@Input('entity') set entity(entity: Entity) {
-		this.logger.debug('[card-on-board] setting entity', entity.id, entity, entity.tags.toJS());
+		// console.log('[card-on-board] setting entity', entity.id, entity, entity.tags.toJS());
 
 		this._entity = entity;
 
@@ -117,7 +116,7 @@ export class CardOnBoardComponent {
 	}
 
 	@Input('enchantments') set enchantments(value: readonly Entity[]) {
-		this.logger.debug('[card-on-board] setting enchantments', value);
+		// console.log('[card-on-board] setting enchantments', value);
 		this._enchantments = value;
 	}
 }

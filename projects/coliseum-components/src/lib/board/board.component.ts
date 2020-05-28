@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'board',
@@ -28,23 +27,23 @@ export class BoardComponent {
 	_enchantmentCandidates: readonly Entity[];
 	_options: readonly number[];
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input() isMainPlayer: boolean;
 	@Input() isRecruitPhase: boolean;
 
 	@Input('entities') set entities(entities: readonly Entity[]) {
-		this.logger.debug('[board] setting new entities', entities);
+		// console.log('[board] setting new entities', entities);
 		this._entities = entities;
 	}
 
 	@Input('enchantmentCandidates') set enchantmentCandidates(value: readonly Entity[]) {
-		this.logger.debug('[board] setting enchantmentCandidates', value);
+		// console.log('[board] setting enchantmentCandidates', value);
 		this._enchantmentCandidates = value;
 	}
 
 	@Input('options') set options(value: readonly number[]) {
-		this.logger.debug('[board] setting options', value);
+		// console.log('[board] setting options', value);
 		this._options = value;
 	}
 

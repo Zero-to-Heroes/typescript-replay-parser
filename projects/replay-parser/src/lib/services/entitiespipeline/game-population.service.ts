@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CardType, GameTag, GameType } from '@firestone-hs/reference-data';
 import { fromJS, Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Entity } from '../../models/game/entity';
 import { GameEntity } from '../../models/game/game-entity';
 import { PlayerEntity } from '../../models/game/player-entity';
@@ -19,7 +18,7 @@ import { AllCardsService } from '../all-cards.service';
 	providedIn: 'root',
 })
 export class GamePopulationService {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public initNewEntities(
 		game: Game,

@@ -2,7 +2,6 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'hero-power',
@@ -74,10 +73,10 @@ export class HeroPowerComponent {
 	premium: boolean;
 	_option: boolean;
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('heroPower') set heroPower(heroPower: Entity) {
-		this.logger.debug('[hero-power] setting new heroPower', heroPower, heroPower && heroPower.tags.toJS());
+		// console.log('[hero-power] setting new heroPower', heroPower, heroPower && heroPower.tags.toJS());
 		this.entity = heroPower;
 		if (!heroPower) {
 			// console.log('no hero power, returning');

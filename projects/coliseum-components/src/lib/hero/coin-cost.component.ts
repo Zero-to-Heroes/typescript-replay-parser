@@ -1,15 +1,5 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    HostListener,
-    Input,
-    ViewRef
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, ViewRef } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'coin-cost',
@@ -31,7 +21,7 @@ export class CoinCostComponent implements AfterViewInit {
 	constructor(
 		private cards: AllCardsService,
 		private elRef: ElementRef,
-		private logger: NGXLogger,
+		
 		private cdr: ChangeDetectorRef,
 	) {}
 

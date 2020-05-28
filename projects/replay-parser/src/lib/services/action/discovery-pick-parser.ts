@@ -1,5 +1,4 @@
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { DiscoverAction } from '../../models/action/discover-action';
 import { DiscoveryPickAction } from '../../models/action/discovery-pick-action';
@@ -12,7 +11,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class DiscoveryPickParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof ChosenEntityHistoryItem && item.tag.cards && item.tag.cards.length === 1;
@@ -52,7 +51,7 @@ export class DiscoveryPickParser implements Parser {
 		} else if (currentAction instanceof DiscoveryPickAction) {
 			// Mulligan is handled differently
 			if (!(previousAction instanceof StartTurnAction)) {
-				this.logger.warn('removing discovery pick action', previousAction);
+				console.warn('removing discovery pick action', previousAction);
 			}
 			return true;
 		}

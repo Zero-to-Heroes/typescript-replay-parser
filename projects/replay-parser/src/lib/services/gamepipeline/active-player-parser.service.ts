@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { Game } from '../../models/game/game';
 import { Turn } from '../../models/game/turn';
@@ -9,7 +8,7 @@ import { AllCardsService } from '../all-cards.service';
 	providedIn: 'root',
 })
 export class ActivePlayerParserService {
-	constructor(private logger: NGXLogger, private allCards: AllCardsService) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public parseActivePlayerForLastTurn(game: Game): Game {
 		let turns = game.turns;

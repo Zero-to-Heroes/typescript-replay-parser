@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { Entity } from '../../models/game/entity';
 import { Game } from '../../models/game/game';
@@ -41,11 +40,7 @@ import { StateProcessorService } from '../state-processor.service';
 	providedIn: 'root',
 })
 export class ActionParserService {
-	constructor(
-		private logger: NGXLogger,
-		private allCards: AllCardsService,
-		private stateProcessorService: StateProcessorService,
-	) {}
+	constructor(private allCards: AllCardsService, private stateProcessorService: StateProcessorService) {}
 
 	private registerActionParsers(config: ActionParserConfig): Parser[] {
 		return [
@@ -196,7 +191,7 @@ export class ActionParserService {
 				return Game.createGame(game, { entitiesBeforeMulligan: previousStateEntities } as Game);
 			}
 			if (!game.turns.get(currentTurn)) {
-				this.logger.warn('could not get current turn', currentTurn, game.turns.toJS());
+				console.warn('could not get current turn', currentTurn, game.turns.toJS());
 			}
 			const turnWithNewActions = game.turns.get(currentTurn).update({ actions: actionsForTurn });
 			// if (debug) {
@@ -222,8 +217,8 @@ export class ActionParserService {
 			// console.log('oriejg', result.getLatestParsedState().toJS());
 			return result;
 		} catch (e) {
-			this.logger.warn(currentTurn, game.turns.toJS(), actionsForTurn);
-			this.logger.error(e);
+			console.warn(currentTurn, game.turns.toJS(), actionsForTurn);
+			console.error(e);
 			return game;
 		}
 		// this.logger.log('took', Date.now() - start, 'ms for parseActions');

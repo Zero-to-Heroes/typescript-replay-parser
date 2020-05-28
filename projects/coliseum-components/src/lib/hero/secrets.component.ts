@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'secrets',
@@ -30,10 +29,10 @@ export class SecretsComponent {
 	_quests: readonly Entity[];
 	_secrets: readonly Entity[];
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('secrets') set secrets(value: readonly Entity[]) {
-		this.logger.debug('[secrets] setting secrets', value);
+		// console.log('[secrets] setting secrets', value);
 		this._secrets = value.filter(entity => entity.getTag(GameTag.QUEST) !== 1) || [];
 		this._quests = value.filter(entity => entity.getTag(GameTag.QUEST) === 1) || [];
 	}

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CardClass, GameTag } from '@firestone-hs/reference-data';
 import { AllCardsService, Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'secret',
@@ -20,10 +19,10 @@ export class SecretComponent {
 	image: string;
 	markImage = 'https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/secrets/secret_question_mark.png';
 
-	constructor(private logger: NGXLogger, private cards: AllCardsService) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('entity') set entity(value: Entity) {
-		this.logger.debug('[secret] setting new entity', value, value.tags.toJS());
+		// console.log('[secret] setting new entity', value, value.tags.toJS());
 		this._entity = value;
 		this.image = undefined;
 		if (value) {
@@ -35,7 +34,7 @@ export class SecretComponent {
 				const card = this.cards.getCard(value.cardID);
 				this.image = this.buildImageFromDb(card.cardClass);
 			} else {
-				this.logger.error('[secret] Could not assign player class', value, value.tags.toJS());
+				console.error('[secret] Could not assign player class', value, value.tags.toJS());
 			}
 		}
 	}
@@ -51,7 +50,7 @@ export class SecretComponent {
 			case CardClass.ROGUE:
 				return this.getImage('secret_rogue');
 			default:
-				this.logger.error('[secret] invalid class requested', playerClass);
+				console.error('[secret] invalid class requested', playerClass);
 				return '';
 		}
 	}
@@ -67,7 +66,7 @@ export class SecretComponent {
 			case 'ROGUE':
 				return this.getImage('secret_rogue');
 			default:
-				this.logger.error('[secret] invalid class requested', playerClass);
+				console.error('[secret] invalid class requested', playerClass);
 				return '';
 		}
 	}

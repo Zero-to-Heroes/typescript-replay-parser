@@ -1,7 +1,6 @@
 import { GameTag, MetaTags } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import uniq from 'lodash-es/uniq';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { CardBurnAction } from '../../models/action/card-burn-action';
 import { Entity } from '../../models/game/entity';
@@ -13,7 +12,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class CardBurnParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return (
@@ -34,7 +33,7 @@ export class CardBurnParser implements Parser {
 	private buildBurnAction(item: MetadataHistoryItem, info: Info, entitiesBeforeAction: Map<number, Entity>): Action {
 		const controller = entitiesBeforeAction.get(info.entity).getTag(GameTag.CONTROLLER);
 		if (!controller) {
-			this.logger.warn('[card-burn-parser] empty controller', info, entitiesBeforeAction.get(info.entity));
+			console.warn('[card-burn-parser] empty controller', info, entitiesBeforeAction.get(info.entity));
 			return null;
 		}
 		return CardBurnAction.create(
@@ -61,7 +60,7 @@ export class CardBurnParser implements Parser {
 			return false;
 		}
 		if (previous.controller === undefined || current.controller === undefined) {
-			this.logger.warn('[card-burn-parser] Empty controller for burn action', previous, current);
+			console.warn('[card-burn-parser] Empty controller for burn action', previous, current);
 			return false;
 		}
 		return previous.controller === current.controller;

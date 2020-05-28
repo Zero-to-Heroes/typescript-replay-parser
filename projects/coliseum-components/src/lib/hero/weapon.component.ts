@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'weapon',
@@ -25,13 +24,13 @@ export class WeaponComponent {
 	exhausted: boolean;
 	_weapon: Entity;
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('weapon') set weapon(value: Entity) {
 		if (!value) {
 			return;
 		}
-		this.logger.debug('[weapon] setting new weapon', value, value.tags.toJS());
+		// console.log('[weapon] setting new weapon', value, value.tags.toJS());
 		this._weapon = value;
 		this.entityId = value.id;
 		this.cardId = value.cardID;

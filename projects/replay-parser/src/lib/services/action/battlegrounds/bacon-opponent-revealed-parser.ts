@@ -1,6 +1,5 @@
 import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../../models/action/action';
 import { BaconOpponentRevealedAction } from '../../../models/action/battlegrounds/bacon-opponent-revealed-action';
 import { Entity } from '../../../models/game/entity';
@@ -12,7 +11,7 @@ import { ActionHelper } from '../action-helper';
 import { Parser } from '../parser';
 
 export class BaconOpponentRevealedParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return (

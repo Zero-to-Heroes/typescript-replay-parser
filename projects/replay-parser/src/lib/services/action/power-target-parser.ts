@@ -2,7 +2,6 @@ import { BlockType, CardType, GameTag, MetaTags } from '@firestone-hs/reference-
 import { Map } from 'immutable';
 import isEqual from 'lodash-es/isEqual';
 import uniq from 'lodash-es/uniq';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
 import { CardTargetAction } from '../../models/action/card-target-action';
@@ -19,7 +18,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class PowerTargetParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		if (!(item instanceof MetadataHistoryItem)) {
@@ -136,7 +135,7 @@ export class PowerTargetParser implements Parser {
 
 	private mergeActions(previousAction: Action, currentAction: Action): Action {
 		if (!(currentAction instanceof PowerTargetAction)) {
-			this.logger.warn('incorrect currentAction as current action for power-target-parser', currentAction);
+			console.warn('incorrect currentAction as current action for power-target-parser', currentAction);
 			return;
 		}
 		if (previousAction instanceof PowerTargetAction || previousAction instanceof CardTargetAction) {

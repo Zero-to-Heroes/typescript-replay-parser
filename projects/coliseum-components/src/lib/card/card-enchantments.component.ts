@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-enchantments',
@@ -16,10 +15,10 @@ import { NGXLogger } from 'ngx-logger';
 export class CardEnchantmentsComponent {
 	_enchantments: readonly Entity[];
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('enchantments') set enchantments(value: readonly Entity[]) {
-		this.logger.debug('[card-enchantments] setting enchantments', value);
+		// console.log('[card-enchantments] setting enchantments', value);
 		this._enchantments = value;
 	}
 

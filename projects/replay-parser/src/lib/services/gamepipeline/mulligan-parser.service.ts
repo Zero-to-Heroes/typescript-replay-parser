@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CardType, GameTag, Step, Zone } from '@firestone-hs/reference-data';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { Game } from '../../models/game/game';
 import { GameEntity } from '../../models/game/game-entity';
@@ -11,7 +10,7 @@ import { AllCardsService } from '../all-cards.service';
 	providedIn: 'root',
 })
 export class MulliganParserService {
-	constructor(private logger: NGXLogger, private allCards: AllCardsService) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public affectMulligan(game: Game): Game {
 		let turns = game.turns;

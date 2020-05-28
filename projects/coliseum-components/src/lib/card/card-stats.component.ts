@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-stats',
@@ -44,40 +43,40 @@ export class CardStatsComponent {
 	private _damage: number;
 	private _durability: number;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[card-stats] setting cardId', cardId);
+		// console.log('[card-stats] setting cardId', cardId);
 		this._cardId = cardId;
 		this.updateStats();
 	}
 
 	@Input('attack') set attack(attack: number) {
-		this.logger.debug('[card-stats] setting attack', attack);
+		// console.log('[card-stats] setting attack', attack);
 		this._attack = attack;
 		this.updateStats();
 	}
 
 	@Input('health') set health(health: number) {
-		this.logger.debug('[card-stats] setting health', health);
+		// console.log('[card-stats] setting health', health);
 		this._health = health;
 		this.updateStats();
 	}
 
 	@Input('damage') set damage(damage: number) {
-		this.logger.debug('[card-stats] setting damage', damage);
+		// console.log('[card-stats] setting damage', damage);
 		this._damage = damage;
 		this.updateStats();
 	}
 
 	@Input('durability') set durability(durability: number) {
-		this.logger.debug('[card-stats] setting durability', durability);
+		// console.log('[card-stats] setting durability', durability);
 		this._durability = durability;
 		this.updateStats();
 	}
 
 	@Input('armor') set armor(armor: number) {
-		this.logger.debug('[card-stats] setting armor', armor);
+		// console.log('[card-stats] setting armor', armor);
 		this._armor = armor;
 		this.updateStats();
 	}

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameTag, Mulligan, Step } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { ActionTurn } from '../../models/game/action-turn';
 import { Game } from '../../models/game/game';
 import { GameEntity } from '../../models/game/game-entity';
@@ -15,7 +14,7 @@ import { PlayerHistoryItem } from '../../models/models';
 	providedIn: 'root',
 })
 export class TurnParserService {
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	public createTurns(game: Game, history: readonly HistoryItem[]): Game {
 		let turns: Map<number, Turn> = game.turns;
@@ -29,7 +28,7 @@ export class TurnParserService {
 				turnNumber++;
 			} else if (turnNumber === 0 && this.isMulliganDone(item, game)) {
 				// The proper mulligan input could not be parsed
-				// this.logger.warn('Could not detect mulligan input, creating mulligan turn');
+				// console.warn('Could not detect mulligan input, creating mulligan turn');
 				const mulliganTurn: MulliganTurn = this.parseMulliganTurn(item as PlayerHistoryItem, turns);
 				turns = turns.set(0, mulliganTurn);
 				turnNumber++;
@@ -47,7 +46,7 @@ export class TurnParserService {
 				turnNumber++;
 			}
 		}
-		// this.logger.info('created turns', turns.toJS());
+		// console.log('created turns', turns.toJS());
 		return Game.createGame(game, { turns } as Game);
 	}
 

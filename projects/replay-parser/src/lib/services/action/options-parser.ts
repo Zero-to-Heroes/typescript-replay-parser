@@ -1,5 +1,4 @@
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { OptionsAction } from '../../models/action/options-action';
 import { Entity } from '../../models/game/entity';
@@ -10,7 +9,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class OptionsParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof OptionsHistoryItem;

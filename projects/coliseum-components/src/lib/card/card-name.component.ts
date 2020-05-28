@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input } from '@angular/
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CardType } from '@firestone-hs/reference-data';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-name',
@@ -22,12 +21,12 @@ export class CardNameComponent {
 	constructor(
 		private cards: AllCardsService,
 		private domSanitizer: DomSanitizer,
-		private logger: NGXLogger,
+		
 		private elRef: ElementRef,
 	) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[card-name] setting cardId', cardId);
+		// console.log('[card-name] setting cardId', cardId);
 		const originalCard = this.cards.getCard(cardId);
 		const cardType: CardType =
 			originalCard && originalCard.type ? CardType[originalCard.type.toUpperCase() as string] : undefined;

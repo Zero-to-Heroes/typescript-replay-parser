@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-on-board-overlays',
@@ -16,10 +15,10 @@ import { NGXLogger } from 'ngx-logger';
 export class CardOnBoardOverlaysComponent {
 	overlays: string[][];
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('entity') set entity(value: Entity) {
-		this.logger.debug('[card-on-board-overlays] setting entity', value);
+		// console.log('[card-on-board-overlays] setting entity', value);
 		this.overlays = [];
 		if (!value) {
 			return;

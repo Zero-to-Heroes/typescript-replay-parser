@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'overlay-ticked',
@@ -15,7 +14,7 @@ import { NGXLogger } from 'ngx-logger';
 export class OverlayTickedComponent {
 	image: string;
 
-	constructor(private logger: NGXLogger) {
+	constructor() {
 		console.warn('missing discover pick icon');
 	}
 }

@@ -17,8 +17,7 @@
 		"@angular/platform-browser": "~8.2.9",
 		"@firestone-hs/reference-data": "0.1.25",
 		"immutable": "3.8.2",
-		"lodash-es": "4.17.15",
-		"ngx-logger": "3.3.11",
+		"lodash-es": "4.17.15"
 		"node-fetch": "^2.6.0",
 		"sax": "1.2.4",
 		"tslib": "^1.9.0",

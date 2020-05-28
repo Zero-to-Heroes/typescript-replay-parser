@@ -1,6 +1,5 @@
 import { GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { FatigueDamageAction } from '../../models/action/fatigue-damage-action';
 import { Entity } from '../../models/game/entity';
@@ -10,7 +9,7 @@ import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
 export class FatigueDamageParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.FATIGUE;

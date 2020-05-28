@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CardType, GameTag } from '@firestone-hs/reference-data';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
 import { CardDrawAction } from '../../models/action/card-draw-action';
@@ -22,7 +21,7 @@ import { AllCardsService } from '../all-cards.service';
 export class ActiveSpellParserService {
 	private readonly ACTIONS_THAT_RESET_ACTIVE_SPELL = [typeof StartTurnAction];
 
-	constructor(private logger: NGXLogger, private allCards: AllCardsService) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public parseActiveSpellForLastTurn(game: Game): Game {
 		let turns = game.turns;
@@ -100,7 +99,7 @@ export class ActiveSpellParserService {
 		}
 
 		if (activeSpell) {
-			// this.logger.debug('Updating active spell', activeSpell);
+			// // console.log('Updating active spell', activeSpell);
 			return action.updateAction({ activeSpell } as Action);
 		}
 		return action;

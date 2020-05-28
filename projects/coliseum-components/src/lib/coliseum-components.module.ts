@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReplayParserModule } from '@firestone-hs/replay-parser';
 import { Ng2FittextModule } from 'ng2-fittext';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BoardCardFrameComponent } from './board/board-card-frame.component';
 import { BoardCardStatsComponent } from './board/board-card-stats.component';
 import { BoardComponent } from './board/board.component';
@@ -54,14 +53,7 @@ import { WeaponStatsComponent } from './hero/weapon-stats.component';
 import { WeaponComponent } from './hero/weapon.component';
 
 @NgModule({
-	imports: [
-		BrowserModule,
-		FormsModule,
-		BrowserAnimationsModule,
-		Ng2FittextModule,
-		LoggerModule.forRoot({ level: NgxLoggerLevel.WARN }),
-		ReplayParserModule.forRoot(),
-	],
+	imports: [BrowserModule, FormsModule, BrowserAnimationsModule, Ng2FittextModule, ReplayParserModule.forRoot()],
 	declarations: [
 		BoardComponent,
 		BoardCardFrameComponent,

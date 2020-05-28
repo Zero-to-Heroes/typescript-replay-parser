@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'hero-power-frame',
@@ -15,16 +14,16 @@ export class HeroPowerFrameComponent {
 
 	private _exhausted = false;
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('exhausted') set exhausted(value: boolean) {
-		this.logger.debug('[hero-power-frame] setting exhausted', value);
+		// console.log('[hero-power-frame] setting exhausted', value);
 		this._exhausted = value;
 		this.updateImage();
 	}
 
 	@Input('premium') set premium(premium: boolean) {
-		this.logger.debug('[hero-power-frame] setting premium', premium);
+		// console.log('[hero-power-frame] setting premium', premium);
 		this._premium = premium || undefined;
 		this.updateImage();
 	}

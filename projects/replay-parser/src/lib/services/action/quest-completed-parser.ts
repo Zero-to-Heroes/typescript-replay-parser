@@ -1,6 +1,5 @@
 import { BlockType, GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { QuestCompletedAction } from '../../models/action/quest-completed-action';
 import { Entity } from '../../models/game/entity';
@@ -10,7 +9,7 @@ import { AllCardsService } from '../all-cards.service';
 import { Parser } from './parser';
 
 export class QuestCompletedParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof ActionHistoryItem && parseInt(item.node.attributes.type) === BlockType.TRIGGER;

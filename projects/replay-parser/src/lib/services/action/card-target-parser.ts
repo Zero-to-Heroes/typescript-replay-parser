@@ -2,7 +2,6 @@ import { BlockType } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import isEqual from 'lodash-es/isEqual';
 import uniq from 'lodash-es/uniq';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { AttachingEnchantmentAction } from '../../models/action/attaching-enchantment-action';
 import { CardTargetAction } from '../../models/action/card-target-action';
@@ -15,7 +14,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class CardTargetParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof ActionHistoryItem;
@@ -89,7 +88,7 @@ export class CardTargetParser implements Parser {
 
 	private mergeActions(previousAction: Action, currentAction: Action): Action {
 		if (currentAction instanceof AttachingEnchantmentAction) {
-			this.logger.warn(
+			console.warn(
 				'incorrect AttachingEnchantmentAction as current action for card-target-parser',
 				currentAction,
 			);

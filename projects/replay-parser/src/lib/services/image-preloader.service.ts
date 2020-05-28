@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 import { HistoryItem } from '../models/history/history-item';
 import { EntityDefinition } from '../models/parser/entity-definition';
 import { AllCardsService } from './all-cards.service';
@@ -120,18 +119,18 @@ export class ImagePreloaderService {
 		},
 	};
 
-	constructor(private logger: NGXLogger, private cards: AllCardsService) {}
+	constructor(private cards: AllCardsService) {}
 
 	public *preloadImages(history: readonly HistoryItem[]) {
 		const imageUrls = this.buildImageUrls(history);
 		// yield;
-		// this.logger.debug('preloading ' + imageUrls.length + ' images');
+		// // console.log('preloading ' + imageUrls.length + ' images');
 		for (let i = 0; i < imageUrls.length; i++) {
 			const imageUrl = imageUrls[i];
-			// this.logger.debug('[image-preloader] preloading image', imageUrl);
+			// // console.log('[image-preloader] preloading image', imageUrl);
 			const image = new Image();
 			image.onload = () =>
-				// this.logger.debug('[image-preloader] preloaded image', imageUrl);
+				// // console.log('[image-preloader] preloaded image', imageUrl);
 				(image.src = imageUrl);
 			// if (i % 15 === 0) {
 			// 	yield;

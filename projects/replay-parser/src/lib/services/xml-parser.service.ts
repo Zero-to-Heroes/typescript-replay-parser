@@ -1,6 +1,5 @@
 import { GameTag, MetaTags, Mulligan, Step, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Tag } from 'sax';
 // import { parser, SAXParser, Tag } from 'sax';
 import { NotForced, SaxesParser, SaxesTag } from 'saxes';
@@ -47,7 +46,7 @@ export class XmlParserService {
 	private formatType: number;
 	private scenarioID: number;
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	public *parseXml(xmlAsString: string): IterableIterator<readonly HistoryItem[]> {
 		this.reset();
@@ -59,7 +58,7 @@ export class XmlParserService {
 		const testSaxes = new SaxesParser({} as NotForced);
 		testSaxes.onopentag = (tag: SaxesTag) => this.onOpenTag(tag);
 		testSaxes.onclosetag = tagName => this.onCloseTag();
-		testSaxes.onerror = error => this.logger.error('Error while parsing xml', error);
+		testSaxes.onerror = error => console.error('Error while parsing xml', error);
 
 		// We want to have:
 		// - a chunk with pre-mulligan stuff, to setup the board
@@ -518,7 +517,7 @@ export class XmlParserService {
 
 	private enqueueHistoryItem(item: HistoryItem) {
 		if (item.timestamp === undefined) {
-			this.logger.error("History item doesn't have timestamp", item);
+			console.error("History item doesn't have timestamp", item);
 			throw new Error("History item doesn't have timestamp" + item);
 		}
 		this.history = [...(this.history || []), item];

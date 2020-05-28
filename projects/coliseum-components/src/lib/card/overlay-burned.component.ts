@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'overlay-burned',
@@ -13,5 +12,5 @@ import { NGXLogger } from 'ngx-logger';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverlayBurnedComponent {
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 }

@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Entity } from '@firestone-hs/replay-parser';
-// import { NGXLogger } from 'ngx-logger';
-// import { Events } from '../../../services/events.service';
 
 @Component({
 	selector: 'quest',
@@ -26,10 +24,10 @@ export class QuestComponent {
 	image: string;
 	questionMark: string;
 
-	// constructor(private logger: NGXLogger, private events: Events) {}
+	// constructor( private events: Events) {}
 
 	@Input('entity') set entity(value: Entity) {
-		// this.logger.debug('[quest] setting new entity', value, value.tags.toJS());
+		// // console.log('[quest] setting new entity', value, value.tags.toJS());
 		this._entity = value;
 		this.image = undefined;
 		if (!value) {

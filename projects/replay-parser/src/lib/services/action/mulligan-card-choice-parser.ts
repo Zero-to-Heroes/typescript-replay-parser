@@ -1,6 +1,5 @@
 import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { MulliganCardAction } from '../../models/action/mulligan-card-action';
 import { MulliganCardChoiceAction } from '../../models/action/mulligan-card-choice-action';
@@ -14,7 +13,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class MulliganCardChoiceParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof ChosenEntityHistoryItem;
@@ -59,7 +58,7 @@ export class MulliganCardChoiceParser implements Parser {
 				),
 			];
 		} else {
-			this.logger.warn('Invalid mulligan choice', item, players);
+			console.warn('Invalid mulligan choice', item, players);
 		}
 		return null;
 	}
@@ -81,7 +80,7 @@ export class MulliganCardChoiceParser implements Parser {
 		currentAction: MulliganCardChoiceAction | StartTurnAction,
 	): MulliganCardChoiceAction | StartTurnAction {
 		if (currentAction instanceof StartTurnAction) {
-			this.logger.warn('Invalid mulligan action merge', previousAction, currentAction);
+			console.warn('Invalid mulligan action merge', previousAction, currentAction);
 			return previousAction;
 		}
 		if (previousAction instanceof MulliganCardChoiceAction) {

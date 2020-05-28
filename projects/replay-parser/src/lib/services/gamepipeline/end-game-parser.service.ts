@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { PlayState } from '@firestone-hs/reference-data';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { EndGameAction } from '../../models/action/end-game-action';
 import { Game } from '../../models/game/game';
@@ -11,7 +10,7 @@ import { AllCardsService } from '../all-cards.service';
 	providedIn: 'root',
 })
 export class EndGameParserService {
-	constructor(private logger: NGXLogger, private allCards: AllCardsService) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public parseEndGame(game: Game): Game {
 		let turns = game.turns;
@@ -28,12 +27,12 @@ export class EndGameParserService {
 			newActions.push(turn.actions[i]);
 		}
 		if (!turn.actions[turn.actions.length - 1]) {
-			this.logger.warn('missing last action' + turn.actions[turn.actions.length - 1], turn);
+			console.warn('missing last action' + turn.actions[turn.actions.length - 1], turn);
 			return turn;
 		}
 
 		if (!(turn.actions[turn.actions.length - 1] instanceof EndGameAction)) {
-			this.logger.debug('last action is not an endgame, returning');
+			// console.log('last action is not an endgame, returning');
 			return turn;
 		}
 		const newEndGame = this.enrichAction(turn.actions[turn.actions.length - 1] as EndGameAction);

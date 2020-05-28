@@ -8,7 +8,6 @@
 		"@angular/forms": "8.2.9",
 		"@firestone-hs/reference-data": "^0.1.30",
 		"@firestone-hs/replay-parser": "^1.1.16",
-		"ng2-fittext": "^1.2.8",
-		"ngx-logger": "3.3.11"
+		"ng2-fittext": "^1.2.8"
 	}
 }

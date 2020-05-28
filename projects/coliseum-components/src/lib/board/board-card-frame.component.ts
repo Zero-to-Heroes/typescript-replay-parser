@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'board-card-frame',
@@ -21,23 +20,23 @@ export class BoardCardFrameComponent {
 	private _taunt: boolean;
 	private _hideStats: boolean;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('taunt') set taunt(taunt: boolean) {
-		this.logger.debug('[board-card-frame] setting taunt', taunt);
+		// console.log('[board-card-frame] setting taunt', taunt);
 		this._taunt = taunt;
 		this.updateImageTaunt();
 	}
 
 	@Input('premium') set premium(premium: boolean) {
-		this.logger.debug('[board-card-frame] setting premium', premium);
+		// console.log('[board-card-frame] setting premium', premium);
 		this._premium = premium;
 		this.updateImage();
 		this.updateImageTaunt();
 	}
 
 	@Input('hideStats') set hideStats(value: boolean) {
-		this.logger.debug('[board-card-frame] setting hideStats', value);
+		// console.log('[board-card-frame] setting hideStats', value);
 		this._hideStats = value;
 		this.updateImage();
 	}

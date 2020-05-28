@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'weapon-stats',
@@ -32,28 +31,28 @@ export class WeaponStatsComponent {
 	private _durability: number;
 	private _damage: number;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[weapon-stats] setting cardId', cardId);
+		// console.log('[weapon-stats] setting cardId', cardId);
 		this._cardId = cardId;
 		this.updateStats();
 	}
 
 	@Input('attack') set attack(attack: number) {
-		this.logger.debug('[weapon-stats] setting attack', attack);
+		// console.log('[weapon-stats] setting attack', attack);
 		this._attack = attack;
 		this.updateStats();
 	}
 
 	@Input('durability') set durability(value: number) {
-		this.logger.debug('[weapon-stats] setting health', value);
+		// console.log('[weapon-stats] setting health', value);
 		this._durability = value;
 		this.updateStats();
 	}
 
 	@Input('damage') set damage(damage: number) {
-		this.logger.debug('[weapon-stats] setting damage', damage);
+		// console.log('[weapon-stats] setting damage', damage);
 		this._damage = damage;
 		this.updateStats();
 	}

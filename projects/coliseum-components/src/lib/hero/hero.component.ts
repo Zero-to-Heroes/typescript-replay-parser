@@ -60,13 +60,13 @@ export class HeroComponent {
 	// constructor(private conf: GameConfService) {}
 
 	@Input('entities') set entities(entities: Map<number, Entity>) {
-		// this.logger.debug('[hero] setting new entities', entities && entities.toJS());
+		// // console.log('[hero] setting new entities', entities && entities.toJS());
 		this._entities = entities;
 		this.updateEntityGroups();
 	}
 
 	@Input('playerId') set playerId(playerId: number) {
-		// this.logger.debug('[hero] setting playerId', playerId);
+		// // console.log('[hero] setting playerId', playerId);
 		this._playerId = playerId;
 		this.updateEntityGroups();
 	}
@@ -77,7 +77,7 @@ export class HeroComponent {
 	}
 
 	@Input('options') set options(value: readonly number[]) {
-		// this.logger.info('[hero] setting options', value);
+		// console.log('[hero] setting options', value);
 		this._options = value;
 		this.updateEntityGroups();
 	}

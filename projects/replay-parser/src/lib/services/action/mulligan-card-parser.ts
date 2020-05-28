@@ -1,6 +1,5 @@
 import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { MulliganCardAction } from '../../models/action/mulligan-card-action';
 import { Entity } from '../../models/game/entity';
@@ -13,7 +12,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class MulliganCardParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	// Don't use the root Block here, as it can be split off in another processing chunk,
 	// which means the children TagChange and HideEntity are not set yet

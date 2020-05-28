@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CardClass, CardType, GameTag } from '@firestone-hs/reference-data';
 import { AllCardsService, Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card',
@@ -73,10 +72,10 @@ export class CardComponent {
 	_forbiddenTargetSource = false;
 	_hasTooltip = true;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('entity') set entity(entity: Entity) {
-		this.logger.debug('[card] setting entity', entity);
+		// console.log('[card] setting entity', entity);
 		this._entity = entity;
 		this.updateEntityGroups();
 	}
@@ -87,7 +86,7 @@ export class CardComponent {
 	}
 
 	@Input('controller') set controller(value: Entity) {
-		this.logger.debug('[card] setting controller', value);
+		// console.log('[card] setting controller', value);
 		this._controller = value;
 	}
 
@@ -106,21 +105,21 @@ export class CardComponent {
 	@Input('crossed') set crossed(value: boolean) {
 		this._crossed = value;
 		if (value) {
-			this.logger.debug('[card] marking card as crossed', this._entity);
+			// console.log('[card] marking card as crossed', this._entity);
 		}
 	}
 
 	@Input('burned') set burned(value: boolean) {
 		this._burned = value;
 		if (value) {
-			this.logger.debug('[card] marking card as burned', this._entity);
+			// console.log('[card] marking card as burned', this._entity);
 		}
 	}
 
 	@Input('ticked') set ticked(value: boolean) {
 		this._ticked = value;
 		if (value) {
-			this.logger.debug('[card] marking card as ticked', this._entity);
+			// console.log('[card] marking card as ticked', this._entity);
 		}
 	}
 

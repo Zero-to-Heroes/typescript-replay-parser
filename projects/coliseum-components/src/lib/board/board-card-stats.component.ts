@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewRef } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'board-card-stats',
@@ -42,29 +41,29 @@ export class BoardCardStatsComponent {
 		private cards: AllCardsService,
 		private cdr: ChangeDetectorRef,
 		private elRef: ElementRef,
-		private logger: NGXLogger,
+		
 	) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[board-card-stats] setting cardId', cardId);
+		// console.log('[board-card-stats] setting cardId', cardId);
 		this._cardId = cardId;
 		this.updateStats();
 	}
 
 	@Input('attack') set attack(attack: number) {
-		this.logger.debug('[board-card-stats] setting attack', attack);
+		// console.log('[board-card-stats] setting attack', attack);
 		this._attack = attack;
 		this.updateStats();
 	}
 
 	@Input('health') set health(health: number) {
-		this.logger.debug('[board-card-stats] setting health', health);
+		// console.log('[board-card-stats] setting health', health);
 		this._health = health;
 		this.updateStats();
 	}
 
 	@Input('damage') set damage(damage: number) {
-		this.logger.debug('[board-card-stats] setting damage', damage);
+		// console.log('[board-card-stats] setting damage', damage);
 		this._damage = damage;
 		this.updateStats();
 	}

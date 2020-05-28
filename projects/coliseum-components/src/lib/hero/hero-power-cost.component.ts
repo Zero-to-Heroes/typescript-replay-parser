@@ -1,15 +1,5 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    HostListener,
-    Input,
-    ViewRef
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, ViewRef } from '@angular/core';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'hero-power-cost',
@@ -31,24 +21,24 @@ export class HeroPowerCostComponent implements AfterViewInit {
 	constructor(
 		private cards: AllCardsService,
 		private elRef: ElementRef,
-		private logger: NGXLogger,
+		
 		private cdr: ChangeDetectorRef,
 	) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[hero-power-cost] setting cardId', cardId);
+		// console.log('[hero-power-cost] setting cardId', cardId);
 		this._cardId = cardId;
 		this.updateCost();
 	}
 
 	@Input('cost') set cost(cost: number) {
-		this.logger.debug('[hero-power-cost] setting cost', cost);
+		// console.log('[hero-power-cost] setting cost', cost);
 		this._cost = cost;
 		this.updateCost();
 	}
 
 	@Input('premium') set premium(premium: boolean) {
-		this.logger.debug('[hero-power-cost] setting premium', premium);
+		// console.log('[hero-power-cost] setting premium', premium);
 		this._premium = premium || undefined;
 	}
 

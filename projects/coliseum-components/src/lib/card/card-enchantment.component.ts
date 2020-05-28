@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AllCardsService, Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-enchantment',
@@ -26,10 +25,10 @@ export class CardEnchantmentComponent {
 	description: string;
 	ringImage = 'https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/enchantments/enchantment-ring.png';
 
-	constructor(private logger: NGXLogger, private cards: AllCardsService) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('enchantment') set enchantment(value: Entity) {
-		this.logger.debug('[card-enchantment] setting enchantment', value);
+		// console.log('[card-enchantment] setting enchantment', value);
 		this._enchantment = value;
 		const cardId = value.cardID;
 		const card = this.cards.getCard(cardId);

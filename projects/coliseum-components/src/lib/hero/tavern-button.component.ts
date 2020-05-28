@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'tavern-button',
@@ -37,7 +36,7 @@ export class TavernButtonComponent {
 
 	@Output() entityChanged: EventEmitter<Entity> = new EventEmitter();
 
-	constructor(private logger: NGXLogger, private renderer: Renderer2, private el: ElementRef) {}
+	constructor(private renderer: Renderer2, private el: ElementRef) {}
 
 	@Input() set entity(value: Entity) {
 		this.entityId = value ? value.id : undefined;

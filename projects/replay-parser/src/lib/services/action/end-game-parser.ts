@@ -1,6 +1,5 @@
 import { GameTag, PlayState } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { EndGameAction } from '../../models/action/end-game-action';
 import { Entity } from '../../models/game/entity';
@@ -12,7 +11,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class EndGameParser implements Parser {
-	constructor(private logger: NGXLogger, private readonly allCards: AllCardsService) {}
+	constructor(private readonly allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return (

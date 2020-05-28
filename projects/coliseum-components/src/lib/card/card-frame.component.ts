@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CardClass, CardType } from '@firestone-hs/reference-data';
 import { AllCardsService } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-frame',
@@ -17,16 +16,16 @@ export class CardFrameComponent {
 	private _cardId: string;
 	private _premium: boolean = undefined;
 
-	constructor(private cards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private cards: AllCardsService) {}
 
 	@Input('cardId') set cardId(cardId: string) {
-		this.logger.debug('[card-frame] setting cardId', cardId);
+		// console.log('[card-frame] setting cardId', cardId);
 		this._cardId = cardId;
 		this.updateImage();
 	}
 
 	@Input('premium') set premium(premium: boolean) {
-		this.logger.debug('[card-frame] setting premium', premium);
+		// console.log('[card-frame] setting premium', premium);
 		this._premium = premium || undefined;
 		this.updateImage();
 	}

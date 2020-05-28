@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Entity } from '../models/game/entity';
 import { ChangeEntityHistoryItem } from '../models/history/change-entity-history-item';
 import { FullEntityHistoryItem } from '../models/history/full-entity-history-item';
@@ -13,7 +12,7 @@ import { TagChangeHistoryItem } from '../models/history/tag-change-history-item'
 	providedIn: 'root',
 })
 export class StateProcessorService {
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	private readonly USEFUL_TAGS: readonly GameTag[] = [
 		GameTag.TAG_SCRIPT_DATA_NUM_1,

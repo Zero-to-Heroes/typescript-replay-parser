@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'card-race',
@@ -18,10 +17,10 @@ import { NGXLogger } from 'ngx-logger';
 export class CardRaceComponent {
 	_race: string;
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('race') set race(value: string) {
-		this.logger.debug('[card-race] setting race', value);
+		// console.log('[card-race] setting race', value);
 		this._race = value;
 	}
 }

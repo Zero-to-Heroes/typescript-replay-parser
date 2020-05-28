@@ -1,6 +1,5 @@
 import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { AttackAction } from '../../models/action/attack-action';
 import { DamageAction } from '../../models/action/damage-action';
@@ -15,7 +14,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class DamageParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return item instanceof TagChangeHistoryItem && item.tag.tag === GameTag.DAMAGE;

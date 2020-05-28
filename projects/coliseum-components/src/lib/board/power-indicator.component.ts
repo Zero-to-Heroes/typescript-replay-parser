@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GameTag } from '@firestone-hs/reference-data';
 import { Entity } from '@firestone-hs/replay-parser';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
 	selector: 'power-indicator',
@@ -17,10 +16,10 @@ export class PowerIndicatorComponent {
 	effect: string;
 	effectImage: string;
 
-	constructor(private logger: NGXLogger) {}
+	constructor() {}
 
 	@Input('entity') set entity(value: Entity) {
-		this.logger.debug('[power-indicator] setting entity', value);
+		// console.log('[power-indicator] setting entity', value);
 		let image = '';
 		this.effect = undefined;
 		if (!value) {

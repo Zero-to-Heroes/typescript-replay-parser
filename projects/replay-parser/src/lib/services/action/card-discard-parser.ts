@@ -1,7 +1,6 @@
 import { GameTag, Zone } from '@firestone-hs/reference-data';
 import { Map } from 'immutable';
 import uniq from 'lodash-es/uniq';
-import { NGXLogger } from 'ngx-logger';
 import { Action } from '../../models/action/action';
 import { CardDiscardAction } from '../../models/action/card-discard-action';
 import { Entity } from '../../models/game/entity';
@@ -12,7 +11,7 @@ import { ActionHelper } from './action-helper';
 import { Parser } from './parser';
 
 export class CardDiscardParser implements Parser {
-	constructor(private allCards: AllCardsService, private logger: NGXLogger) {}
+	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
 		return (
@@ -39,11 +38,7 @@ export class CardDiscardParser implements Parser {
 		if (previousZone === Zone.HAND) {
 			const controller = entitiesBeforeAction.get(item.tag.entity).getTag(GameTag.CONTROLLER);
 			if (!controller) {
-				this.logger.warn(
-					'[card-discard-parser] empty controller',
-					item,
-					entitiesBeforeAction.get(item.tag.entity),
-				);
+				console.warn('[card-discard-parser] empty controller', item, entitiesBeforeAction.get(item.tag.entity));
 				return null;
 			}
 			return [
@@ -75,7 +70,7 @@ export class CardDiscardParser implements Parser {
 			return false;
 		}
 		if (previous.controller === undefined || current.controller === undefined) {
-			this.logger.warn('[card-discard-parser] Empty controller for draw action', previous, current);
+			console.warn('[card-discard-parser] Empty controller for draw action', previous, current);
 			return false;
 		}
 		return previous.controller === current.controller;
