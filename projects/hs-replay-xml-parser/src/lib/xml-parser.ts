@@ -1,14 +1,11 @@
 import { allMinionsPlayedExtractor } from './exrtactors/all-minions-played-extractor';
-import {
-	BattleResultHistory,
-	BgsPlayer,
-	buildPostMatchStats,
-} from './exrtactors/battlegrounds/battlegrounds-game-extractor';
+import { buildPostMatchStats } from './exrtactors/battlegrounds/battlegrounds-game-extractor';
 import { totalDamageDealtToEnemyHeroExtractor } from './exrtactors/total-damage-dealt-to-enemy-hero-extractor';
 import { totalDurationExtractor } from './exrtactors/total-duration-extractor';
 import { killedEnemeyHeroesExtarctor } from './exrtactors/total-enemy-heroes-killed-extractor';
 import { totalManaSpentExtractor } from './exrtactors/total-mana-spent-extractor';
 import { totalMinionsDeathExtractor } from './exrtactors/total-minions-death-extractor';
+import { BattleResultHistory, BgsPlayer } from './model/battlegrounds';
 import { BgsPostMatchStats } from './model/bgs-post-match-stats';
 import { PlayerOpponentElements } from './model/player-opponent-elements';
 import { PlayerOpponentValues } from './model/player-opponent-values';

@@ -1,4 +1,4 @@
-import { BgsBoard, BgsTavernUpgrade, BgsTriple } from '../exrtactors/battlegrounds/battlegrounds-game-extractor';
+import { BgsBoard, BgsTavernUpgrade, BgsTriple } from './battlegrounds';
 import { BooleanTurnInfo } from './boolean-turn-info';
 import { NumericTurnInfo } from './numeric-turn-info';
 
