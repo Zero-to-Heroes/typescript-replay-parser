@@ -37,7 +37,7 @@ export class CardTextComponent {
 		
 		private cdr: ChangeDetectorRef,
 	) {
-		document.addEventListener('card-resize', event => this.resizeText(), true);
+		document.addEventListener('card-resize', event => this.resizeText());
 	}
 
 	@Input('entity') set entity(value: Entity) {

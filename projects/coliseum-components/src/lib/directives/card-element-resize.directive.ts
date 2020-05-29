@@ -10,7 +10,7 @@ export class CardElementResizeDirective implements AfterViewInit {
 	@Input() isCardElement = true;
 
 	constructor(private elRef: ElementRef, private cdr: ChangeDetectorRef) {
-		document.addEventListener('card-resize', () => this.resizeText(), true);
+		document.addEventListener('card-resize', () => this.resizeText());
 	}
 
 	ngAfterViewInit() {
