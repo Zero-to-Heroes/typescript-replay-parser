@@ -11,9 +11,6 @@ import { AllCardsService, Entity } from '@firestone-hs/replay-parser';
 			[ngClass]="{ 'highlight': _option }"
 			cardResize
 			[aspectRatio]="aspectRatio"
-			cardTooltip
-			[tooltipEntity]="_entity"
-			[hasTooltip]="_showCard && _hasTooltip"
 			[attr.data-entity-id]="!forbiddenTargetSource && _entity.id"
 		>
 			<card-art [cardId]="cardId" [cardType]="cardType"></card-art>
