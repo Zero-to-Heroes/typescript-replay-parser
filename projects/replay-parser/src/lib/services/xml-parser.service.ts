@@ -439,7 +439,7 @@ export class XmlParserService {
 				);
 
 				this.enqueueHistoryItem(gameItem);
-				this.entityDefinition = { tags: Map() };
+				this.entityDefinition = { tags: Map.of() };
 				break;
 			case 'Player':
 				this.state.pop();
@@ -451,7 +451,7 @@ export class XmlParserService {
 					node.index,
 				);
 				this.enqueueHistoryItem(playerItem);
-				this.entityDefinition = { tags: Map() };
+				this.entityDefinition = { tags: Map.of() };
 				break;
 			case 'FullEntity':
 				this.state.pop();
@@ -461,7 +461,7 @@ export class XmlParserService {
 					node.index,
 				);
 				this.enqueueHistoryItem(fullEntityItem);
-				this.entityDefinition = { tags: Map() };
+				this.entityDefinition = { tags: Map.of() };
 				break;
 			case 'ShowEntity':
 				this.state.pop();
@@ -471,7 +471,7 @@ export class XmlParserService {
 					node.index,
 				);
 				this.enqueueHistoryItem(showEntityItem);
-				this.entityDefinition = { tags: Map() };
+				this.entityDefinition = { tags: Map.of() };
 				break;
 			case 'ChangeEntity':
 				this.state.pop();
@@ -481,7 +481,7 @@ export class XmlParserService {
 					node.index,
 				);
 				this.enqueueHistoryItem(changeEntityItem);
-				this.entityDefinition = { tags: Map() };
+				this.entityDefinition = { tags: Map.of() };
 				break;
 		}
 	}
@@ -530,7 +530,7 @@ export class XmlParserService {
 		this.initialTimestamp = undefined;
 		this.history = [];
 		this.entityDefinition = {
-			tags: Map(),
+			tags: Map.of(),
 		};
 		this.choices = undefined;
 		this.chosen = undefined;

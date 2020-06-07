@@ -6,8 +6,8 @@ import { Entity } from './entity';
 export class GameEntity extends Entity {
 	public static create(base: GameEntity, newAttributes?: EntityDefinition): GameEntity {
 		// Merge tags
-		const newTags: Map<string, number> = newAttributes && newAttributes.tags ? newAttributes.tags : Map();
-		const tags: Map<string, number> = (base.tags || Map()).merge(newTags);
+		const newTags: Map<string, number> = newAttributes && newAttributes.tags ? newAttributes.tags : Map.of();
+		const tags: Map<string, number> = base.tags ? base.tags.merge(newTags) : newTags;
 		const newEntity: GameEntity = Object.assign(new GameEntity(), { ...base, ...newAttributes, tags });
 		return newEntity;
 	}

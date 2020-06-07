@@ -8,12 +8,12 @@ export class Entity {
 	readonly id: number;
 	readonly cardID: string;
 	readonly damageForThisAction: number;
-	readonly tags: Map<string, number> = Map();
+	readonly tags: Map<string, number> = Map.of();
 
 	public static create(base: Entity, newAttributes?: EntityDefinition): Entity {
 		// Merge tags
-		const newTags: Map<string, number> = newAttributes && newAttributes.tags ? newAttributes.tags : Map();
-		const tags: Map<string, number> = (base.tags || Map()).merge(newTags);
+		const newTags: Map<string, number> = newAttributes && newAttributes.tags ? newAttributes.tags : Map.of();
+		const tags: Map<string, number> = base.tags ? base.tags.merge(newTags) : newTags;
 		const newEntity: Entity = Object.assign(new Entity(), { ...base, ...newAttributes, tags });
 		return newEntity;
 	}

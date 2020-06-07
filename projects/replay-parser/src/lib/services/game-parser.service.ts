@@ -128,7 +128,7 @@ export class GameParserService {
 
 		// Do the parsing turn by turn
 		// let history: readonly HistoryItem[];
-		const xmlParsingIterator: IterableIterator<readonly HistoryItem[]> = new XmlParserService(this.logger).parseXml(
+		const xmlParsingIterator: IterableIterator<readonly HistoryItem[]> = new XmlParserService().parseXml(
 			replayAsString,
 		);
 		let game: Game = Game.createGame({} as Game);
