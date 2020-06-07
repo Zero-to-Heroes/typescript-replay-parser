@@ -15,44 +15,61 @@
 
 	img {
 		width: 40%;
+		position: relative;
+	}
 
-		// https://stackoverflow.com/questions/8720931/can-css-detect-the-number-of-children-an-element-has
-		&:first-child:nth-last-child(1),
-		&:first-child:nth-last-child(1) ~ img,
-		&:first-child:nth-last-child(2),
-		&:first-child:nth-last-child(2) ~ img {
+	&.level-1,
+	&.level-2 {
+		img {
 			margin-bottom: -3%;
 		}
+	}
 
-		&:first-child:nth-last-child(3),
-		&:first-child:nth-last-child(3) ~ img {
+	&.level-3 {
+		img {
 			margin-bottom: -40%;
 			&:nth-of-type(3) {
-				margin-bottom: -5%;
+				margin-bottom: -10%;
 			}
 		}
+	}
 
-		&:first-child:nth-last-child(4),
-		&:first-child:nth-last-child(4) ~ img {
-			margin-bottom: -45%;
+	&.level-4 {
+		img {
+			margin-bottom: -30%;
 			&:nth-of-type(3),
 			&:nth-of-type(4) {
 				margin-bottom: -10%;
 			}
 		}
+	}
 
-		&:first-child:nth-last-child(5),
-		&:first-child:nth-last-child(5) ~ img {
+	&.level-5 {
+		img {
 			margin-bottom: -17%;
 			&:nth-of-type(3) {
 				margin-left: 20%;
 				margin-right: 20%;
+				top: -5%;
+			}
+			&:nth-of-type(4),
+			&:nth-of-type(5) {
+				top: -10%;
 			}
 		}
+	}
 
-		&:first-child:nth-last-child(6),
-		&:first-child:nth-last-child(6) ~ img {
+	&.level-6 {
+		img {
 			margin-bottom: -17%;
+			&:nth-of-type(3),
+			&:nth-of-type(4) {
+				top: -5%;
+			}
+			&:nth-of-type(5),
+			&:nth-of-type(6) {
+				top: -10%;
+			}
 		}
 	}
 }

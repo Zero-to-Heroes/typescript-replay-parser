@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewRef }
 				class="banner"
 				src="https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_banner.png"
 			/>
-			<div class="level">
+			<div class="level level-{{ stars?.length }}">
 				<img
 					*ngFor="let number of stars"
 					src="https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_star.png"
