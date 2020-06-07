@@ -398,7 +398,7 @@ const freezesForTurnPopulate = (structure: ParsingStructure, replay: Replay) => 
 };
 
 const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPlayerId: number) => {
-	return element => {
+	return (element: Element) => {
 		if (element.tag === 'FullEntity' && element.get('cardID') === 'TB_BaconShop_8P_PlayerE') {
 			structure.mainEnchantEntityIds = [...structure.mainEnchantEntityIds, element.get('id')];
 			// console.debug('freezesIds', structure.freezesIds);
@@ -416,7 +416,12 @@ const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPl
 				console.warn('trying to know who went first in battle without attacking entity', firstAttack.get('entity'));
 				return;
 			}
+			if (attackingEntity.cardType === CardType.HERO) {
+				// console.log('ignoring hero attack');
+				return;
+			}
 			const wentFirst = attackingEntity.controller === mainPlayerPlayerId;
+			// console.debug('wentFirst', wentFirst, attackingEntity, mainPlayerPlayerId, firstAttack.attrib);
 			structure.wentFirstInBattleThisTurn = wentFirst;
 			// console.debug('wentFirstInBattleThisTurn', structure.wentFirstInBattleThisTurn);
 		}
