@@ -42,7 +42,7 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	const result = extractResult(mainPlayerEntityId, elementTree);
 	// console.log('result');
 	const additionalResult =
-		gameMode === GameType.GT_BATTLEGROUNDS
+		gameMode === GameType.GT_BATTLEGROUNDS || gameMode === GameType.GT_BATTLEGROUNDS_FRIENDLY
 			? '' + extractBgsAdditionalResult(mainPlayerId, mainPlayerCardId, opponentPlayerId, elementTree)
 			: null;
 	// console.log('bgsResult');
