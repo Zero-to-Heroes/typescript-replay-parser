@@ -124,20 +124,6 @@ export const reparseReplay = (
 		],
 	);
 
-	// const compositionsOverTurn: readonly BgsCompositionForTurn[] = structure.boardOverTurn
-	// 	.map((cards: any[], turn: number) => {
-	// 		return {
-	// 			turn: turn,
-	// 			beast: cards.filter(card => card.tribe === Race.BEAST).length,
-	// 			demon: cards.filter(card => card.tribe === Race.DEMON).length,
-	// 			dragon: cards.filter(card => card.tribe === Race.DRAGON).length,
-	// 			mech: cards.filter(card => card.tribe === Race.MECHANICAL).length,
-	// 			murloc: cards.filter(card => card.tribe === Race.MURLOC).length,
-	// 			blank: cards.filter(card => card.tribe === Race.BLANK || card.tribe === -1).length,
-	// 		} as BgsCompositionForTurn;
-	// 	})
-	// 	.valueSeq()
-	// 	.toArray();
 	const rerollsOverTurn: readonly NumericTurnInfo[] = structure.rerollOverTurn
 		.map(
 			(rerolls, turn: number) =>
@@ -335,7 +321,7 @@ const rerollsForTurnPopulate = (structure: ParsingStructure, replay: Replay) => 
 };
 
 const mainPlayerHeroPowerForTurnParse = (structure: ParsingStructure, mainPlayerPlayerId: number) => {
-	return element => {
+	return (element: Element) => {
 		if (
 			element.tag === 'FullEntity' &&
 			element.find(`.Tag[@tag='${GameTag.CARDTYPE}'][@value='${CardType.HERO_POWER}']`) &&
@@ -344,13 +330,22 @@ const mainPlayerHeroPowerForTurnParse = (structure: ParsingStructure, mainPlayer
 			structure.mainPlayerHeroPowerIds = [...structure.mainPlayerHeroPowerIds, element.get('id')];
 			// console.debug('mainPlayerHeroPowerIds', structure.mainPlayerHeroPowerIds);
 		}
+		// if (
+		// 	element.tag === 'Block' &&
+		// 	parseInt(element.get('type')) === BlockType.POWER &&
+		// 	structure.mainPlayerHeroPowerIds.indexOf(element.get('entity')) !== -1
+		// ) {
+		// 	structure.mainPlayerHeroPowersForTurn = structure.mainPlayerHeroPowersForTurn + 1;
+		// 	console.debug('mainPlayerHeroPowersForTurn', structure.mainPlayerHeroPowersForTurn, element.attrib);
+		// }
 		if (
-			element.tag === 'Block' &&
-			parseInt(element.get('type')) === BlockType.POWER &&
+			element.tag === 'TagChange' &&
+			parseInt(element.get('tag')) === GameTag.EXHAUSTED &&
+			parseInt(element.get('value')) === 1 &&
 			structure.mainPlayerHeroPowerIds.indexOf(element.get('entity')) !== -1
 		) {
 			structure.mainPlayerHeroPowersForTurn = structure.mainPlayerHeroPowersForTurn + 1;
-			// console.debug('mainPlayerHeroPowersForTurn', structure.mainPlayerHeroPowersForTurn);
+			// console.debug('mainPlayerHeroPowersForTurn', structure.mainPlayerHeroPowersForTurn, element.attrib);
 		}
 	};
 };
