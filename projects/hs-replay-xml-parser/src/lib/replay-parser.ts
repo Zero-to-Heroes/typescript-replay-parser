@@ -104,20 +104,15 @@ const extractBgsAdditionalResult = (
 	opponentPlayerId: number,
 	elementTree: ElementTree,
 ): number => {
-	// const playerStats = extractBgsPlayerStats(elementTree, mainPlayerId, opponentPlayerId);
-	// const playerStat = playerStats.find(stat => stat.heroCardId === mainPlayerCardId);
-	// console.log('extracted battlegrounds additional result', mainPlayerId, mainPlayerCardId, playerStat, playerStats);
-	// return playerStat.finalRank;
-
 	const playerEntities = elementTree
 		.findall('.//FullEntity')
 		.filter(entity => entity.find(`.Tag[@tag='${GameTag.CARDTYPE}'][@value='${CardType.HERO}']`))
 		.filter(entity => entity.find(`.Tag[@tag='${GameTag.CONTROLLER}'][@value='${mainPlayerId}']`))
 		.filter(
 			entity =>
-				['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].indexOf(
+				!['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].includes(
 					entity.get('cardID'),
-				) === -1,
+				),
 		);
 	const entityIds = playerEntities.map(entity => entity.get('id'));
 	let leaderboardTags = elementTree

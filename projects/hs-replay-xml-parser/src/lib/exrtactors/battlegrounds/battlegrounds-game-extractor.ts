@@ -10,7 +10,7 @@ export const buildPostMatchStats = (
 	battleResultHistory: readonly BattleResultHistory[],
 ): BgsPostMatchStats => {
 	const replay: Replay = parseHsReplayString(replayXml);
-	console.log('parsed replay');
+	console.log('parsed replay', replayXml?.length);
 	const player: BgsPlayer = mainPlayer;
 	const structure = reparseReplay(replay);
 	const winLuckFactor = buildWinLuckFactor(battleResultHistory);
