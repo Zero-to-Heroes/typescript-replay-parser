@@ -7,6 +7,7 @@ import { NumericTurnInfo } from '../../model/numeric-turn-info';
 import { Replay } from '../../model/replay';
 import { extractNumberOfKilledEnemyHeroes, extractTotalDamageDealtToEnemyHero, extractTotalMinionDeaths } from '../../xml-parser';
 import { ParsingStructure } from './parsing-structure';
+import { normalizeHeroCardId } from './utils';
 
 export const reparseReplay = (
 	replay: Replay,
@@ -75,13 +76,13 @@ export const reparseReplay = (
 		.filter(
 			fullEntity =>
 				['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].indexOf(
-					fullEntity.get('cardID'),
+					normalizeHeroCardId(fullEntity.get('cardID')),
 				) === -1,
 		);
 	const mainPlayerEntityId: string = replay.replay.find('.//Player[@isMainPlayer="true"]').get('id');
 	console.debug('mainPlayerEntityId', mainPlayerEntityId);
 	const playerCardIds: readonly string[] = [
-		...new Set(playerEntities.map(entity => entity.get('cardID'))),
+		...new Set(playerEntities.map(entity => normalizeHeroCardId(entity.get('cardID')))),
 	] as readonly string[];
 	for (const playerCardId of playerCardIds) {
 		structure.playerHps[playerCardId] = playerCardId === 'TB_BaconShop_HERO_34' ? 50 : 40;
@@ -233,9 +234,9 @@ const hpForTurnParse = (structure: ParsingStructure, playerEntities: readonly El
 			parseInt(element.get('tag')) === GameTag.DAMAGE &&
 			playerEntities.map(entity => entity.get('id')).indexOf(element.get('entity')) !== -1
 		) {
-			const playerCardId = playerEntities
-				.find(entity => entity.get('id') === element.get('entity'))
-				.get('cardID');
+			const playerCardId = normalizeHeroCardId(playerEntities
+				.find(entity => normalizeHeroCardId(entity.get('id')) === normalizeHeroCardId(element.get('entity')))
+				.get('cardID'));
 			structure.playerHps[playerCardId] =
 				// Patchwerk is a special case
 				Math.max(0, (playerCardId === 'TB_BaconShop_HERO_34' ? 50 : 40) - parseInt(element.get('value')));
@@ -250,9 +251,9 @@ const leaderboardForTurnParse = (structure: ParsingStructure, playerEntities: re
 			parseInt(element.get('tag')) === GameTag.PLAYER_LEADERBOARD_PLACE &&
 			playerEntities.map(entity => entity.get('id').indexOf(element.get('entity')) !== -1)
 		) {
-			const playerCardId = playerEntities
-				.find(entity => entity.get('id') === element.get('entity'))
-				.get('cardID');
+			const playerCardId = normalizeHeroCardId(playerEntities
+				.find(entity => normalizeHeroCardId(entity.get('id')) === normalizeHeroCardId(element.get('entity')))
+				.get('cardID'));
 			structure.leaderboardPositions[playerCardId] = parseInt(element.get('value'));
 		}
 	};
@@ -605,7 +606,7 @@ const compositionForTurnParse = (structure: ParsingStructure) => {
 	return element => {
 		if (element.tag === 'FullEntity') {
 			structure.entities[element.get('id')] = {
-				cardId: element.get('cardID'),
+				cardId: normalizeHeroCardId(element.get('cardID')),
 				controller: parseInt(element.find(`.Tag[@tag='${GameTag.CONTROLLER}']`)?.get('value') || '-1'),
 				zone: parseInt(element.find(`.Tag[@tag='${GameTag.ZONE}']`)?.get('value') || '-1'),
 				zonePosition: parseInt(element.find(`.Tag[@tag='${GameTag.ZONE_POSITION}']`)?.get('value') || '-1'),
