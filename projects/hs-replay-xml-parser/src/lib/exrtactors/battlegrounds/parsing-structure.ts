@@ -35,6 +35,7 @@ export interface ParsingStructure {
 	minionsSoldForTurn: number;
 	minionsBoughtIds: string[];
 	minionsBoughtForTurn: number;
+	damageToEnemyHeroForTurn: number;
 	wentFirstInBattleThisTurn: boolean;
 
 	boardOverTurn: Map<number, readonly { cardId: string; tribe: number }[]>;
@@ -44,6 +45,7 @@ export interface ParsingStructure {
 	freezeOverTurn: Map<number, number>;
 	wentFirstInBattleOverTurn: Map<number, boolean>;
 	mainPlayerHeroPowerOverTurn: Map<number, number>;
+	damageToEnemyHeroOverTurn: Map<number, number>;
 	coinsWastedOverTurn: Map<number, number>;
 	minionsSoldOverTurn: Map<number, number>;
 	minionsBoughtOverTurn: Map<number, number>;

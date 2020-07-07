@@ -32,6 +32,7 @@ export const buildPostMatchStats = (
 		totalMinionsDamageTaken: structure.totalMinionsDamageTaken,
 		totalEnemyMinionsKilled: structure.totalEnemyMinionsKilled,
 		totalEnemyHeroesKilled: structure.totalEnemyHeroesKilled,
+		damageToEnemyHeroOverTurn: structure.damageToEnemyHeroOverTurn,
 		wentFirstInBattleOverTurn: structure.wentFirstInBattleOverTurn,
 		luckFactor: (2 * winLuckFactor + tieLuckFactor) / 3,
 	} as BgsPostMatchStats;

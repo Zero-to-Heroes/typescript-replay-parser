@@ -2,10 +2,11 @@
 import { BlockType, CardType, GameTag, MetaTags, PlayState, Step, Zone } from '@firestone-hs/reference-data';
 import { Element } from 'elementtree';
 import { Map } from 'immutable';
+import { extractHeroEntityIds } from '../../global-info-extractor';
 import { BooleanTurnInfo } from '../../model/boolean-turn-info';
 import { NumericTurnInfo } from '../../model/numeric-turn-info';
 import { Replay } from '../../model/replay';
-import { extractNumberOfKilledEnemyHeroes, extractTotalDamageDealtToEnemyHero, extractTotalMinionDeaths } from '../../xml-parser';
+import { extractNumberOfKilledEnemyHeroes, extractTotalMinionDeaths } from '../../xml-parser';
 import { ParsingStructure } from './parsing-structure';
 import { normalizeHeroCardId } from './utils';
 
@@ -21,9 +22,9 @@ export const reparseReplay = (
 	wentFirstInBattleOverTurn: readonly BooleanTurnInfo[];
 	hpOverTurn: { [playerCardId: string]: readonly NumericTurnInfo[] };
 	totalStatsOverTurn: readonly NumericTurnInfo[];
+	damageToEnemyHeroOverTurn: readonly NumericTurnInfo[];
 	totalMinionsDamageDealt: { [cardId: string]: number };
 	totalMinionsDamageTaken: { [cardId: string]: number };
-	totalDamageDealtToEnemyHeroes: number;
 	totalEnemyMinionsKilled: number;
 	totalEnemyHeroesKilled: number;
 } => {
@@ -42,6 +43,7 @@ export const reparseReplay = (
 		coinsWastedOverTurn: Map.of(),
 		minionsBoughtOverTurn: Map.of(),
 		minionsSoldOverTurn: Map.of(),
+		damageToEnemyHeroOverTurn: Map.of(),
 		hpOverTurn: {},
 		leaderboardPositionOverTurn: {},
 		totalStatsOverTurn: Map.of(),
@@ -49,6 +51,7 @@ export const reparseReplay = (
 		mainEnchantEntityIds: [],
 		mainPlayerHeroPowerIds: [],
 		mainPlayerHeroPowersForTurn: 0,
+		damageToEnemyHeroForTurn: 0,
 		rerollsForTurn: 0,
 		rerollsIds: [],
 		wentFirstInBattleThisTurn: undefined,
@@ -89,6 +92,9 @@ export const reparseReplay = (
 	}
 	console.log('mainPlayerId', replay.mainPlayerId);
 
+	const opponentHeroEntityIds = extractHeroEntityIds(replay, replay.opponentPlayerId);
+
+
 	parseElement(
 		replay.replay.getroot(),
 		replay.mainPlayerId,
@@ -106,6 +112,7 @@ export const reparseReplay = (
 			hpForTurnParse(structure, playerEntities),
 			leaderboardForTurnParse(structure, playerEntities),
 			damageDealtByMinionsParse(structure, replay),
+			damageDealtToEnemyHeroParse(structure, replay, opponentHeroEntityIds),
 			wentFirstInBattleForTurnParse(structure, replay.mainPlayerId),
 		],
 		[
@@ -120,6 +127,7 @@ export const reparseReplay = (
 			// to filter out the mulligan choices) and use this to iterate on the other elements
 			leaderboardForTurnPopulate(structure, replay),
 			hpForTurnPopulate(structure, replay),
+			damageDealtToEnemyHeroPopulate(structure, replay),
 			totalStatsForTurnPopulate(structure, replay),
 			wentFirstInBattleForTurnPopulate(structure, replay),
 		],
@@ -205,8 +213,19 @@ export const reparseReplay = (
 		})
 		.valueSeq()
 		.toArray();
+		const damageToEnemyHeroOverTurn: readonly NumericTurnInfo[] = structure.damageToEnemyHeroOverTurn
+			.map((stats: number, turn: number) => {
+				return {
+					turn: turn,
+					value: stats,
+				} as NumericTurnInfo;
+			})
+			.valueSeq() 
+			.toArray();
 	const totalEnemyMinionsKilled = extractTotalMinionDeaths(replay).opponent;
 	const totalEnemyHeroesKilled = extractNumberOfKilledEnemyHeroes(replay);
+	// const totalDamageDealtToEnemyHeroes = extractTotalDamageDealtToEnemyHero(replay).opponent;
+
 	return {
 		// compositionsOverTurn: compositionsOverTurn,
 		rerollsOverTurn: rerollsOverTurn,
@@ -217,7 +236,7 @@ export const reparseReplay = (
 		minionsBoughtOverTurn: minionsBoughtOverTurn,
 		hpOverTurn: hpOverTurn,
 		totalStatsOverTurn: totalStatsOverTurn,
-		totalDamageDealtToEnemyHeroes: extractTotalDamageDealtToEnemyHero(replay).opponent,
+		damageToEnemyHeroOverTurn: damageToEnemyHeroOverTurn,
 		totalMinionsDamageDealt: structure.minionsDamageDealt,
 		totalMinionsDamageTaken: structure.minionsDamageReceived,
 		totalEnemyMinionsKilled: totalEnemyMinionsKilled,
@@ -598,6 +617,31 @@ const damageDealtByMinionsParse = (structure: ParsingStructure, replay: Replay) 
 				}
 			}
 		}
+	};
+};
+
+
+
+const damageDealtToEnemyHeroParse = (structure: ParsingStructure, replay: Replay, opponentHeroEntityIds: readonly number[]) => {
+	return (element: Element) => {
+		if (element.tag === 'MetaData' && parseInt(element.get('meta')) === MetaTags.DAMAGE) {
+			const infos = element
+				.findall(`.Info`)
+				.filter(info => opponentHeroEntityIds.indexOf(parseInt(info.get('entity'))) !== -1);
+
+			if (!infos || infos.length === 0) {
+				return;
+			}
+			structure.damageToEnemyHeroForTurn = parseInt(element.get('data'));
+		}
+		
+	};
+};
+
+const damageDealtToEnemyHeroPopulate = (structure: ParsingStructure, replay: Replay) => {
+	return currentTurn => {
+		structure.damageToEnemyHeroOverTurn = structure.damageToEnemyHeroOverTurn.set(currentTurn, structure.damageToEnemyHeroForTurn);
+		structure.damageToEnemyHeroForTurn = 0;
 	};
 };
 
