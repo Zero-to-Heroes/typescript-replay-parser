@@ -1,5 +1,6 @@
 import { Map } from 'immutable';
 import { NumericTurnInfo } from '../../model/numeric-turn-info';
+import { ValueHeroInfo } from '../../model/value-hero-info';
 
 export interface ParsingStructure {
 	currentTurn: number;
@@ -35,7 +36,7 @@ export interface ParsingStructure {
 	minionsSoldForTurn: number;
 	minionsBoughtIds: string[];
 	minionsBoughtForTurn: number;
-	damageToEnemyHeroForTurn: number;
+	damageToEnemyHeroForTurn: ValueHeroInfo;
 	wentFirstInBattleThisTurn: boolean;
 
 	boardOverTurn: Map<number, readonly { cardId: string; tribe: number }[]>;
@@ -45,7 +46,7 @@ export interface ParsingStructure {
 	freezeOverTurn: Map<number, number>;
 	wentFirstInBattleOverTurn: Map<number, boolean>;
 	mainPlayerHeroPowerOverTurn: Map<number, number>;
-	damageToEnemyHeroOverTurn: Map<number, number>;
+	damageToEnemyHeroOverTurn: Map<number, ValueHeroInfo>;
 	coinsWastedOverTurn: Map<number, number>;
 	minionsSoldOverTurn: Map<number, number>;
 	minionsBoughtOverTurn: Map<number, number>;

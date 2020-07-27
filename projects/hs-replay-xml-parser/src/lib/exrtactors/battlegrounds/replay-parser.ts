@@ -4,8 +4,10 @@ import { Element } from 'elementtree';
 import { Map } from 'immutable';
 import { extractHeroEntityIds } from '../../global-info-extractor';
 import { BooleanTurnInfo } from '../../model/boolean-turn-info';
+import { ComplexTurnInfo } from '../../model/complex-turn-info';
 import { NumericTurnInfo } from '../../model/numeric-turn-info';
 import { Replay } from '../../model/replay';
+import { ValueHeroInfo } from '../../model/value-hero-info';
 import { extractNumberOfKilledEnemyHeroes, extractTotalMinionDeaths } from '../../xml-parser';
 import { ParsingStructure } from './parsing-structure';
 import { normalizeHeroCardId } from './utils';
@@ -22,7 +24,7 @@ export const reparseReplay = (
 	wentFirstInBattleOverTurn: readonly BooleanTurnInfo[];
 	hpOverTurn: { [playerCardId: string]: readonly NumericTurnInfo[] };
 	totalStatsOverTurn: readonly NumericTurnInfo[];
-	damageToEnemyHeroOverTurn: readonly NumericTurnInfo[];
+	damageToEnemyHeroOverTurn: readonly ComplexTurnInfo<ValueHeroInfo>[];
 	totalMinionsDamageDealt: { [cardId: string]: number };
 	totalMinionsDamageTaken: { [cardId: string]: number };
 	totalEnemyMinionsKilled: number;
@@ -51,7 +53,10 @@ export const reparseReplay = (
 		mainEnchantEntityIds: [],
 		mainPlayerHeroPowerIds: [],
 		mainPlayerHeroPowersForTurn: 0,
-		damageToEnemyHeroForTurn: 0,
+		damageToEnemyHeroForTurn: { 
+			enemyHeroCardId: undefined,
+			value: 0,
+		},
 		rerollsForTurn: 0,
 		rerollsIds: [],
 		wentFirstInBattleThisTurn: undefined,
@@ -213,12 +218,12 @@ export const reparseReplay = (
 		})
 		.valueSeq()
 		.toArray();
-		const damageToEnemyHeroOverTurn: readonly NumericTurnInfo[] = structure.damageToEnemyHeroOverTurn
-			.map((stats: number, turn: number) => {
+		const damageToEnemyHeroOverTurn: readonly ComplexTurnInfo<ValueHeroInfo>[] = structure.damageToEnemyHeroOverTurn
+			.map((stats: ValueHeroInfo, turn: number) => {
 				return {
 					turn: turn,
 					value: stats,
-				} as NumericTurnInfo;
+				} as ComplexTurnInfo<ValueHeroInfo>;
 			})
 			.valueSeq() 
 			.toArray();
@@ -632,7 +637,10 @@ const damageDealtToEnemyHeroParse = (structure: ParsingStructure, replay: Replay
 			if (!infos || infos.length === 0) {
 				return;
 			}
-			structure.damageToEnemyHeroForTurn = parseInt(element.get('data'));
+			structure.damageToEnemyHeroForTurn = {
+				enemyHeroCardId: structure.entities[infos[0].get('entity')].cardId,
+				value: parseInt(element.get('data'))
+			};
 		}
 		
 	};
@@ -641,7 +649,10 @@ const damageDealtToEnemyHeroParse = (structure: ParsingStructure, replay: Replay
 const damageDealtToEnemyHeroPopulate = (structure: ParsingStructure, replay: Replay) => {
 	return currentTurn => {
 		structure.damageToEnemyHeroOverTurn = structure.damageToEnemyHeroOverTurn.set(currentTurn, structure.damageToEnemyHeroForTurn);
-		structure.damageToEnemyHeroForTurn = 0;
+		structure.damageToEnemyHeroForTurn = {
+			enemyHeroCardId: undefined,
+			value: 0,
+		};
 	};
 };
 

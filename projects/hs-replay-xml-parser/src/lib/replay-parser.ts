@@ -9,9 +9,9 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	}
 	// http://effbot.org/zone/element-xpath.htm
 	// http://effbot.org/zone/pythondoc-elementtree-ElementTree.htm
-	// console.log('preparing to create element tree');
+	console.log('preparing to create element tree');
 	const elementTree = parse(replayString);
-	// console.log('elementTree');
+	console.log('elementTree');
 
 	const mainPlayerElement =
 		elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'true') ||
@@ -24,7 +24,7 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 		.shiftRight(32)
 		.and(0xff)
 		.toJSNumber();
-	// console.log('mainPlayer');
+	console.log('mainPlayer');
 
 	const opponentPlayerElement =
 		elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'false') ||
@@ -33,19 +33,19 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	const opponentPlayerName = opponentPlayerElement.get('name');
 	const opponentPlayerEntityId = opponentPlayerElement.get('id');
 	const opponentPlayerCardId = extractPlayerCardId(opponentPlayerElement, opponentPlayerEntityId, elementTree);
-	// console.log('opponentPlayer');
+	console.log('opponentPlayer');
 
 	const gameFormat = parseInt(elementTree.find('Game').get('formatType'));
 	const gameMode = parseInt(elementTree.find('Game').get('gameType'));
 	const scenarioId = parseInt(elementTree.find('Game').get('scenarioID'));
 
 	const result = extractResult(mainPlayerEntityId, elementTree);
-	// console.log('result');
+	console.log('result');
 	const additionalResult =
 		gameMode === GameType.GT_BATTLEGROUNDS || gameMode === GameType.GT_BATTLEGROUNDS_FRIENDLY
 			? '' + extractBgsAdditionalResult(mainPlayerId, mainPlayerCardId, opponentPlayerId, elementTree)
 			: null;
-	// console.log('bgsResult');
+	console.log('bgsResult');
 	const playCoin = extarctPlayCoin(mainPlayerEntityId, elementTree);
 
 	return Object.assign(new Replay(), {

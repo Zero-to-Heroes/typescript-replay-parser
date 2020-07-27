@@ -1,6 +1,8 @@
 import { BgsBoard, BgsTavernUpgrade, BgsTriple } from './battlegrounds';
 import { BooleanTurnInfo } from './boolean-turn-info';
+import { ComplexTurnInfo } from './complex-turn-info';
 import { NumericTurnInfo } from './numeric-turn-info';
+import { ValueHeroInfo } from './value-hero-info';
 
 export interface BgsPostMatchStats {
 	readonly tavernTimings: readonly BgsTavernUpgrade[];
@@ -19,7 +21,7 @@ export interface BgsPostMatchStats {
 	readonly leaderboardPositionOverTurn: { [playerCardId: string]: readonly NumericTurnInfo[] };
 	readonly totalStatsOverTurn: readonly NumericTurnInfo[];
 	readonly wentFirstInBattleOverTurn: readonly BooleanTurnInfo[];
-	readonly damageToEnemyHeroOverTurn: readonly NumericTurnInfo[];
+	readonly damageToEnemyHeroOverTurn: readonly ComplexTurnInfo<ValueHeroInfo>[];
 
 	readonly minionsBoughtOverTurn: readonly NumericTurnInfo[];
 	readonly minionsSoldOverTurn: readonly NumericTurnInfo[];
