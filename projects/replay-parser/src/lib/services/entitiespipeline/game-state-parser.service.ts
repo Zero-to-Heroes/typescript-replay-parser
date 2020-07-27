@@ -16,7 +16,7 @@ export class GameStateParserService {
 		game: Game,
 		entities: Map<number, Entity>,
 		history: readonly HistoryItem[],
-	): Map<number, Entity> {
+	): Game {
 		for (const item of history) {
 			if (item instanceof TagChangeHistoryItem) {
 				const tagChange: TagChangeHistoryItem = item as TagChangeHistoryItem;
@@ -38,7 +38,7 @@ export class GameStateParserService {
 				entities = this.updateWithFullEntity(item, entities);
 			}
 		}
-		return entities;
+		return game.update({ entitiesBeforeMulligan: entities } as Game);
 	}
 
 	private updateWithTagChange(historyItem: TagChangeHistoryItem, entities: Map<number, Entity>): Map<number, Entity> {

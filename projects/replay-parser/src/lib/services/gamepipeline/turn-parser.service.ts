@@ -99,12 +99,14 @@ export class TurnParserService {
 	}
 
 	private isStartOfTurn(item: HistoryItem, game: Game) {
-		return (
-			item instanceof TagChangeHistoryItem &&
-			this.isGameEntity(item.tag.entity, game) &&
-			item.tag.tag === GameTag.STEP &&
-			item.tag.value === Step.MAIN_READY
-		);
+		if (!(item instanceof TagChangeHistoryItem)) {
+			return false;
+		}
+		const startOfTurn = item.tag.tag === GameTag.STEP && item.tag.value === Step.MAIN_READY;
+		if (startOfTurn) {
+			// console.log('start of turn, isGameEntity?', item.tag.entity, game.getLatestParsedState()?.toJS())
+		}
+		return this.isGameEntity(item.tag.entity, game) && startOfTurn;
 	}
 
 	// private isPlayerEntity(entityId: number, game: Game) {

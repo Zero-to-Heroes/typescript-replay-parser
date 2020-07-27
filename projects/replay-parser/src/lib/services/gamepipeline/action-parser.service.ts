@@ -116,7 +116,7 @@ export class ActionParserService {
 						game.players,
 					);
 					if (actions && actions.length > 0) {
-						// console.log('parser applies', parser, item);
+						// console.log('parser applies', parser, item, actions);
 						actionsForTurn = this.fillMissingEntities(actionsForTurn, entitiesBeforeAction);
 						actionsForTurn = [...actionsForTurn, ...actions];
 					}
@@ -138,15 +138,7 @@ export class ActionParserService {
 		// 	console.log('is entity present', previousStateEntities.has(507));
 		// }
 		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
-		// console.log(
-		// 	'after fillMissingEntities 150',
-		// 	actionsForTurn[actionsForTurn.length - 1].entities.get(150) &&
-		// 		actionsForTurn[actionsForTurn.length - 1].entities.get(150).tags.toJS(),
-		// );
-		// console.log(
-		// 	'actionsForTurn after fillMissingEntities',
-		// 	actionsForTurn[actionsForTurn.length - 1].entities.toJS(),
-		// );
+		// console.log('actionsForTurn after fillMissingEntities', actionsForTurn);
 		// Sort actions based on their index (so that actions that were created from the same
 		// parent action can have a custom order)
 		actionsForTurn = this.sortActions(
@@ -194,25 +186,9 @@ export class ActionParserService {
 				console.warn('could not get current turn', currentTurn, game.turns.toJS());
 			}
 			const turnWithNewActions = game.turns.get(currentTurn).update({ actions: actionsForTurn });
-			// if (debug) {
-			// 	console.log(
-			// 		'is entity present after turnWithNewActions',
-			// 		turnWithNewActions.actions[turnWithNewActions.actions.length - 1].entities.has(507),
-			// 	);
-			// }
 			const turnNumber = turnWithNewActions.turn === 'mulligan' ? 0 : parseInt(turnWithNewActions.turn);
 			const turns = game.turns.set(turnNumber, turnWithNewActions);
-			// console.log(
-			// 	'turnWithNewActions',
-			// 	turnWithNewActions.actions[turnWithNewActions.actions.length - 1].entities.toJS(),
-			// );
-			// actionsForTurn = [];
-			// if (debug) {
-			// 	console.log(
-			// 		'is entity present after turns set',
-			// 		turns.get(turnNumber).actions[turns.get(turnNumber).actions.length - 1].entities.has(507),
-			// 	);
-			// }
+			// console.log('turnWithNewActions', turnNumber, turnWithNewActions.actions);
 			const result = Game.createGame(game, { turns } as Game);
 			// console.log('oriejg', result.getLatestParsedState().toJS());
 			return result;

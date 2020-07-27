@@ -71,16 +71,18 @@ export class XmlParserService {
 		const [setupChunk, ...gameChunks] = mulliganSplits;
 		// console.log('setupChunk', setupChunk);
 		// Then the other chunks are handled only on a turn-by-turn basis
-		const gameXml = gameChunks.join('');
+		// This logic is here to handle the case where there is no mulligan info. It should usually not happen,
+		// but I've seen it at least once
+		const gameXml = gameChunks && gameChunks.length > 0 ? gameChunks.join('') : setupChunk;
 		// console.log('gameXml', gameXml);
 		// https://stackoverflow.com/questions/12001953/javascript-and-regex-split-string-and-keep-the-separator
 		const chunks = gameXml.split(
 			new RegExp(`(?=<TagChange.*tag="${GameTag.STEP}" value="${Step.MAIN_READY}".*/>)`),
 		);
-		// console.log('chunks', chunks);
-		const splitChunks = [setupChunk, ...chunks];
+		// console.log('chunks', chunks.length);
+		const splitChunks = gameChunks && gameChunks.length > 0 ? [setupChunk, ...chunks] : [...chunks];
 		for (const chunk of splitChunks) {
-			// console.log('writing chunk', chunk);
+			// console.log('writing chunk', chunk.length);
 			testSaxes.write(chunk);
 			yield this.history;
 			this.history = [];

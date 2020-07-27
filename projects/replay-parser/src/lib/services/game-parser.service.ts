@@ -136,8 +136,9 @@ export class GameParserService {
 		while (true) {
 			const itValue = xmlParsingIterator.next();
 			const history: readonly HistoryItem[] = itValue.value;
+			// console.log('parsing for', counter, 'with history length', history.length);
 
-			if (itValue.done) {
+			if (!history || itValue.done) {
 				// console.log('history parsing over', itValue);
 				break;
 			}
@@ -159,18 +160,6 @@ export class GameParserService {
 				return [null, SMALL_PAUSE, 'Batllegrounds tutorial is not supported'];
 			}
 
-			// if (game.turns.size === 30) {
-			// 	return;
-			// }
-
-			// const debug = game.turns.size === 33;
-			// console.log(
-			// 	'handling turn',
-			// 	game.turns.size,
-			// 	counter,
-			// 	'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
-			// );
-
 			// Preload the images we'll need early on
 			const preloadIterator = this.imagePreloader.preloadImages(history);
 			while (true) {
@@ -181,23 +170,12 @@ export class GameParserService {
 			}
 
 			let entities = this.gamePopulationService.initNewEntities(game, history, entityCardId);
-			// console.log(
-			// 	'entity 150 initNewEntities',
-			// 	entities.get(150) && entities.get(150).tags.toJS(),
-			// 	entities.get(150),
-			// );
-			// if (debug || game.turns.size === 32) {
-			// 	console.log('=======game after initNewEntities', entities.toJS(), entities.get(507));
-			// }
 			if (game.turns.size === 0) {
 				game = this.gameInitializer.initializePlayers(game, entities);
-				entities = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
+				game = this.gameStateParser.updateEntitiesUntilMulliganState(game, entities, history);
+				entities = game.entitiesBeforeMulligan;
 				// console.log('game after populateEntitiesUntilMulliganState', game, game.turns.toJS());
 			}
-
-			// if (game.turns.size === 1) {
-			// 	return;
-			// }
 
 			game = this.turnParser.createTurns(game, history);
 			// console.log('game after turn creation', game.turns.size);

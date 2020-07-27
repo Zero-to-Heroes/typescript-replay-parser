@@ -20,6 +20,10 @@ export class Game {
 		return Object.assign(new Game(), { ...baseGame }, { ...newAttributes });
 	}
 
+	public update(base: Game): Game {
+		return Object.assign(new Game(), this, base);
+	}
+
 	public getLatestParsedState(): Map<number, Entity> {
 		if (this.turns.size === 0 || this.turns.last().actions.length === 0) {
 			return this.entitiesBeforeMulligan;
