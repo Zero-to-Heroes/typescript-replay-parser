@@ -50,7 +50,10 @@ export class ActionHelper {
 	}
 
 	public static getTag(tags: readonly EntityTag[], name: GameTag): number {
-		const defender = tags.find(tag => tag.tag === name);
+		if (!tags) {
+			return null;
+		}
+		const defender = tags?.find(tag => tag.tag === name);
 		return defender ? defender.value : 0;
 	}
 
