@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CardType, GameTag, Zone } from '@firestone-hs/reference-data';
+import { CardType, GameTag, GameType, Zone } from '@firestone-hs/reference-data';
 import { BoardEntity } from '@firestone-hs/simulate-bgs-battle/dist/board-entity';
 import { Damage, GameAction } from '@firestone-hs/simulate-bgs-battle/dist/simulation/spectator/game-action';
 import { GameSample } from '@firestone-hs/simulate-bgs-battle/dist/simulation/spectator/game-sample';
@@ -32,6 +32,7 @@ export class BattlegroundsSimulationParserService {
 		let game: Game = Game.createGame({
 			players: [playerEntity, opponentEntity] as readonly PlayerEntity[],
 			turns: Map.of(0, this.buildSingleBgsTurn(bgsSimulationWithIds, playerEntity, opponentEntity)),
+			gameType: GameType.GT_BATTLEGROUNDS
 		} as Game);
 		game = this.narrator.populateActionTextForLastTurn(game);
 		game = this.narrator.createGameStoryForLastTurn(game);
