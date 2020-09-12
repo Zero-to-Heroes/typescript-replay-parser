@@ -1,4 +1,4 @@
-import { BnetRegion, CardType, GameTag, GameType, PlayState } from '@firestone-hs/reference-data';
+import { BnetRegion, CardType, GameTag, GameType, PlayState, Zone } from '@firestone-hs/reference-data';
 import bigInt from 'big-integer';
 import { Element, ElementTree, parse } from 'elementtree';
 import { Replay } from './model/replay';
@@ -9,9 +9,9 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	}
 	// http://effbot.org/zone/element-xpath.htm
 	// http://effbot.org/zone/pythondoc-elementtree-ElementTree.htm
-	console.log('preparing to create element tree');
+	// console.log('preparing to create element tree');
 	const elementTree = parse(replayString);
-	console.log('elementTree');
+	// console.log('elementTree');
 
 	const mainPlayerElement =
 		elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'true') ||
@@ -24,7 +24,7 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 		.shiftRight(32)
 		.and(0xff)
 		.toJSNumber();
-	console.log('mainPlayer');
+	// console.log('mainPlayer');
 
 	const opponentPlayerElement =
 		elementTree.findall('.//Player').find(player => player.get('isMainPlayer') === 'false') ||
@@ -33,19 +33,19 @@ export const buildReplayFromXml = (replayString: string): Replay => {
 	const opponentPlayerName = opponentPlayerElement.get('name');
 	const opponentPlayerEntityId = opponentPlayerElement.get('id');
 	const opponentPlayerCardId = extractPlayerCardId(opponentPlayerElement, opponentPlayerEntityId, elementTree);
-	console.log('opponentPlayer');
+	// console.log('opponentPlayer');
 
 	const gameFormat = parseInt(elementTree.find('Game').get('formatType'));
 	const gameMode = parseInt(elementTree.find('Game').get('gameType'));
 	const scenarioId = parseInt(elementTree.find('Game').get('scenarioID'));
 
 	const result = extractResult(mainPlayerEntityId, elementTree);
-	console.log('result');
+	// console.log('result');
 	const additionalResult =
 		gameMode === GameType.GT_BATTLEGROUNDS || gameMode === GameType.GT_BATTLEGROUNDS_FRIENDLY
 			? '' + extractBgsAdditionalResult(mainPlayerId, mainPlayerCardId, opponentPlayerId, elementTree)
 			: null;
-	console.log('bgsResult');
+	// console.log('bgsResult');
 	const playCoin = extarctPlayCoin(mainPlayerEntityId, elementTree);
 
 	return Object.assign(new Replay(), {
@@ -104,29 +104,54 @@ const extractBgsAdditionalResult = (
 	opponentPlayerId: number,
 	elementTree: ElementTree,
 ): number => {
-	const playerEntities = elementTree
+	const playerEntities = extractPlayerEntities(mainPlayerId, elementTree, true);
+	const entityIds = playerEntities.map(entity => entity.get('id'));
+	// console.log('player entity ids', entityIds);
+	let leaderboardTags = elementTree
+		.findall(`.//TagChange[@tag='${GameTag.PLAYER_LEADERBOARD_PLACE}']`)
+		.filter(tag => entityIds.indexOf(tag.get('entity')) !== -1)
+		.map(tag => parseInt(tag.get('value')))
+		.filter(value => value > 0);
+	// console.log('leaderboard tag changes', leaderboardTags);
+	// No tag change, look at root tag
+	if (!leaderboardTags || leaderboardTags.length === 0) {
+		// console.log('no tag change, looking at root');
+		leaderboardTags = playerEntities
+			.map(entity => entity.find(`.Tag[@tag='${GameTag.PLAYER_LEADERBOARD_PLACE}']`))
+			.filter(tag => tag)
+			.map(tag => parseInt(tag.get('value')))
+			.filter(value => value > 0);
+		// console.log('leaderboard tag changes at root', leaderboardTags);
+	}
+	return !leaderboardTags || leaderboardTags.length === 0 ? 0 : leaderboardTags[leaderboardTags.length - 1];
+};
+
+export const extractPlayerEntities = (playerId: number, elementTree: ElementTree, isMainPlayer: boolean): Element[] => {
+	return elementTree
 		.findall('.//FullEntity')
 		.filter(entity => entity.find(`.Tag[@tag='${GameTag.CARDTYPE}'][@value='${CardType.HERO}']`))
-		.filter(entity => entity.find(`.Tag[@tag='${GameTag.CONTROLLER}'][@value='${mainPlayerId}']`))
+		.filter(entity => entity.find(`.Tag[@tag='${GameTag.CONTROLLER}'][@value='${playerId}']`))
+		.filter(
+			entity =>
+				!isMainPlayer ||
+				![Zone.SETASIDE, Zone.GRAVEYARD].includes(
+					parseInt(entity.find(`.Tag[@tag='${GameTag.ZONE}']`).get('value')),
+				),
+		)
 		.filter(
 			entity =>
 				!['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].includes(
 					entity.get('cardID'),
 				),
 		);
-	const entityIds = playerEntities.map(entity => entity.get('id'));
-	let leaderboardTags = elementTree
-		.findall(`.//TagChange[@tag='${GameTag.PLAYER_LEADERBOARD_PLACE}']`)
-		.filter(tag => entityIds.indexOf(tag.get('entity')) !== -1)
-		.map(tag => parseInt(tag.get('value')))
-		.filter(value => value > 0);
-	// No tag change, look at root tag
-	if (!leaderboardTags || leaderboardTags.length === 0) {
-		leaderboardTags = playerEntities
-			.map(entity => entity.find(`.Tag[@tag='${GameTag.PLAYER_LEADERBOARD_PLACE}']`))
-			.filter(tag => tag)
-			.map(tag => parseInt(tag.get('value')))
-			.filter(value => value > 0);
-	}
-	return !leaderboardTags || leaderboardTags.length === 0 ? 0 : leaderboardTags[leaderboardTags.length - 1];
+};
+
+export const extractAllPlayerEntities = (
+	mainPlayerId: number,
+	opponentPlayerId: number,
+	elementTree: ElementTree,
+): Element[] => {
+	const mainPlayerEntities = extractPlayerEntities(mainPlayerId, elementTree, true);
+	const opponentEntities = extractPlayerEntities(opponentPlayerId, elementTree, false);
+	return [...mainPlayerEntities, ...opponentEntities];
 };

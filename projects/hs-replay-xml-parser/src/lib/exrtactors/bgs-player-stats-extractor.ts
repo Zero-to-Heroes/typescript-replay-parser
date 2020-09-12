@@ -1,26 +1,15 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { CardType, GameTag } from '@firestone-hs/reference-data';
+import { GameTag } from '@firestone-hs/reference-data';
 import { Element, ElementTree } from 'elementtree';
 import { PlayerStat } from '../model/player-stat';
+import { extractAllPlayerEntities } from '../replay-parser';
 
 export const extractBgsPlayerStats = (
 	elementTree: ElementTree,
 	mainPlayerId: number,
 	opponentPlayerId: number,
 ): readonly PlayerStat[] => {
-	const playerEntities = elementTree
-		.findall(`.//FullEntity`)
-		.filter(fullEntity => fullEntity.find(`.Tag[@tag='${GameTag.CARDTYPE}'][@value='${CardType.HERO}']`))
-		.filter(fullEntity => {
-			const controllerId = parseInt(fullEntity.find(`.Tag[@tag='${GameTag.CONTROLLER}']`).get('value'));
-			return controllerId === mainPlayerId || controllerId === opponentPlayerId;
-		})
-		.filter(
-			fullEntity =>
-				['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].indexOf(
-					fullEntity.get('cardID'),
-				) === -1,
-		);
+	const playerEntities = extractAllPlayerEntities(mainPlayerId, opponentPlayerId, elementTree);
 
 	// Each player has one ID per match, so we need to aggregate all of them
 	// It also inclues the choices during mulligan, which should be ok since they are not assigned any info

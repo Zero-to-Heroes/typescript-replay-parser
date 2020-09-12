@@ -8,6 +8,7 @@ import { ComplexTurnInfo } from '../../model/complex-turn-info';
 import { NumericTurnInfo } from '../../model/numeric-turn-info';
 import { Replay } from '../../model/replay';
 import { ValueHeroInfo } from '../../model/value-hero-info';
+import { extractAllPlayerEntities } from '../../replay-parser';
 import { extractNumberOfKilledEnemyHeroes, extractTotalMinionDeaths } from '../../xml-parser';
 import { ParsingStructure } from './parsing-structure';
 import { normalizeHeroCardId } from './utils';
@@ -74,28 +75,16 @@ export const reparseReplay = (
 		minionsDamageReceived: {},
 	};
 
-	const playerEntities = replay.replay
-		.findall(`.//FullEntity`)
-		.filter(fullEntity => fullEntity.find(`.Tag[@tag='${GameTag.CARDTYPE}'][@value='${CardType.HERO}']`))
-		.filter(fullEntity => {
-			const controllerId = parseInt(fullEntity.find(`.Tag[@tag='${GameTag.CONTROLLER}']`).get('value'));
-			return controllerId === replay.mainPlayerId || controllerId === replay.opponentPlayerId;
-		})
-		.filter(
-			fullEntity =>
-				['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].indexOf(
-					normalizeHeroCardId(fullEntity.get('cardID')),
-				) === -1,
-		);
+	const playerEntities = extractAllPlayerEntities(replay.mainPlayerId, replay.opponentPlayerId, replay.replay);
 	const mainPlayerEntityId: string = replay.replay.find('.//Player[@isMainPlayer="true"]').get('id');
-	console.debug('mainPlayerEntityId', mainPlayerEntityId);
+	// console.debug('mainPlayerEntityId', mainPlayerEntityId);
 	const playerCardIds: readonly string[] = [
 		...new Set(playerEntities.map(entity => normalizeHeroCardId(entity.get('cardID')))),
 	] as readonly string[];
 	for (const playerCardId of playerCardIds) {
 		structure.playerHps[playerCardId] = playerCardId === 'TB_BaconShop_HERO_34' ? 50 : 40;
 	}
-	console.log('mainPlayerId', replay.mainPlayerId);
+	// console.log('mainPlayerId', replay.mainPlayerId);
 
 	const opponentHeroEntityIds = extractHeroEntityIds(replay, replay.opponentPlayerId);
 
@@ -190,7 +179,7 @@ export const reparseReplay = (
 		.toArray();
 	const wentFirstInBattleOverTurn: readonly BooleanTurnInfo[] = structure.wentFirstInBattleOverTurn
 		.map(
-			(wentFirst, turn: number) =>
+			(wentFirst: boolean, turn: number) =>
 				({
 					turn: turn,
 					value: wentFirst,
@@ -421,12 +410,11 @@ const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPl
 	return (element: Element) => {
 		if (element.tag === 'FullEntity' && element.get('cardID') === 'TB_BaconShop_8P_PlayerE') {
 			structure.mainEnchantEntityIds = [...structure.mainEnchantEntityIds, element.get('id')];
-			// console.debug('freezesIds', structure.freezesIds);
+			console.debug('freezesIds', structure.freezesIds);
 		}
 		if (
 			element.tag === 'Block' &&
 			structure.mainEnchantEntityIds.indexOf(element.get('entity')) !== -1 &&
-			// element.get('cardID') === 'TB_BaconShop_8P_PlayerE' &&
 			parseInt(element.get('type')) == BlockType.TRIGGER &&
 			element.find(`.Block[@type='${BlockType.ATTACK}']`)
 		) {
@@ -437,13 +425,13 @@ const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPl
 				return;
 			}
 			if (attackingEntity.cardType === CardType.HERO) {
-				// console.log('ignoring hero attack');
+				console.log('ignoring hero attack');
 				return;
 			}
 			const wentFirst = attackingEntity.controller === mainPlayerPlayerId;
-			// console.debug('wentFirst', wentFirst, attackingEntity, mainPlayerPlayerId, firstAttack.attrib);
+			console.debug('wentFirst', wentFirst, attackingEntity, mainPlayerPlayerId, firstAttack.attrib);
 			structure.wentFirstInBattleThisTurn = wentFirst;
-			// console.debug('wentFirstInBattleThisTurn', structure.wentFirstInBattleThisTurn);
+			console.debug('wentFirstInBattleThisTurn', structure.wentFirstInBattleThisTurn);
 		}
 	};
 };
