@@ -18,6 +18,13 @@ export class Entity {
 		return newEntity;
 	}
 
+	public static fromJS(base: EntityAsJS): Entity {
+		const tags: Map<string, number> = Map(base.tags);
+		return Object.assign(new Entity(), base, {
+			tags: tags,
+		} as Entity);
+	}
+
 	public getCardType() {
 		return this.getTag(GameTag.CARDTYPE);
 	}
@@ -72,4 +79,11 @@ export class Entity {
 		const base: Entity = this;
 		return Object.assign(new Entity(), { ...base, tags: newTags });
 	}
+}
+
+export interface EntityAsJS {
+	readonly id: number;
+	readonly cardID: string;
+	readonly damageForThisAction: number;
+	readonly tags: { [tagName: string]: number };
 }
