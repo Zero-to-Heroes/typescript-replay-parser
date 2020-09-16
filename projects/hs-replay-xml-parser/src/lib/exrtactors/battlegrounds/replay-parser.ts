@@ -76,6 +76,7 @@ export const reparseReplay = (
 	};
 
 	const playerEntities = extractAllPlayerEntities(replay.mainPlayerId, replay.opponentPlayerId, replay.replay);
+	// console.debug('player entities', playerEntities.map(entity => entity.get('id')));
 	const mainPlayerEntityId: string = replay.replay.find('.//Player[@isMainPlayer="true"]').get('id');
 	// console.debug('mainPlayerEntityId', mainPlayerEntityId);
 	const playerCardIds: readonly string[] = [
@@ -262,8 +263,9 @@ const leaderboardForTurnParse = (structure: ParsingStructure, playerEntities: re
 		if (
 			element.tag === 'TagChange' &&
 			parseInt(element.get('tag')) === GameTag.PLAYER_LEADERBOARD_PLACE &&
-			playerEntities.map(entity => entity.get('id').indexOf(element.get('entity')) !== -1)
+			playerEntities.map(entity => entity.get('id')).indexOf(element.get('entity')) !== -1
 		) {
+			// console.debug('finding leaderboard for turn', playerEntities.map(entity => entity.get('id')), element.get('entity'));
 			const playerCardId = normalizeHeroCardId(playerEntities
 				.find(entity => normalizeHeroCardId(entity.get('id')) === normalizeHeroCardId(element.get('entity')))
 				.get('cardID'));
@@ -410,7 +412,7 @@ const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPl
 	return (element: Element) => {
 		if (element.tag === 'FullEntity' && element.get('cardID') === 'TB_BaconShop_8P_PlayerE') {
 			structure.mainEnchantEntityIds = [...structure.mainEnchantEntityIds, element.get('id')];
-			console.debug('freezesIds', structure.freezesIds);
+			// console.debug('freezesIds', structure.freezesIds);
 		}
 		if (
 			element.tag === 'Block' &&
@@ -425,13 +427,13 @@ const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPl
 				return;
 			}
 			if (attackingEntity.cardType === CardType.HERO) {
-				console.log('ignoring hero attack');
+				// console.log('ignoring hero attack');
 				return;
 			}
 			const wentFirst = attackingEntity.controller === mainPlayerPlayerId;
-			console.debug('wentFirst', wentFirst, attackingEntity, mainPlayerPlayerId, firstAttack.attrib);
+			// console.debug('wentFirst', wentFirst, attackingEntity, mainPlayerPlayerId, firstAttack.attrib);
 			structure.wentFirstInBattleThisTurn = wentFirst;
-			console.debug('wentFirstInBattleThisTurn', structure.wentFirstInBattleThisTurn);
+			// console.debug('wentFirstInBattleThisTurn', structure.wentFirstInBattleThisTurn);
 		}
 	};
 };
