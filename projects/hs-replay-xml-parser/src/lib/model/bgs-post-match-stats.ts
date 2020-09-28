@@ -1,4 +1,4 @@
-import { BgsBoard, BgsTavernUpgrade, BgsTriple } from './battlegrounds';
+import { BattleResultHistory, BgsBoard, BgsTavernUpgrade, BgsTriple } from './battlegrounds';
 import { BooleanTurnInfo } from './boolean-turn-info';
 import { ComplexTurnInfo } from './complex-turn-info';
 import { NumericTurnInfo } from './numeric-turn-info';
@@ -32,4 +32,5 @@ export interface BgsPostMatchStats {
 	readonly totalEnemyMinionsKilled: number;
 	readonly totalEnemyHeroesKilled: number;
 	readonly luckFactor: number;
+	readonly battleResultHistory: readonly BattleResultHistory[];
 }
