@@ -125,10 +125,14 @@ export class StateProcessorService {
 		historyItem: ShowEntityHistoryItem | FullEntityHistoryItem,
 		entities: Map<number, Entity>,
 	): Map<number, Entity> {
+		if (historyItem.entityDefintion.id === 35) {
+			console.log('applying history item', historyItem, historyItem.entityDefintion.tags?.toJS());
+		}
 		if (!entities.get(historyItem.entityDefintion.id)) {
 			console.warn('[state-processor] could not update entity', historyItem.entityDefintion.id);
 			return entities;
 		}
+
 		// if (historyItem.entityDefintion.id === 73 || historyItem.entityDefintion.id === 74) {
 		// 	console.log('enriching state', historyItem);
 		// }

@@ -4,7 +4,7 @@ import { Action } from '../../models/action/action';
 import { Entity } from '../../models/game/entity';
 import { Game } from '../../models/game/game';
 import { HistoryItem } from '../../models/history/history-item';
-import { ActionParserConfig } from '../../models/models';
+import { ActionParserConfig, SummonAction } from '../../models/models';
 import { ActionButtonUsedParser } from '../action/action-button-used-parser';
 import { AttachingEnchantmentParser } from '../action/attaching-enchantment-parser';
 import { AttackParser } from '../action/attack-parser';
@@ -98,9 +98,9 @@ export class ActionParserService {
 			// const start = Date.now();
 			const entitiesBeforeAction = previousStateEntities;
 			previousStateEntities = this.stateProcessorService.applyHistoryItem(previousStateEntities, item);
-			// if (debug) {
-			// 	console.log('is entity present', entitiesBeforeAction.has(507), previousStateEntities.has(507), item);
-			// }
+			//if (debug) {
+			//	console.log('is entity present', entitiesBeforeAction.has(35), previousStateEntities.has(35), previousStateEntities.get(35)?.tags?.toJS());
+			//}
 			previousProcessedItem = item;
 			actionParsers.forEach(parser => {
 				if (parser.applies(item)) {
@@ -117,6 +117,10 @@ export class ActionParserService {
 					);
 					if (actions && actions.length > 0) {
 						// console.log('parser applies', parser, item, actions);
+						actionsForTurn = this.sortActions(
+							actionsForTurn,
+							(a: Action, b: Action) => a.index - b.index || a.timestamp - b.timestamp,
+						);
 						actionsForTurn = this.fillMissingEntities(actionsForTurn, entitiesBeforeAction);
 						actionsForTurn = [...actionsForTurn, ...actions];
 					}
@@ -130,21 +134,17 @@ export class ActionParserService {
 			previousProcessedItem,
 		);
 		// console.log(
-		// 	'after history applied until end 150',
-		// 	previousStateEntities.get(150) && previousStateEntities.get(150).tags.toJS(),
+		// 	'after history applied until end 35',
+		// 	previousStateEntities.get(35) && previousStateEntities.get(35).tags.toJS(),
 		// );
-		// console.log('previousStateEntities after history parsing', previousStateEntities.toJS());
-		// if (debug) {
-		// 	console.log('is entity present', previousStateEntities.has(507));
-		// }
-		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
-		// console.log('actionsForTurn after fillMissingEntities', actionsForTurn);
 		// Sort actions based on their index (so that actions that were created from the same
 		// parent action can have a custom order)
 		actionsForTurn = this.sortActions(
 			actionsForTurn,
 			(a: Action, b: Action) => a.index - b.index || a.timestamp - b.timestamp,
 		);
+		actionsForTurn = this.fillMissingEntities(actionsForTurn, previousStateEntities);
+		// console.log('actionsForTurn after fillMissingEntities', actionsForTurn);
 		// console.log(
 		// 	'after sortActions 150',
 		// 	actionsForTurn[actionsForTurn.length - 1].entities.get(150) &&
@@ -209,6 +209,13 @@ export class ActionParserService {
 			if (actionsForTurn[i].entities) {
 				newActionsForTurn.push(actionsForTurn[i]);
 			} else {
+				//if (actionsForTurn[i] instanceof SummonAction) {
+				//	console.log(
+				//		'filling missing entities for',
+				//		previousStateEntities.get(35) && previousStateEntities.get(35).tags.toJS(),
+				//		actionsForTurn[i],
+				//	);
+				//}
 				newActionsForTurn.push(actionsForTurn[i].update(previousStateEntities));
 			}
 		}

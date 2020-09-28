@@ -6,6 +6,7 @@ import { SummonAction } from '../../models/action/summon-action';
 import { Entity } from '../../models/game/entity';
 import { ActionHistoryItem } from '../../models/history/action-history-item';
 import { HistoryItem } from '../../models/history/history-item';
+import { FullEntityHistoryItem, ShowEntityHistoryItem } from '../../models/models';
 import { EntityDefinition } from '../../models/parser/entity-definition';
 import { AllCardsService } from '../all-cards.service';
 import { ActionHelper } from './action-helper';
@@ -15,28 +16,30 @@ export class SummonsParser implements Parser {
 	constructor(private allCards: AllCardsService) {}
 
 	public applies(item: HistoryItem): boolean {
-		return item instanceof ActionHistoryItem;
+		return item instanceof ShowEntityHistoryItem || item instanceof FullEntityHistoryItem;
 	}
 
 	public parse(
-		item: ActionHistoryItem,
+		item: ShowEntityHistoryItem | FullEntityHistoryItem,
 		currentTurn: number,
 		entitiesBeforeAction: Map<number, Entity>,
 		history: readonly HistoryItem[],
 	): Action[] {
+		const parentActionId = item.entityDefintion.parentIndex;
+		const parentAction = history.find(historyItem => historyItem.index === parentActionId);
+		// We make sure the death occurs during a DEATH phase, so that we don't count the
+		// "dead spells", ie spells that have been used and go to the graveyard
+		if (!item.entityDefintion.parentIndex || !parentAction || !(parentAction instanceof ActionHistoryItem)) {
+			return;
+		}
 		if (
-			parseInt(item.node.attributes.type) !== BlockType.TRIGGER &&
-			parseInt(item.node.attributes.type) !== BlockType.POWER
+			parseInt(parentAction.node.attributes.type) !== BlockType.TRIGGER &&
+			parseInt(parentAction.node.attributes.type) !== BlockType.POWER
 		) {
 			return;
 		}
 
-		let entities: readonly EntityDefinition[];
-		if (item.node.fullEntities && item.node.fullEntities.length > 0) {
-			entities = item.node.fullEntities;
-		} else if (item.node.showEntities && item.node.showEntities.length > 0) {
-			entities = item.node.showEntities;
-		}
+		let entities: readonly EntityDefinition[] = [item.entityDefintion];
 		if (!entities) {
 			return;
 		}
@@ -50,7 +53,7 @@ export class SummonsParser implements Parser {
 						timestamp: item.timestamp,
 						index: entity.index,
 						entityIds: [entity.id] as readonly number[],
-						originId: parseInt(item.node.attributes.entity),
+						originId: parseInt(parentAction.node.attributes.entity),
 					} as SummonAction,
 					this.allCards,
 				);
