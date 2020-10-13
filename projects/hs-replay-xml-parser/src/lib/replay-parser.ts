@@ -1,6 +1,7 @@
 import { BnetRegion, CardType, GameTag, GameType, PlayState, Zone } from '@firestone-hs/reference-data';
 import bigInt from 'big-integer';
 import { Element, ElementTree, parse } from 'elementtree';
+import { heroPickExtractor } from './exrtactors/battlegrounds/hero-pick-extractor';
 import { Replay } from './model/replay';
 
 export const buildReplayFromXml = (replayString: string): Replay => {
@@ -127,6 +128,15 @@ const extractBgsAdditionalResult = (
 };
 
 export const extractPlayerEntities = (playerId: number, elementTree: ElementTree, isMainPlayer: boolean): Element[] => {
+	const [pickOptions, pickedHeroFullEntity] = isMainPlayer ? heroPickExtractor(elementTree, playerId) : [[], null];
+
+	// The heroes that were discarded in the hero selection phase (if any)
+	const invalidCardIds: readonly string[] = pickedHeroFullEntity
+		? pickOptions
+				.map(option => option.get('cardID'))
+				.filter(cardId => cardId !== pickedHeroFullEntity.get('cardID'))
+		: [];
+
 	return elementTree
 		.findall('.//FullEntity')
 		.filter(entity => entity.find(`.Tag[@tag='${GameTag.CARDTYPE}'][@value='${CardType.HERO}']`))
@@ -138,6 +148,7 @@ export const extractPlayerEntities = (playerId: number, elementTree: ElementTree
 					parseInt(entity.find(`.Tag[@tag='${GameTag.ZONE}']`).get('value')),
 				),
 		)
+		.filter(entity => !invalidCardIds.includes(entity.get('cardID')))
 		.filter(
 			entity =>
 				!['TB_BaconShop_HERO_PH', 'TB_BaconShop_HERO_KelThuzad', 'TB_BaconShopBob'].includes(

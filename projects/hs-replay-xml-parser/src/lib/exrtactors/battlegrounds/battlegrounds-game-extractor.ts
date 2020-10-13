@@ -1,6 +1,9 @@
-import { BattleResultHistory, BgsPlayer } from '../../model/battlegrounds';
+import { GameTag } from '@firestone-hs/reference-data';
+import { BattleResultHistory, BgsBoard, BgsComposition, BgsPlayer, Entity } from '../../model/battlegrounds';
+import { BgsFaceOff } from '../../model/bgs-face-off';
 import { BgsPostMatchStats } from '../../model/bgs-post-match-stats';
 import { Replay } from '../../model/replay';
+import { groupByFunction } from '../../utils';
 import { parseHsReplayString } from '../../xml-parser';
 import { reparseReplay } from './replay-parser';
 
@@ -8,6 +11,7 @@ export const buildPostMatchStats = (
 	replayXml: string,
 	mainPlayer: BgsPlayer,
 	battleResultHistory: readonly BattleResultHistory[],
+	faceOffs: readonly BgsFaceOff[],
 ): BgsPostMatchStats => {
 	const replay: Replay = parseHsReplayString(replayXml);
 	// console.log('parsed replay', replayXml?.length);
@@ -15,6 +19,7 @@ export const buildPostMatchStats = (
 	const structure = reparseReplay(replay);
 	const winLuckFactor = buildWinLuckFactor(battleResultHistory);
 	const tieLuckFactor = buildTieLuckFactor(battleResultHistory);
+	const compositionsOverTurn: readonly BgsComposition[] = buildCompositionsOverTurn(player.boardHistory);
 	const postMatchStats: BgsPostMatchStats = {
 		tavernTimings: player.tavernUpgradeHistory,
 		tripleTimings: player.tripleHistory, // TODO: add the cards when relevant
@@ -26,6 +31,7 @@ export const buildPostMatchStats = (
 		mainPlayerHeroPowersOverTurn: structure.mainPlayerHeroPowersOverTurn,
 		hpOverTurn: structure.hpOverTurn,
 		totalStatsOverTurn: structure.totalStatsOverTurn,
+		compositionsOverTurn: compositionsOverTurn,
 		minionsBoughtOverTurn: structure.minionsBoughtOverTurn,
 		minionsSoldOverTurn: structure.minionsSoldOverTurn,
 		totalMinionsDamageDealt: structure.totalMinionsDamageDealt,
@@ -36,8 +42,31 @@ export const buildPostMatchStats = (
 		wentFirstInBattleOverTurn: structure.wentFirstInBattleOverTurn,
 		luckFactor: (2 * winLuckFactor + tieLuckFactor) / 3,
 		battleResultHistory: battleResultHistory,
+		faceOffs: faceOffs,
 	} as BgsPostMatchStats;
 	return postMatchStats;
+};
+
+const buildCompositionsOverTurn = (boardHistory: readonly BgsBoard[]): readonly BgsComposition[] => {
+	const extractCompositionsForTurn = (board: BgsBoard): readonly BgsComposition[] => {
+		const groupedByTribe: { [tribe: string]: readonly Entity[] } = groupByFunction(
+			(entity: Entity) =>
+				'' +
+				GameTag[
+					entity.tags.get
+						? entity.tags.get(GameTag[GameTag.CARDRACE])
+						: entity.tags[GameTag[GameTag.CARDRACE]]
+				],
+		)(board.board);
+		return Object.keys(groupedByTribe).map(tribe => ({
+			turn: board.turn,
+			tribe: tribe,
+			count: groupedByTribe[tribe].length,
+		}));
+	};
+	return boardHistory
+		? boardHistory.map(history => extractCompositionsForTurn(history)).reduce((a, b) => a.concat(b), [])
+		: [];
 };
 
 // Returns -1 if had the worst possible luck, and 1 if had the best possible luck

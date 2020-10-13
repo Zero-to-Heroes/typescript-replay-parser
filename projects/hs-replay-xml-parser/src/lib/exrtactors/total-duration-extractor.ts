@@ -1,3 +1,4 @@
+import { GameTag } from '@firestone-hs/reference-data';
 import { Replay } from '../model/replay';
 
 export const totalDurationExtractor = (replay: Replay): number => {
@@ -9,6 +10,13 @@ export const totalDurationExtractor = (replay: Replay): number => {
 	}
 	const durationInSeconds = lastTimestampInSeconds - firstTimestampInSeconds;
 	return durationInSeconds;
+};
+
+export const numberOfTurnsExtractor = (replay: Replay): number => {
+	const allTurnChanges = replay.replay.findall(`.//TagChange[@tag='${GameTag.TURN}']`);
+	const lastTurn = allTurnChanges.length > 0 ? allTurnChanges[allTurnChanges.length - 1] : null;
+	const totalTurns = lastTurn ? parseInt(lastTurn.get('value')) : 0;
+	return Math.ceil(totalTurns / 2);
 };
 
 const toTimestamp = (ts: string): number => {

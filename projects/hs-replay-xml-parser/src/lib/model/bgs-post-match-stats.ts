@@ -1,4 +1,5 @@
-import { BattleResultHistory, BgsBoard, BgsTavernUpgrade, BgsTriple } from './battlegrounds';
+import { BattleResultHistory, BgsBoard, BgsComposition, BgsTavernUpgrade, BgsTriple } from './battlegrounds';
+import { BgsFaceOff } from './bgs-face-off';
 import { BooleanTurnInfo } from './boolean-turn-info';
 import { ComplexTurnInfo } from './complex-turn-info';
 import { NumericTurnInfo } from './numeric-turn-info';
@@ -12,7 +13,7 @@ export interface BgsPostMatchStats {
 	readonly replayLink: string;
 
 	readonly boardHistory: readonly BgsBoard[];
-	// readonly compositionsOverTurn: readonly BgsCompositionForTurn[];
+	readonly compositionsOverTurn: readonly BgsComposition[];
 	readonly rerollsOverTurn: readonly NumericTurnInfo[];
 	readonly freezesOverTurn: readonly NumericTurnInfo[];
 	readonly coinsWastedOverTurn: readonly NumericTurnInfo[];
@@ -33,4 +34,5 @@ export interface BgsPostMatchStats {
 	readonly totalEnemyHeroesKilled: number;
 	readonly luckFactor: number;
 	readonly battleResultHistory: readonly BattleResultHistory[];
+	readonly faceOffs: readonly BgsFaceOff[];
 }
