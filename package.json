@@ -22,7 +22,7 @@
 		"@angular/router": "^8.2.14",
 		"@firestone-hs/reference-data": "^0.1.38",
 		"@firestone-hs/replay-parser": "^1.1.16",
-		"@firestone-hs/simulate-bgs-battle": "^1.1.5",
+		"@firestone-hs/simulate-bgs-battle": "^1.1.29",
 		"big-integer": "^1.6.48",
 		"cross-fetch": "^3.0.4",
 		"elementtree": "^0.1.7",

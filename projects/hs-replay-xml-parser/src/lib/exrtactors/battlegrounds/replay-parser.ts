@@ -31,6 +31,9 @@ export const reparseReplay = (
 	totalEnemyMinionsKilled: number;
 	totalEnemyHeroesKilled: number;
 } => {
+	if (!replay) {
+		return {} as any;
+	}
 	const opponentPlayerElement = replay.replay
 		.findall('.//Player')
 		.find(player => player.get('isMainPlayer') === 'false');

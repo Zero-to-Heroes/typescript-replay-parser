@@ -5,7 +5,7 @@ import { Damage, GameAction } from '@firestone-hs/simulate-bgs-battle/dist/simul
 import { GameSample } from '@firestone-hs/simulate-bgs-battle/dist/simulation/spectator/game-sample';
 import { Map } from 'immutable';
 import { Game } from '../../models/game/game';
-import { Action, ActionParserConfig, ActionTurn, AttackAction, DamageAction, Entity, MinionDeathAction, PlayerEntity, SummonAction, Turn } from '../../models/models';
+import { Action, ActionParserConfig, ActionTurn, AttackAction, DamageAction, Entity, MinionDeathAction, PlayerEntity, PowerTargetAction, SummonAction, Turn } from '../../models/models';
 import { AllCardsService } from '../all-cards.service';
 import { NarratorService } from '../gamepipeline/narrator.service';
 import { ExtendedGameSample } from './extended-game-sample';
@@ -73,6 +73,18 @@ export class BattlegroundsSimulationParserService {
 					entities: this.buildEntities(action, playerEntity, opponentEntity, damages),
 					damages: damages,
 				} as DamageAction,
+				this.allCards,
+			);
+		} else if (action.type === 'power-target') {
+			console.log('parsing powertargetaction', action);
+			const targetIds: readonly number[] = [action.targetEntityId];
+			return PowerTargetAction.create(
+				{
+					entities: this.buildEntities(action, playerEntity, opponentEntity, damages),
+					originId: action.sourceEntityId,
+					targetIds: targetIds,
+					targets: targetIds.map(targetId => [action.sourceEntityId, targetId]) as readonly [number, number][],
+				} as PowerTargetAction,
 				this.allCards,
 			);
 		} else if (action.type === 'spawn') {
