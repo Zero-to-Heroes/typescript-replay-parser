@@ -18,8 +18,8 @@ export class AllCardsService {
 
 	// We keep this synchronous because we ensure, in the game init pipeline, that loading cards
 	// is the first thing we do
-	public getCard(id: string): ReferenceCard {
-		return this.service.getCard(id);
+	public getCard(id: string, errorWhenUndefined = true): ReferenceCard {
+		return this.service.getCard(id, errorWhenUndefined);
 	}
 
 	public getCardFromDbfId(dbfId: number): ReferenceCard {
