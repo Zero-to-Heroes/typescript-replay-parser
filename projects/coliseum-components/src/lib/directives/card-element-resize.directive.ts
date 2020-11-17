@@ -5,7 +5,7 @@ import { AfterViewInit, ChangeDetectorRef, Directive, ElementRef, Input, ViewRef
 })
 export class CardElementResizeDirective implements AfterViewInit {
 	@Input() fontSizeRatio: number;
-	@Input() timeout = 0;
+	@Input() timeout = 100;
 	@Input() keepOpacity = false;
 	@Input() isCardElement = true;
 
@@ -27,11 +27,12 @@ export class CardElementResizeDirective implements AfterViewInit {
 	private resizeText() {
 		const el = this.elRef.nativeElement;
 		if (!el) {
-			setTimeout(() => this.resizeText());
+			setTimeout(() => this.resizeText(), 20);
 			return;
 		}
 		const fontSize = this.fontSizeRatio * el.getBoundingClientRect().width;
 		const textEls = this.elRef.nativeElement.querySelectorAll('[resizeTarget]');
+		// console.log('fontSize', fontSize, textEls)
 		for (const textEl of textEls) {
 			textEl.style.fontSize = fontSize + 'px';
 			// console.log('resized element', textEl, textEls);

@@ -14,17 +14,17 @@ export class CardTooltipDirective {
 
 	@HostListener('mouseenter')
 	onMouseEnter() {
-		if (!this.hasTooltip || !this.tooltipEntity || !this.tooltipEntity.cardID) {
-			return;
-		}
-		let elementLeft = 0;
-		let elementTop = 0;
-		let element = this.el.nativeElement;
-		while (element && !element.classList.contains('external-player')) {
-			elementLeft += element.offsetLeft;
-			elementTop += element.offsetTop;
-			element = element.offsetParent;
-		}
+		// if (!this.hasTooltip || !this.tooltipEntity || !this.tooltipEntity.cardID) {
+		// 	return;
+		// }
+		// let elementLeft = 0;
+		// let elementTop = 0;
+		// let element = this.el.nativeElement;
+		// while (element && !element.classList.contains('external-player')) {
+		// 	elementLeft += element.offsetLeft;
+		// 	elementTop += element.offsetTop;
+		// 	element = element.offsetParent;
+		// }
 		// TODO: compute this once at component init + after each resize, instead of every time
 		// TODO: move the logic away to tooltips component, so it can take care of auto positioning
 		// this.events.broadcast(

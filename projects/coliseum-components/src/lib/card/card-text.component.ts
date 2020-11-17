@@ -56,6 +56,7 @@ export class CardTextComponent {
 		if (!this._entity) {
 			return;
 		}
+		// console.log('updating text')
 		const cardId = this._entity.cardID;
 		this.text = undefined;
 		const originalCard = this.cards.getCard(cardId);
@@ -98,13 +99,12 @@ export class CardTextComponent {
 			.replace(/\$(\d+)/g, this.modifier(damageBonus, doubleDamage))
 			.replace(/\#(\d+)/g, this.modifier(damageBonus, doubleDamage));
 		this.text = this.domSanitizer.bypassSecurityTrustHtml(description);
+		// console.log('updated text', this.text)
 
 		// Text is not the same color for premium cards
 		this.premium = this._entity.getTag(GameTag.PREMIUM) === 1;
-
-		if (!(this.cdr as ViewRef)?.destroyed) {
-			this.cdr.detectChanges();
-		}
+		this.resizeText();
+		setTimeout(() => this.resizeText(), 100);
 	}
 
 	@Input('cardType') set cardType(cardType: CardType) {
@@ -114,6 +114,7 @@ export class CardTextComponent {
 
 	private resizeText() {
 		this.dirtyFlag = !this.dirtyFlag;
+		// console.log('asking for text resize')
 		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
