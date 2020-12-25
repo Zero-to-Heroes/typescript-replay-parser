@@ -13,7 +13,7 @@ export class Replay {
 	readonly gameFormat: GameFormat;
 	readonly gameType: GameType;
 	readonly scenarioId: number;
-	readonly result: string;
+	readonly result: 'won' | 'lost' | 'tied';
 	readonly additionalResult: string;
 	readonly playCoin: 'play' | 'coin';
 }
