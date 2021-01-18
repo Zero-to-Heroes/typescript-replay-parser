@@ -5,30 +5,20 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewRef }
 	styleUrls: ['./tavern-level-icon.component.scss'],
 	template: `
 		<div class="tavern-level-icon">
-			<img
-				class="banner"
-				src="https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_banner.png"
-			/>
-			<div class="level level-{{ stars?.length }}">
-				<img
-					*ngFor="let number of stars"
-					src="https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_star.png"
-				/>
-			</div>
+			<img class="banner" [src]="image" />
 		</div>
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TavernLevelIconComponent {
-	stars: readonly number[];
+	image: string;
 
 	@Input() set level(value: number) {
-		if (value === this.stars?.length) {
-			return;
-		}
-		this.stars = Array(value)
-			.fill(0)
-			.map((x, i) => i);
+		this.image = value 
+		? `https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_banner_${value}.png` 
+		: 'https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_banner_0.png';
+		console.debug('set image', value, this.image)
+		
 		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
 		}
