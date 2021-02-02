@@ -36,6 +36,7 @@ export class XmlParserService {
 	private entityDefinition: EntityDefinition;
 	private accountHi: string;
 	private accountLo: string;
+	private isMainPlayer: string;
 	private choices: Choices;
 	private chosen: ChosenTag;
 	private metaData: MetaData;
@@ -139,6 +140,7 @@ export class XmlParserService {
 						: node.attributes.name;
 				this.accountHi = node.attributes.accountHi;
 				this.accountLo = node.attributes.accountLo;
+				this.isMainPlayer = node.attributes.isMainPlayer;
 			/* falls through */
 			case 'GameEntity':
 			case 'FullEntity':
@@ -449,6 +451,7 @@ export class XmlParserService {
 					this.entityDefinition,
 					this.accountHi,
 					this.accountLo,
+					this.isMainPlayer,
 					this.buildTimestamp(ts),
 					node.index,
 				);

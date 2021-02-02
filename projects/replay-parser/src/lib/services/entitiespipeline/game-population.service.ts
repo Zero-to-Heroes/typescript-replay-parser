@@ -89,6 +89,7 @@ export class GamePopulationService {
 			accountHi: historyItem.accountHi,
 			accountLo: historyItem.accountLo,
 			name: playerName,
+			isMainPlayer: historyItem.isMainPlayer,
 		} as PlayerEntity).update(historyItem.entityDefintion);
 		return entities.set(entity.id, entity);
 	}

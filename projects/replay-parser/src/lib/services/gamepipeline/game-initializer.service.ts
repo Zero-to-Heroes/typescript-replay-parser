@@ -15,22 +15,24 @@ export class GameInitializerService {
 			.filter((entity: Entity) => entity.getCardType() === CardType.PLAYER)
 			.map(entity => entity as PlayerEntity)
 			.toArray();
-		let player1 = players[0];
-		let player2 = players[1];
-		const firstPlayerHand: readonly Entity[] = GameHepler.getPlayerHand(entities, players[0].playerId);
-		if (
-			// All game modes known today have the main player have at least 3 cards in hand
-			firstPlayerHand.length < 3 ||
-			!firstPlayerHand[0].isRevealed() ||
-			!firstPlayerHand[1].isRevealed() ||
-			!firstPlayerHand[2].isRevealed()
-		) {
-			[player1, player2] = [player2, player1];
-		}
+		let player1 = players.find(player => player.isMainPlayer);
+		let player2 = players.find(player => !player.isMainPlayer);
+		if (!player1) {
+			const firstPlayerHand: readonly Entity[] = GameHepler.getPlayerHand(entities, players[0].playerId);
+			if (
+				// All game modes known today have the main player have at least 3 cards in hand
+				firstPlayerHand.length < 3 ||
+				!firstPlayerHand[0].isRevealed() ||
+				!firstPlayerHand[1].isRevealed() ||
+				!firstPlayerHand[2].isRevealed()
+			) {
+				[player1, player2] = [player2, player1];
+			}
 
-		// AI trick
-		if (player1.accountHi === '0' && player1.accountLo === '0') {
-			[player1, player2] = [player2, player1];
+			// AI trick
+			if (player1.accountHi === '0' && player1.accountLo === '0') {
+				[player1, player2] = [player2, player1];
+			}
 		}
 		return Game.createGame(game, {
 			players: [player1, player2] as readonly PlayerEntity[],

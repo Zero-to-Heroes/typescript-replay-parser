@@ -5,11 +5,13 @@ export class PlayerHistoryItem extends HistoryItem {
 	readonly entityDefintion: EntityDefinition;
 	readonly accountHi: string;
 	readonly accountLo: string;
+	readonly isMainPlayer: boolean;
 
 	constructor(
 		entityDefintion: EntityDefinition,
 		accountHi: string,
 		accountLo: string,
+		isMainPlayer: string,
 		timestamp: number,
 		index: number,
 	) {
@@ -17,5 +19,6 @@ export class PlayerHistoryItem extends HistoryItem {
 		this.entityDefintion = entityDefintion;
 		this.accountHi = accountHi;
 		this.accountLo = accountLo;
+		this.isMainPlayer = isMainPlayer === 'true';
 	}
 }

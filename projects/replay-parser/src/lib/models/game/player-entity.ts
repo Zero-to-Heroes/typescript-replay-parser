@@ -8,6 +8,7 @@ export class PlayerEntity extends Entity {
 	readonly name: string;
 	readonly accountHi: string;
 	readonly accountLo: string;
+	readonly isMainPlayer: boolean;
 
 	public static create(base: PlayerEntity, newAttributes?: EntityDefinition): PlayerEntity {
 		// Merge tags
