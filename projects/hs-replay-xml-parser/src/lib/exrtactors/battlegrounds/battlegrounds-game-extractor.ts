@@ -70,7 +70,7 @@ const buildCompositionsOverTurn = (boardHistory: readonly BgsBoard[]): readonly 
 };
 
 // Returns -1 if had the worst possible luck, and 1 if had the best possible luck
-const buildWinLuckFactor = (battleResultHistory: readonly BattleResultHistory[]): number => {
+export const buildWinLuckFactor = (battleResultHistory: readonly BattleResultHistory[]): number => {
 	return spreadAroundZero(
 		battleResultHistory
 			.filter(history => history.simulationResult) // Mostly for dev, shouldn't happen in real life

@@ -24,8 +24,8 @@ Run `ng test hs-replay-xml-parser` to execute the unit tests via [Karma](https:/
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-rm -rf dist && tsc && 'cp' -rf dist/ /g/Source/zerotoheroes/firestone/core/node_modules/\@firestone-hs/hs-replay-xml-parser/
+rm -rf dist && tsc && 'cp' -rf dist/ /e/Source/zerotoheroes/firestone/core/node_modules/\@firestone-hs/hs-replay-xml-parser/
 
-rm -rf dist && tsc && 'cp' -rf dist/ /g/Source/zerotoheroes/firestone/integration-tests/node_modules/\@firestone-hs/hs-replay-xml-parser/
+rm -rf dist && tsc && 'cp' -rf dist/ /e/Source/zerotoheroes/firestone/integration-tests/node_modules/\@firestone-hs/hs-replay-xml-parser/
 
 rm -rf dist && tsc && npm publish --access public

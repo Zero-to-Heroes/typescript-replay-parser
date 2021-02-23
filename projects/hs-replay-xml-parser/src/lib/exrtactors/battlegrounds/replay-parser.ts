@@ -92,7 +92,6 @@ export const reparseReplay = (
 
 	const opponentHeroEntityIds = extractHeroEntityIds(replay, replay.opponentPlayerId);
 
-
 	parseElement(
 		replay.replay.getroot(),
 		replay.mainPlayerId,
@@ -161,7 +160,7 @@ export const reparseReplay = (
 		)
 		.valueSeq()
 		.toArray();
-	const coinsWastedOverTurn: readonly NumericTurnInfo[] = structure.coinsWastedOverTurn
+	const coinsWastedOverTurn: NumericTurnInfo[] = structure.coinsWastedOverTurn
 		.map(
 			(waste, turn: number) =>
 				({
@@ -171,6 +170,8 @@ export const reparseReplay = (
 		)
 		.valueSeq()
 		.toArray();
+		// We remove the last element of the array, as it gives you the coins present on your end-game screen
+	coinsWastedOverTurn.pop();
 	const minionsSoldOverTurn: readonly NumericTurnInfo[] = structure.minionsSoldOverTurn
 		.map(
 			(minions, turn: number) =>
@@ -256,7 +257,20 @@ const hpForTurnParse = (structure: ParsingStructure, playerEntities: readonly El
 				.get('cardID'));
 			structure.playerHps[playerCardId] =
 				// Patchwerk is a special case
-				Math.max(0, (playerCardId === 'TB_BaconShop_HERO_34' ? 50 : 40) - parseInt(element.get('value')));
+				Math.max(0, (playerCardId === 'TB_BaconShop_HERO_34' ? 55 : 40) - parseInt(element.get('value')));
+		}
+	};
+};
+
+const hpForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
+	return currentTurn => {
+		for (const playerCardId of Object.keys(structure.playerHps)) {
+			const currentHps = [...(structure.hpOverTurn[playerCardId] || [])];
+			currentHps.push({
+				turn: currentTurn,
+				value: structure.playerHps[playerCardId],
+			});
+			structure.hpOverTurn[playerCardId] = currentHps;
 		}
 	};
 };
@@ -273,6 +287,19 @@ const leaderboardForTurnParse = (structure: ParsingStructure, playerEntities: re
 				.find(entity => normalizeHeroCardId(entity.get('id')) === normalizeHeroCardId(element.get('entity')))
 				.get('cardID'));
 			structure.leaderboardPositions[playerCardId] = parseInt(element.get('value'));
+		}
+	};
+};
+
+const leaderboardForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
+	return currentTurn => {
+		for (const playerCardId of Object.keys(structure.leaderboardPositions)) {
+			const currentLeaderboards = [...(structure.leaderboardPositionOverTurn[playerCardId] || [])];
+			currentLeaderboards.push({
+				turn: currentTurn,
+				value: structure.leaderboardPositions[playerCardId],
+			});
+			structure.leaderboardPositionOverTurn[playerCardId] = currentLeaderboards;
 		}
 	};
 };
@@ -294,44 +321,6 @@ const rerollsForTurnParse = (structure: ParsingStructure) => {
 	};
 };
 
-const coinsWastedForTurnParse = (structure: ParsingStructure, mainPlayerEntityId: string) => {
-	return (element: Element) => {
-		if (element.tag === 'TagChange' && mainPlayerEntityId === element.get('entity')) {
-			if (parseInt(element.get('tag')) === GameTag.RESOURCES) {
-				structure.resourcesForTurn = parseInt(element.get('value'));
-			} else if (parseInt(element.get('tag')) === GameTag.RESOURCES_USED) {
-				structure.resourcesUsedForTurn = parseInt(element.get('value'));
-			}
-		}
-	};
-};
-
-const leaderboardForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
-	return currentTurn => {
-		for (const playerCardId of Object.keys(structure.leaderboardPositions)) {
-			const currentLeaderboards = [...(structure.leaderboardPositionOverTurn[playerCardId] || [])];
-			currentLeaderboards.push({
-				turn: currentTurn,
-				value: structure.leaderboardPositions[playerCardId],
-			});
-			structure.leaderboardPositionOverTurn[playerCardId] = currentLeaderboards;
-		}
-	};
-};
-
-const hpForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
-	return currentTurn => {
-		for (const playerCardId of Object.keys(structure.playerHps)) {
-			const currentHps = [...(structure.hpOverTurn[playerCardId] || [])];
-			currentHps.push({
-				turn: currentTurn,
-				value: structure.playerHps[playerCardId],
-			});
-			structure.hpOverTurn[playerCardId] = currentHps;
-		}
-	};
-};
-
 const rerollsForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
 	return currentTurn => {
 		structure.rerollOverTurn = structure.rerollOverTurn.set(currentTurn, structure.rerollsForTurn);
@@ -349,14 +338,6 @@ const mainPlayerHeroPowerForTurnParse = (structure: ParsingStructure, mainPlayer
 			structure.mainPlayerHeroPowerIds = [...structure.mainPlayerHeroPowerIds, element.get('id')];
 			// console.debug('mainPlayerHeroPowerIds', structure.mainPlayerHeroPowerIds);
 		}
-		// if (
-		// 	element.tag === 'Block' &&
-		// 	parseInt(element.get('type')) === BlockType.POWER &&
-		// 	structure.mainPlayerHeroPowerIds.indexOf(element.get('entity')) !== -1
-		// ) {
-		// 	structure.mainPlayerHeroPowersForTurn = structure.mainPlayerHeroPowersForTurn + 1;
-		// 	console.debug('mainPlayerHeroPowersForTurn', structure.mainPlayerHeroPowersForTurn, element.attrib);
-		// }
 		if (
 			element.tag === 'TagChange' &&
 			parseInt(element.get('tag')) === GameTag.EXHAUSTED &&
@@ -411,6 +392,16 @@ const freezesForTurnPopulate = (structure: ParsingStructure, replay: Replay) => 
 	};
 };
 
+const wentFirstInBattleForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
+	return currentTurn => {
+		structure.wentFirstInBattleOverTurn = structure.wentFirstInBattleOverTurn.set(
+			currentTurn,
+			structure.wentFirstInBattleThisTurn,
+		);
+		structure.wentFirstInBattleThisTurn = undefined;
+	};
+};
+
 const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPlayerId: number) => {
 	return (element: Element) => {
 		if (element.tag === 'FullEntity' && element.get('cardID') === 'TB_BaconShop_8P_PlayerE') {
@@ -441,30 +432,32 @@ const wentFirstInBattleForTurnParse = (structure: ParsingStructure, mainPlayerPl
 	};
 };
 
-const wentFirstInBattleForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
-	return currentTurn => {
-		structure.wentFirstInBattleOverTurn = structure.wentFirstInBattleOverTurn.set(
-			currentTurn,
-			structure.wentFirstInBattleThisTurn,
-		);
-		structure.wentFirstInBattleThisTurn = undefined;
+const coinsWastedForTurnParse = (structure: ParsingStructure, mainPlayerEntityId: string) => {
+	return (element: Element) => {
+		if (element.tag === 'TagChange' && mainPlayerEntityId === element.get('entity')) {
+			if (parseInt(element.get('tag')) === GameTag.RESOURCES) {
+				structure.resourcesForTurn = parseInt(element.get('value'));
+			} else if (parseInt(element.get('tag')) === GameTag.RESOURCES_USED) {
+				structure.resourcesUsedForTurn = parseInt(element.get('value'));
+			}
+		}
 	};
 };
 
 const coinsWastedForTurnPopulate = (structure: ParsingStructure, replay: Replay) => {
 	return currentTurn => {
-		const totalResourcesGained = structure.resourcesForTurn + structure.minionsSoldForTurn;
-		// console.debug(
-		// 	'totalResourcesGained',
-		// 	currentTurn,
-		// 	totalResourcesGained,
-		// 	structure.resourcesForTurn,
-		// 	structure.minionsSoldForTurn,
-		// 	structure.resourcesUsedForTurn,
-		// );
+		if (currentTurn === 0) {
+			return;
+		}
+		
+		// The tag isn't present after the last round
+		const resourcesForTurn = structure.resourcesForTurn || 10;
+		// The tag RESOURCES_USED seem to indicate, at the end of each turn, how many resources have been used.
+		// So we don't really need to compute anything
+		const resourcesWasted = Math.max(0, resourcesForTurn - structure.resourcesUsedForTurn);
 		structure.coinsWastedOverTurn = structure.coinsWastedOverTurn.set(
 			currentTurn,
-			Math.max(0, totalResourcesGained - structure.resourcesUsedForTurn),
+			resourcesWasted,
 		);
 		structure.resourcesForTurn = 0;
 		structure.resourcesUsedForTurn = 0;
@@ -481,7 +474,6 @@ const minionsSoldForTurnParse = (structure: ParsingStructure) => {
 			parseInt(element.get('type')) === BlockType.POWER &&
 			structure.minionsSoldIds.indexOf(element.get('entity')) !== -1
 		) {
-			// console.log('adding one reroll', structure.rerollsForTurn, element);
 			structure.minionsSoldForTurn = structure.minionsSoldForTurn + 1;
 		}
 	};
@@ -632,7 +624,7 @@ const damageDealtToEnemyHeroParse = (structure: ParsingStructure, replay: Replay
 			}
 			structure.damageToEnemyHeroForTurn = {
 				enemyHeroCardId: structure.entities[infos[0].get('entity')].cardId,
-				value: parseInt(element.get('data'))
+				value: parseInt(element.get('data')),
 			};
 		}
 		

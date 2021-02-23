@@ -1,6 +1,6 @@
 import { Element } from 'elementtree';
 import { allMinionsPlayedExtractor } from './exrtactors/all-minions-played-extractor';
-import { buildPostMatchStats } from './exrtactors/battlegrounds/battlegrounds-game-extractor';
+import { buildPostMatchStats, buildWinLuckFactor } from './exrtactors/battlegrounds/battlegrounds-game-extractor';
 import { heroPickExtractor } from './exrtactors/battlegrounds/hero-pick-extractor';
 import { totalDamageDealtToEnemyHeroExtractor } from './exrtactors/total-damage-dealt-to-enemy-hero-extractor';
 import { numberOfTurnsExtractor, totalDurationExtractor } from './exrtactors/total-duration-extractor';
@@ -58,4 +58,8 @@ export const parseBattlegroundsGame = (
 	faceOffs: readonly BgsFaceOff[],
 ): BgsPostMatchStats => {
 	return buildPostMatchStats(replayXml, mainPlayer, battleResultHistory, faceOffs);
+};
+
+export const buildLuckFactor = (battleResultHistory: readonly BattleResultHistory[]): number => {
+	return buildWinLuckFactor(battleResultHistory);
 };
