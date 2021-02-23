@@ -8,16 +8,18 @@ import { AllCardsService } from '@firestone-hs/replay-parser';
 		<div class="card-stats" *ngIf="hasStats">
 			<div class="stat {{ attackClass }}">
 				<div class="stat-value">
-					<svg viewBox="0 0 20 20">
+					<svg viewBox="0 0 20 20" *ngIf="useSvg">
 						<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">{{ _attack }}</text>
 					</svg>
+					<span class="value" *ngIf="!useSvg">{{ _attack }}</span>
 				</div>
 			</div>
 			<div class="stat {{ healthClass }}">
 				<div class="stat-value">
-					<svg viewBox="0 0 20 20">
+					<svg viewBox="0 0 20 20" *ngIf="useSvg">
 						<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">{{ healthLeft }}</text>
 					</svg>
+					<span class="value" *ngIf="!useSvg">{{ healthLeft }}</span>
 				</div>
 			</div>
 		</div>
@@ -25,24 +27,7 @@ import { AllCardsService } from '@firestone-hs/replay-parser';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardCardStatsComponent {
-	hasStats: boolean;
-
-	attackClass: string;
-	healthClass: string;
-	healthLeft: number;
-
-	_attack: number;
-
-	private _cardId: string;
-	private _health: number;
-	private _damage: number;
-
-	constructor(
-		private cards: AllCardsService,
-		private cdr: ChangeDetectorRef,
-		private elRef: ElementRef,
-		
-	) {}
+	@Input() useSvg: boolean;
 
 	@Input('cardId') set cardId(cardId: string) {
 		// console.log('[board-card-stats] setting cardId', cardId);
@@ -67,6 +52,25 @@ export class BoardCardStatsComponent {
 		this._damage = damage;
 		this.updateStats();
 	}
+
+	hasStats: boolean;
+
+	attackClass: string;
+	healthClass: string;
+	healthLeft: number;
+
+	_attack: number;
+
+	private _cardId: string;
+	private _health: number;
+	private _damage: number;
+
+	constructor(
+		private cards: AllCardsService,
+		private cdr: ChangeDetectorRef,
+		private elRef: ElementRef,
+		
+	) {}
 
 	private updateStats() {
 		this.attackClass = undefined;

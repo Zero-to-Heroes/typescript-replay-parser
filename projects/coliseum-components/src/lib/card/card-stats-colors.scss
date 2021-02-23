@@ -6,11 +6,17 @@
 		text {
 			fill: $buff;
 		}
+		.value {
+			color: inherit;
+		}
 	}
 	&.debuff {
 		color: $damage;
 		text {
 			fill: $damage;
+		}
+		.value {
+			color: inherit;
 		}
 	}
 }
@@ -21,11 +27,17 @@
 		text {
 			fill: $buff;
 		}
+		.value {
+			color: inherit;
+		}
 	}
 	&.damaged {
 		color: $damage;
 		text {
 			fill: $damage;
+		}
+		.value {
+			color: inherit;
 		}
 	}
 }
