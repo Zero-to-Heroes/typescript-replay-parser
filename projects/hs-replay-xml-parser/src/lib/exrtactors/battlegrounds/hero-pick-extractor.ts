@@ -20,7 +20,7 @@ export const heroPickExtractor = (elementTree: ElementTree, mainPlayerId: number
 			return pickOptionIds.indexOf(choice.get('entity')) !== -1;
 		})
 		.map(entity => entity.find(`.//Choice`));
-	const pickedHeroEntityId = pickedHero[0].get('entity');
+	const pickedHeroEntityId = pickedHero?.length ? pickedHero[0].get('entity') : -1;
 	const pickedHeroFullEntity = pickOptions.find(option => option.get('id') === pickedHeroEntityId);
 
 	return [pickOptions, pickedHeroFullEntity];
