@@ -34,6 +34,7 @@ export class StateProcessorService {
 		GameTag.ZONE,
 		GameTag.CONTROLLER,
 		GameTag.DURABILITY,
+		GameTag.CLASS,
 		GameTag.CARDTYPE,
 		GameTag.SECRET,
 		GameTag.ZONE_POSITION,
