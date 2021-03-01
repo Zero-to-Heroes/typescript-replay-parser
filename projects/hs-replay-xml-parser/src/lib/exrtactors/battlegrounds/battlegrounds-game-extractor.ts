@@ -43,6 +43,7 @@ export const buildPostMatchStats = (
 		luckFactor: (2 * winLuckFactor + tieLuckFactor) / 3,
 		battleResultHistory: battleResultHistory,
 		faceOffs: faceOffs,
+		highestWinStreak: mainPlayer.highestWinStreak,
 	} as BgsPostMatchStats;
 	return postMatchStats;
 };
