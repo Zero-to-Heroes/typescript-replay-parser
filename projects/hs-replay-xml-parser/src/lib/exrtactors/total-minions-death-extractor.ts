@@ -62,12 +62,6 @@ export const totalMinionsDeathExtractor = (replay: Replay): PlayerOpponentValues
 			),
 		),
 	];
-	console.debug(
-		'dead minions entity ids',
-		replay.mainPlayerId,
-		opponentPlayerId,
-		opponentDeadMinionEntityIds.map(entity => parseInt(entity.get('entity') || entity.get('id'))),
-	);
 	// console.debug(allMinionEntities.find(entity => parseInt(entity.get('entity') || entity.get('id')) === 255));
 
 	return { player: playerDeadMinionEntityIds.length, opponent: opponentDeadMinionEntityIds.length };

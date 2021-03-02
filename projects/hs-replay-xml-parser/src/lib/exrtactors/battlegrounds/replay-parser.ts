@@ -534,7 +534,10 @@ const damageDealtByMinionsParse = (structure: ParsingStructure, replay: Replay) 
 			if (!actionEntity) {
 				return;
 			}
-			const damageTags = element.findall(`.//MetaData[@meta='${MetaTags.DAMAGE}']`);
+			// Only look for direct children, to avoid counting the same elements twice (for each action)
+			// As far as I know the damage tags can only appear as children of BLOCKs, so we should not 
+			// miss anything by doing that
+			const damageTags = element.findall(`.MetaData[@meta='${MetaTags.DAMAGE}']`);
 			// If it's an attack, the attacker deals to the def, and vice versa
 			if ([BlockType.ATTACK].indexOf(parseInt(element.get('type'))) !== -1) {
 				const attackerEntityId = element.find(`.//TagChange[@tag='${GameTag.ATTACKING}']`)?.get('entity');
@@ -558,6 +561,9 @@ const damageDealtByMinionsParse = (structure: ParsingStructure, replay: Replay) 
 						else if (actionEntity.controller === replay.mainPlayerId) {
 							structure.minionsDamageDealt[actionEntity.cardId] =
 								(structure.minionsDamageDealt[actionEntity.cardId] || 0) + parseInt(tag.get('data'));
+							// if (actionEntity.cardId === 'BGS_126' && parseInt(tag.get('data')) > 0) {
+							// 	console.debug('adding damage from attack', parseInt(tag.get('data')), element.attrib)
+							// }
 						}
 						// Second case, we are attacked so we need to find out who did the damage to the enemy
 						else {
@@ -580,6 +586,9 @@ const damageDealtByMinionsParse = (structure: ParsingStructure, replay: Replay) 
 					const newDamage = damageTags.map(tag => parseInt(tag.get('data'))).reduce((a, b) => a + b, 0);
 					structure.minionsDamageDealt[actionEntity.cardId] =
 						(structure.minionsDamageDealt[actionEntity.cardId] || 0) + newDamage;
+						// if (actionEntity.cardId === 'BGS_126' && newDamage > 0) {
+						// 	console.debug('adding damage from else', newDamage, element.attrib)
+						// }
 				}
 				// Damage is done to us
 				else if (actionEntity.controller !== replay.mainPlayerId && actionEntity.cardType === CardType.MINION) {
