@@ -4,7 +4,7 @@ import { BgsFaceOff } from '../../model/bgs-face-off';
 import { BgsPostMatchStats } from '../../model/bgs-post-match-stats';
 import { Replay } from '../../model/replay';
 import { groupByFunction } from '../../utils';
-import { parseHsReplayString } from '../../xml-parser';
+import { buildLuckFactor, parseHsReplayString } from '../../xml-parser';
 import { reparseReplay } from './replay-parser';
 
 export const buildPostMatchStats = (
@@ -17,8 +17,6 @@ export const buildPostMatchStats = (
 	// console.log('parsed replay', replayXml?.length);
 	const player: BgsPlayer = mainPlayer;
 	const structure = reparseReplay(replay);
-	const winLuckFactor = buildWinLuckFactor(battleResultHistory);
-	const tieLuckFactor = buildTieLuckFactor(battleResultHistory);
 	const compositionsOverTurn: readonly BgsComposition[] = buildCompositionsOverTurn(player.boardHistory);
 	const postMatchStats: BgsPostMatchStats = {
 		tavernTimings: player.tavernUpgradeHistory,
@@ -40,7 +38,7 @@ export const buildPostMatchStats = (
 		totalEnemyHeroesKilled: structure.totalEnemyHeroesKilled,
 		damageToEnemyHeroOverTurn: structure.damageToEnemyHeroOverTurn,
 		wentFirstInBattleOverTurn: structure.wentFirstInBattleOverTurn,
-		luckFactor: (2 * winLuckFactor + tieLuckFactor) / 3,
+		luckFactor: buildLuckFactor(battleResultHistory),
 		battleResultHistory: battleResultHistory,
 		faceOffs: faceOffs,
 		highestWinStreak: mainPlayer.highestWinStreak,
@@ -83,7 +81,7 @@ export const buildWinLuckFactor = (battleResultHistory: readonly BattleResultHis
 			.reduce((a, b) => a + b, 0) / battleResultHistory.length,
 	);
 };
-const buildTieLuckFactor = (battleResultHistory: readonly BattleResultHistory[]): number => {
+export const buildTieLuckFactor = (battleResultHistory: readonly BattleResultHistory[]): number => {
 	return spreadAroundZero(
 		battleResultHistory
 			.filter(history => history.simulationResult)
