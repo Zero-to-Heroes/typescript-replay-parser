@@ -34,7 +34,7 @@ export class AllCardsService {
 		return this.service.getCards();
 	}
 
-	public async initializeCardsDb(): Promise<void> {
-		return this.service.initializeCardsDb();
+	public async initializeCardsDb(version?: string): Promise<void> {
+		return this.service.initializeCardsDb(version);
 	}
 }
