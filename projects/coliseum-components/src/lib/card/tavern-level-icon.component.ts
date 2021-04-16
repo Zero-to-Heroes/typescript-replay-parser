@@ -17,7 +17,6 @@ export class TavernLevelIconComponent {
 		this.image = value 
 		? `https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_banner_${value}.png` 
 		: 'https://static.zerotoheroes.com/hearthstone/asset/coliseum/images/battlegrounds/tavern_banner_0.png';
-		console.debug('set image', value, this.image)
 		
 		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
