@@ -17,13 +17,13 @@ export const buildPostMatchStats = (
 	// console.log('parsed replay', replayXml?.length);
 	const player: BgsPlayer = mainPlayer;
 	const structure = reparseReplay(replay);
-	const compositionsOverTurn: readonly BgsComposition[] = buildCompositionsOverTurn(player.boardHistory);
+	const compositionsOverTurn: readonly BgsComposition[] = buildCompositionsOverTurn(player?.boardHistory ?? []);
 	const postMatchStats: BgsPostMatchStats = {
 		tavernTimings: player.tavernUpgradeHistory,
 		tripleTimings: player.tripleHistory, // TODO: add the cards when relevant
 		coinsWastedOverTurn: structure.coinsWastedOverTurn,
 		rerolls: structure.rerollsOverTurn.map(turnInfo => turnInfo.value).reduce((a, b) => a + b, 0),
-		boardHistory: player.boardHistory,
+		boardHistory: player?.boardHistory ?? [],
 		rerollsOverTurn: structure.rerollsOverTurn,
 		freezesOverTurn: structure.freezesOverTurn,
 		mainPlayerHeroPowersOverTurn: structure.mainPlayerHeroPowersOverTurn,
