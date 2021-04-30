@@ -19,8 +19,8 @@ export const buildPostMatchStats = (
 	const structure = reparseReplay(replay);
 	const compositionsOverTurn: readonly BgsComposition[] = buildCompositionsOverTurn(player?.boardHistory ?? []);
 	const postMatchStats: BgsPostMatchStats = {
-		tavernTimings: player.tavernUpgradeHistory,
-		tripleTimings: player.tripleHistory, // TODO: add the cards when relevant
+		tavernTimings: player?.tavernUpgradeHistory ?? [],
+		tripleTimings: player?.tripleHistory ?? [], // TODO: add the cards when relevant
 		coinsWastedOverTurn: structure.coinsWastedOverTurn,
 		rerolls: structure.rerollsOverTurn.map(turnInfo => turnInfo.value).reduce((a, b) => a + b, 0),
 		boardHistory: player?.boardHistory ?? [],
@@ -41,7 +41,7 @@ export const buildPostMatchStats = (
 		luckFactor: buildLuckFactor(battleResultHistory),
 		battleResultHistory: battleResultHistory,
 		faceOffs: faceOffs,
-		highestWinStreak: mainPlayer.highestWinStreak,
+		highestWinStreak: player?.highestWinStreak,
 	} as BgsPostMatchStats;
 	return postMatchStats;
 };
