@@ -5,7 +5,7 @@ import { AllCardsService } from '@firestone-hs/replay-parser';
 	selector: 'card-stats',
 	styleUrls: ['../global/text.scss', './card-stats.component.scss', './card-stats-colors.scss'],
 	template: `
-		<div class="card-stats" *ngIf="hasStats" cardElementResize [fontSizeRatio]="0.2">
+		<div class="card-stats" *ngIf="hasStats" [cardElementResize]="autoFontResize" [fontSizeRatio]="0.2">
 			<div class="stat {{ attackClass }}">
 				<img class="stat-icon" src="https://static.zerotoheroes.com/hearthstone/asset/manastorm/attack.png" />
 				<div class="stat-value" resizeTarget>
@@ -80,6 +80,8 @@ export class CardStatsComponent {
 		this._armor = armor;
 		this.updateStats();
 	}
+
+	@Input() autoFontResize: boolean = true;
 
 	private updateStats() {
 		this.attackClass = undefined;

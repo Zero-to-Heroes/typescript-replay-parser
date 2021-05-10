@@ -8,12 +8,17 @@ export class CardElementResizeDirective implements AfterViewInit {
 	@Input() timeout = 100;
 	@Input() keepOpacity = false;
 	@Input() isCardElement = true;
+	@Input() cardElementResize: boolean;
 
 	constructor(private elRef: ElementRef, private cdr: ChangeDetectorRef) {
 		document.addEventListener('card-resize', () => this.resizeText());
 	}
 
 	ngAfterViewInit() {
+		if (this.cardElementResize === false) {
+			return;
+		}
+
 		this.elRef.nativeElement.style.opacity = 0;
 		if (!(this.cdr as ViewRef)?.destroyed) {
 			this.cdr.detectChanges();
@@ -25,6 +30,10 @@ export class CardElementResizeDirective implements AfterViewInit {
 	}
 
 	private resizeText() {
+		if (this.cardElementResize === false) {
+			return;
+		}
+
 		const el = this.elRef.nativeElement;
 		if (!el) {
 			setTimeout(() => this.resizeText(), 20);
