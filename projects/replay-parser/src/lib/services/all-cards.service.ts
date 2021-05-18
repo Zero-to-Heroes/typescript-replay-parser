@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AllCardsService as BaseService } from '@firestone-hs/reference-data';
-import { ReferenceCard } from '@firestone-hs/reference-data/lib/models/reference-cards/reference-card';
+import { AllCardsService as BaseService, ReferenceCard } from '@firestone-hs/reference-data';
 
 // Here to act as cache
 @Injectable({
