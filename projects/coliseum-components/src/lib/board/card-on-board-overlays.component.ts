@@ -23,7 +23,7 @@ export class CardOnBoardOverlaysComponent {
 		if (!value) {
 			return;
 		}
-		if (value.getTag(GameTag.CANT_BE_DAMAGED) === 1) {
+		if (value.getTag(GameTag.IMMUNE) === 1) {
 			this.pushOverlay('minion_immune');
 		}
 		if (value.getTag(GameTag.DIVINE_SHIELD) === 1) {
@@ -39,7 +39,7 @@ export class CardOnBoardOverlaysComponent {
 			this.pushOverlay('minion_stealth');
 		}
 		if (
-			value.getTag(GameTag.CANT_BE_TARGETED_BY_ABILITIES) === 1 &&
+			value.getTag(GameTag.CANT_BE_TARGETED_BY_SPELLS) === 1 &&
 			value.getTag(GameTag.CANT_BE_TARGETED_BY_HERO_POWERS) === 1
 		) {
 			this.pushOverlay('minion_elusive'); // missing
